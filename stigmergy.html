@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BlackBoxLab — Stigmergic Field</title>
+<style>
+:root{--bg:#080b10;--panel:#101620;--line:#273249;--ink:#eef4ff;--muted:#9aa8bb;--hot:#f4c86a;--cyan:#79caff;--violet:#b49cff;--orange:#ff9e73;--mint:#76e3c2}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 50% -20%,#1a2434 0,#080b10 46%);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+main{width:min(1180px,94vw);margin:auto;padding:38px 0 70px}
+a{color:#badaff}
+.kicker{font:700 12px ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--hot)}
+h1{font-size:clamp(38px,6vw,72px);line-height:.95;letter-spacing:-.05em;margin:10px 0 16px}
+.lede{max-width:870px;color:#c8d2e2;font-size:18px;line-height:1.55}
+.controls{display:flex;gap:9px;flex-wrap:wrap;margin:22px 0}
+button{border:1px solid var(--line);background:#111722;color:var(--ink);border-radius:999px;padding:10px 14px;font-weight:750;cursor:pointer}
+button.active{background:#edf3ff;color:#0a0d12;border-color:#edf3ff}
+.stage{border:1px solid var(--line);border-radius:22px;background:#0b1018;overflow:hidden}
+canvas{display:block;width:100%;height:auto}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+.metric{padding:15px 18px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}
+.metric b{display:block;font-size:25px}.metric span{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+.card{border:1px solid var(--line);border-radius:17px;background:rgba(16,22,32,.78);padding:20px}
+.card h2{margin:0 0 10px;font-size:19px}.card p{color:#aeb9c9;line-height:1.55}
+.flow{white-space:pre-wrap;font:600 13px/1.65 ui-monospace,monospace;background:#090d13;border:1px solid #202a3c;border-radius:12px;padding:14px;color:#dae4f3}
+.legend{padding:12px 16px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<main>
+<div class="kicker">BlackBoxLab · Experiment 1</div>
+<h1>The trace is<br>part of the world.</h1>
+<p class="lede">Experiment 0 told agents that crowded territory was expensive. This one removes that rule. Eight identical learners move through one continuous mixed field. Sampling leaves a local refractory trace. In the shared condition, the next learner encounters evidence physically changed by the previous learner.</p>
+
+<div class="controls">
+<button data-mode="none">NO TRACE</button>
+<button data-mode="private">PRIVATE TRACE</button>
+<button data-mode="shared" class="active">SHARED TRACE</button>
+<button id="pause">Pause</button>
+<button id="reset">Reset</button>
+<a href="index.html" style="align-self:center;margin-left:auto">← Experiment 0</a>
+</div>
+
+<section class="stage">
+<canvas id="c" width="1160" height="650"></canvas>
+<div class="metrics">
+<div class="metric"><b id="spread">—</b><span>population spread</span></div>
+<div class="metric"><b id="coverage">—</b><span>post-hoc source coverage</span></div>
+<div class="metric"><b id="trace">—</b><span>mean shared trace</span></div>
+<div class="metric"><b id="div">—</b><span>lag-filter divergence</span></div>
+</div>
+<div class="legend">Colored field underneath is only a human visualization of the four smoothly mixed latent regimes. Agents never receive those labels. Bright white/gray residue is the persistent environmental trace.</div>
+</section>
+
+<div class="grid">
+<article class="card"><h2>What changed?</h2><div class="flow">Experiment 0
+agent count at x
+→ explicit penalty
+
+Experiment 1
+agent samples x
+→ world(x) changes
+→ later evidence at x changes
+→ later policy changes</div><p>The coordination signal is no longer an occupancy number. It exists only as a consequence in the environment.</p></article>
+<article class="card"><h2>Why PRIVATE TRACE?</h2><div class="flow">private trace:
+I change only MY future evidence
+
+shared trace:
+I change YOUR future evidence too</div><p>If both conditions spread equally, we have merely built self-avoidance. A specific shared-trace effect is the thing that earns the word <em>stigmergy</em>.</p></article>
+<article class="card"><h2>Continuous mixed field</h2><p>There are no “fast / slow / burst” action buttons in the learner. Four latent temporal processes overlap smoothly across 64 positions. Each learner chooses only a nearby position and receives one scalar sample.</p><p>Source identity is used afterward for scoring, not for routing.</p></article>
+<article class="card"><h2>Next if this survives</h2><div class="flow">scalar trace
+    ↓
+local operator trace
+    ↓
+what passed here
+changes how future signals
+are mixed / filtered here</div><p>That is the bridge back to the persistent-matrix / body idea. First the dull environmental version has to survive its ablations.</p></article>
+</div>
+</main>
+
+<script>
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+const W=cv.width,H=cv.height,C=64,N=8,LAGS=[1,2,4,8];
+const srcColors=[[121,202,255],[180,156,255],[255,158,115],[118,227,194]];
+let mode='shared',running=true,t=0,rstate=1234567,agents=[],sharedTrace=new Float64Array(C);
+function rng(){rstate=(1664525*rstate+1013904223)>>>0;return rstate/4294967296}
+function norm(){let u=Math.max(rng(),1e-9),v=rng();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function cd(a,b){let d=Math.abs(a-b);return Math.min(d,C-d)}
+function mixAt(x){
+  const centers=[0,16,32,48],sigma=C/7,ws=centers.map(c=>Math.exp(-.5*(cd(x,c)/sigma)**2));
+  let n=Math.sqrt(ws.reduce((s,v)=>s+v*v,0))||1;return ws.map(v=>v/n);
+}
+const MIX=Array.from({length:C},(_,x)=>mixAt(x));
+function sources(){
+  const fast=Math.sin(.33*t+.2*Math.sin(.012*t));
+  const slow=Math.sin(.05*t+.45*Math.sin(.0025*t));
+  // browser visual uses deterministic surrogates for the two stochastic regimes
+  const p=.8*Math.sin(.011*t)+.35*Math.sin(.071*t+1.1);
+  const b=Math.max(0,Math.sin(.017*t-1.4))**9*1.7*Math.sin(.22*t);
+  return [fast,slow,p,b];
+}
+function rawAt(x,s){let y=0;for(let k=0;k<4;k++)y+=MIX[x][k]*s[k];return y}
+function mkAgent(i){return {pos:0,w:[0,0,0,0,0],q:new Float64Array(C).fill(-1),vis:new Float64Array(C),hist:[],privateTrace:new Float64Array(C),path:[],id:i}}
+function reset(){t=0;rstate=1234567;sharedTrace=new Float64Array(C);agents=Array.from({length:N},(_,i)=>mkAgent(i))}
+function feat(a){if(a.hist.length<8)return null;return [1,...LAGS.map(l=>a.hist[a.hist.length-l])]}
+function dot(a,b){let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s}
+function candidates(p){return [-2,-1,0,1,2].map(d=>(p+d+C)%C)}
+function choose(a){const cs=candidates(a.pos);if(rng()<.045)return cs[Math.floor(rng()*cs.length)];let best=-1e9,bi=cs[0];for(const p of cs){let u=a.q[p]+1e-7*norm();if(u>best){best=u;bi=p}}return bi}
+function write(arr,p){for(let x=0;x<C;x++){let k=Math.exp(-.5*(cd(x,p)/1.5)**2);arr[x]=Math.min(.95,arr[x]+.2*k)}}
+function step(){
+  const s=sources();for(let x=0;x<C;x++)sharedTrace[x]*=.992;
+  for(const a of agents)for(let x=0;x<C;x++)a.privateTrace[x]*=.992;
+  for(const a of agents){
+    const p=choose(a),raw=rawAt(p,s),tr=mode==='shared'?sharedTrace[p]:mode==='private'?a.privateTrace[p]:0;
+    const obs=(1-tr)*raw+tr*1.1*norm(),f=feat(a),pred=f?dot(a.w,f):0,e=obs-pred,err=e*e;
+    if(f){let sc=1+dot(f,f);for(let j=0;j<a.w.length;j++)a.w[j]=Math.max(-2,Math.min(2,a.w[j]+.035*e*f[j]/sc))}
+    a.hist.push(obs);if(a.hist.length>9)a.hist.shift();a.vis[p]++;let eta=Math.min(.035,1/a.vis[p]);a.q[p]=(1-eta)*a.q[p]+eta*(-Math.min(err,4));a.pos=p;a.path.push(p);if(a.path.length>220)a.path.shift();
+    if(mode==='shared')write(sharedTrace,p); else if(mode==='private')write(a.privateTrace,p);
+  } t++;
+}
+function domSource(p){const w=MIX[p],m=Math.max(...w);return w.indexOf(m)}
+function compDiv(){let ds=[];for(let i=0;i<N;i++)for(let j=i+1;j<N;j++){let a=agents[i].w,b=agents[j].w,na=Math.sqrt(dot(a,a)),nb=Math.sqrt(dot(b,b));ds.push(na*nb<1e-9?0:1-dot(a,b)/(na*nb))}return ds.reduce((a,b)=>a+b,0)/ds.length}
+function spread(){let ds=[];for(let i=0;i<N;i++)for(let j=i+1;j<N;j++)ds.push(cd(agents[i].pos,agents[j].pos)/(C/2));return ds.reduce((a,b)=>a+b,0)/ds.length}
+function fieldColor(x){
+  const w=MIX[x],rgb=[0,0,0],sum=w.reduce((a,b)=>a+b,0);for(let k=0;k<4;k++)for(let j=0;j<3;j++)rgb[j]+=srcColors[k][j]*w[k]/sum;return rgb.map(v=>Math.round(v))
+}
+function draw(){
+  ctx.fillStyle='#0a0f17';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#8f9db2';ctx.font='12px ui-monospace,monospace';ctx.fillText('CONTINUOUS MIXED FIELD · 64 POSITIONS · no source labels enter the policy',70,42);
+  const x0=70,y0=115,fw=1020,fh=130,cw=fw/C;
+  for(let x=0;x<C;x++){
+    const rgb=fieldColor(x);ctx.fillStyle=`rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;ctx.globalAlpha=.48;ctx.fillRect(x0+x*cw,y0,cw+1,fh);
+    if(mode==='shared'&&sharedTrace[x]>.01){ctx.fillStyle='#ffffff';ctx.globalAlpha=.70*sharedTrace[x];ctx.fillRect(x0+x*cw,y0,cw+1,fh)}
+  }
+  ctx.globalAlpha=1;ctx.strokeStyle='#34415a';ctx.strokeRect(x0,y0,fw,fh);
+  ctx.fillStyle='#cbd6e7';ctx.font='700 12px ui-monospace,monospace';ctx.fillText('raw field + persistent trace',x0,y0-13);
+  // source mixture curves only for viewer
+  for(let k=0;k<4;k++){ctx.strokeStyle=`rgb(${srcColors[k].join(',')})`;ctx.globalAlpha=.45;ctx.beginPath();for(let x=0;x<C;x++){let yy=y0+fh-10-MIX[x][k]*(fh-20),xx=x0+(x+.5)*cw;x===0?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy)}ctx.stroke()}
+  ctx.globalAlpha=1;
+  for(let i=0;i<N;i++){
+    const a=agents[i],x=x0+(a.pos+.5)*cw,ay=330+i*34;
+    ctx.strokeStyle='#3c4c68';ctx.beginPath();ctx.moveTo(x,245);ctx.lineTo(x,ay-8);ctx.stroke();
+    ctx.fillStyle='#e9f1ff';ctx.beginPath();ctx.arc(x,ay,7,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#9aabc0';ctx.font='11px ui-monospace,monospace';ctx.fillText('A'+(i+1),x+12,ay+4);
+    const ws=a.w.slice(1),mx=Math.max(.2,...ws.map(Math.abs));for(let j=0;j<4;j++){ctx.fillStyle=ws[j]>=0?'#79caff':'#ff7f88';ctx.fillRect(x+42+j*10,ay-2,7,-18*ws[j]/mx)}
+  }
+  ctx.fillStyle='#8090a6';ctx.font='12px ui-monospace,monospace';ctx.fillText('Each dot chooses only a nearby x. Lag bars = learned local computation.',70,620);
+}
+function updateMetrics(){
+  document.getElementById('spread').textContent=spread().toFixed(2);
+  document.getElementById('coverage').textContent=new Set(agents.map(a=>domSource(a.pos))).size+' / 4';
+  document.getElementById('trace').textContent=(sharedTrace.reduce((a,b)=>a+b,0)/C).toFixed(2);
+  document.getElementById('div').textContent=compDiv().toFixed(3);
+}
+function loop(){if(running)for(let i=0;i<5;i++)step();draw();updateMetrics();requestAnimationFrame(loop)}
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-mode]').forEach(z=>z.classList.remove('active'));b.classList.add('active');mode=b.dataset.mode;reset()});
+document.getElementById('pause').onclick=e=>{running=!running;e.target.textContent=running?'Pause':'Run'};
+document.getElementById('reset').onclick=reset;
+reset();loop();
+</script>
+</body>
+</html>
