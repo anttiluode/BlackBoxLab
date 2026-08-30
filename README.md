@@ -43,6 +43,48 @@ Adding only the finite-territory crowding term produced **4/4 coverage in
 See [the full Experiment 0 receipt](results/EXPERIMENT0.md).
 
 
+## Experiment 1 — stigmergic continuous field
+
+Experiment 0 used an explicit crowding term. Experiment 1 removes it and
+also removes the four named action channels.
+
+Four latent temporal processes are smoothly mixed across a 64-position ring.
+Every learner starts at the same position with the same weights, values, and
+learning rule. A learner chooses only a nearby position and receives one scalar
+sample.
+
+The three arms are:
+
+~~~text
+NO_TRACE
+    sampling leaves no environmental memory
+
+PRIVATE_TRACE
+    sampling leaves a local refractory trace
+    visible only to that same learner
+
+SHARED_TRACE
+    sampling leaves the trace in one shared field
+    so later learners encounter changed evidence
+~~~
+
+No policy receives an occupancy count, source identity, or diversity reward.
+Latent source labels are used only after the run to score whether different
+learners settled into different parts of the mixed field.
+
+The shared trace is deliberately primitive: repeated sampling makes a local
+patch temporarily less faithful / predictable. It is the smallest test of
+physical stigmergy, not a biological mechanism and not a reproduction of
+SwarmWorld's artifact ecology.
+
+Open [the live Experiment 1 field](stigmergy.html), and see
+[SWARMWORLD_NOTE.md](SWARMWORLD_NOTE.md) for the neighboring paper and the
+limits of the analogy.
+
+The next stronger version, if this survives, is to replace the scalar
+refractory trace with a **persistent local operator** so that what passed
+through a region changes how future signals are mixed or filtered there.
+
 ## World
 
 The toy world exposes four spatial "ecologies" at every physical timestep:
