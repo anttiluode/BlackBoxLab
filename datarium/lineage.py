@@ -478,11 +478,59 @@ class LineageTracker:
                 "max_frames": 0,
             }
 
+        depth_cache: dict[int, int] = {}
+        root_birth_cache: dict[int, float] = {}
+
+        def lineage_depth(track_id: int) -> int:
+            if track_id in depth_cache:
+                return depth_cache[track_id]
+            tr = self.tracks[track_id]
+            if not tr.parents:
+                value = 1
+            else:
+                known = [p for p in tr.parents if p in self.tracks]
+                value = 1 + max((lineage_depth(p) for p in known), default=0)
+            depth_cache[track_id] = value
+            return value
+
+        def earliest_root_birth(track_id: int) -> float:
+            if track_id in root_birth_cache:
+                return root_birth_cache[track_id]
+            tr = self.tracks[track_id]
+            known = [p for p in tr.parents if p in self.tracks]
+            if not known:
+                value = tr.born_t
+            else:
+                value = min(earliest_root_birth(p) for p in known)
+            root_birth_cache[track_id] = value
+            return value
+
+        depths = [lineage_depth(tid) for tid in self.tracks]
+        ancestral_spans = [
+            self.tracks[tid].last_t - earliest_root_birth(tid)
+            for tid in self.tracks
+        ]
+
+        genealogy = {
+            "tracks_with_parents": int(
+                sum(bool(tr.parents) for tr in self.tracks.values())
+            ),
+            "max_depth": int(max(depths, default=0)),
+            "median_depth": float(np.median(depths)) if depths else 0.0,
+            "max_ancestral_span": float(max(ancestral_spans, default=0.0)),
+            "median_ancestral_span": (
+                float(np.median(ancestral_spans))
+                if ancestral_spans
+                else 0.0
+            ),
+        }
+
         return {
             "tracks_created": len(self.tracks),
             "active_domains": len(self.previous),
             "event_counts": event_counts,
             "lifetimes": lifetime,
+            "genealogy": genealogy,
             "seam_continuations": int(self.seam_continuations),
             "raw_periodic_count_last": int(self.raw_periodic_count),
             "raw_nonperiodic_count_last": int(self.raw_nonperiodic_count),
