@@ -18,6 +18,10 @@ jobs:
         run: python -m unittest tests.test_datarium_lineage -v
       - name: Datarium 1 — lineage microscope
         run: python experiments/datarium1_lineage.py
+      - name: Datarium 2 unit tests
+        run: python -m unittest tests.test_datarium2 -v
+      - name: Datarium 2 — ecological thinkers
+        run: python experiments/datarium2_thinkers.py
 
   blackboxlab:
     runs-on: ubuntu-latest
