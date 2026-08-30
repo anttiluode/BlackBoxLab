@@ -18,4 +18,6 @@ jobs:
         run: python experiments/sampling_policy_organogenesis.py
       - name: Experiment 1 — stigmergic continuous field
         run: python experiments/stigmergic_field.py
+      - name: Datarium 1 — lineage microscope
+        run: python experiments/datarium1_lineage.py
       - run: python -m unittest discover -s tests -v
