@@ -303,6 +303,14 @@ def main() -> None:
         f"{receipt['lifetime']['fraction_ge_5_time']:.3f} / "
         f"{receipt['lifetime']['fraction_ge_10_time']:.3f}"
     )
+    genealogy = receipt["tracker"]["genealogy"]
+    print(
+        "genealogy: "
+        f"max depth={genealogy['max_depth']}  "
+        f"median depth={genealogy['median_depth']:.1f}  "
+        f"max ancestral span={genealogy['max_ancestral_span']:.2f}  "
+        f"tracks with parents={genealogy['tracks_with_parents']}"
+    )
     print(
         f"resource late mean={receipt['resource']['late_mean']:.3f}"
     )
