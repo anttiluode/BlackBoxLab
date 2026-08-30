@@ -77,23 +77,26 @@ class DatariumLineageTests(unittest.TestCase):
             min_overlap=0.08,
         )
 
-        fields = [
-            synthetic_torus_blob((48, 48), (24, 24), sigma=3.0),
-            synthetic_torus_blob((48, 48), (22, 24), sigma=3.0)
-            + synthetic_torus_blob((48, 48), (26, 24), sigma=3.0),
-            synthetic_torus_blob((48, 48), (18, 24), sigma=3.0)
-            + synthetic_torus_blob((48, 48), (30, 24), sigma=3.0),
-        ]
+        # Use a deliberately unambiguous threshold geometry. Gaussian daughters
+        # can remain connected through the low hysteresis threshold, in which
+        # case the correct observation is "still one domain", not a split.
+        parent = np.zeros((48, 48), dtype=float)
+        parent[20:28, 12:36] = 1.0
 
-        parent_id = tracker.update(fields[0], 0.0)[0].track_id
-        tracker.update(fields[1], 1.0)
-        children = tracker.update(fields[2], 2.0)
+        daughters = np.zeros((48, 48), dtype=float)
+        daughters[20:28, 12:21] = 1.0
+        daughters[20:28, 27:36] = 1.0
+
+        parent_id = tracker.update(parent, 0.0)[0].track_id
+        children = tracker.update(daughters, 1.0)
 
         splits = [e for e in tracker.events if e["type"] == "split"]
         self.assertEqual(len(splits), 1)
         self.assertEqual(splits[0]["parents"], [parent_id])
         self.assertEqual(len(children), 2)
-        self.assertTrue(all(parent_id in tracker.tracks[d.track_id].parents for d in children))
+        self.assertTrue(
+            all(parent_id in tracker.tracks[d.track_id].parents for d in children)
+        )
 
     def test_merge_creates_child_with_two_parents(self):
         tracker = LineageTracker(
