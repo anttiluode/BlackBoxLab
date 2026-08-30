@@ -152,6 +152,33 @@ python experiments/datarium1_lineage.py
 
 The reusable tracker lives in `datarium/lineage.py`.
 
+### Datarium 1 receipt
+
+The corrected observer changes the picture substantially:
+
+~~~text
+late substantial domains        4.26 mean, 13 max
+dust rejected                   1.33 components / measurement
+frames containing dust          47.9%
+
+individual identity
+median lifetime                 1.60 time
+p90 lifetime                    5.20
+max lifetime                   24.40
+
+genealogical web
+median ancestry depth             21
+max ancestry depth                120
+max ancestral span             236.80
+~~~
+
+So the bodies are mostly short-lived, but explicit split/merge ancestry can be
+long-lived. That is **not heredity**. It means the next test can finally ask
+whether parent and child domains resemble one another more than unrelated
+mass-matched domains.
+
+See [the full Datarium 1 receipt](results/DATARIUM1.md).
+
 The stopping line is explicit:
 
 > **A lineage graph is not evolution. Datarium 1 earns only the right to ask
