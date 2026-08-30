@@ -515,24 +515,32 @@ def run_mode(
             if d.track_id in thinkers
         ]
 
+        # Compute shared field observables once per control tick, not once per
+        # thinker. This matters for long overnight populations.
+        velocity_field = field.velocity
+        gx_field = (
+            np.roll(field.phi, -1, 1) - np.roll(field.phi, 1, 1)
+        ) / 2.0
+        gy_field = (
+            np.roll(field.phi, -1, 0) - np.roll(field.phi, 1, 0)
+        ) / 2.0
+        local_energy_field = (
+            0.5 * velocity_field**2
+            + 0.5 * (gx_field**2 + gy_field**2)
+            + 0.025 * field.phi**4
+        )
+
         for thinker in active_thinkers:
             domain = domain_by_id[thinker.track_id]
 
             # Field-derived surfing + body binding + controller steering.
             phi_val = sample_bilinear(field.phi, thinker.scout_pos)
-            vel_val = sample_bilinear(field.velocity, thinker.scout_pos)
-            gx_field = (
-                np.roll(field.phi, -1, 1) - np.roll(field.phi, 1, 1)
-            ) / 2.0
-            gy_field = (
-                np.roll(field.phi, -1, 0) - np.roll(field.phi, 1, 0)
-            ) / 2.0
+            vel_val = sample_bilinear(velocity_field, thinker.scout_pos)
             gx = sample_bilinear(gx_field, thinker.scout_pos)
             gy = sample_bilinear(gy_field, thinker.scout_pos)
             resource = sample_bilinear(field.r, thinker.scout_pos)
             local_energy = patch_mean(
-                0.5 * field.velocity**2
-                + 0.025 * field.phi**4,
+                local_energy_field,
                 thinker.scout_pos,
                 radius=2,
             )
