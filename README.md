@@ -29,6 +29,20 @@ different future sampling value
 
 That feedback loop can break symmetry. But it may also create monoculture.
 
+## First receipt
+
+With identical predictor weights and identical sampling priors, stochastic
+experience alone produced strong PRIVATE specialists, but the eight-organ
+population covered only **2.417 ± 0.640 of four ecologies** and achieved full
+4/4 coverage in **0/24** seeds.
+
+Adding only the finite-territory crowding term produced **4/4 coverage in
+24/24 seeds** and increased pairwise computation divergence from
+**0.081 ± 0.033** to **0.182 ± 0.013**, with comparable prediction error.
+
+See [the full Experiment 0 receipt](results/EXPERIMENT0.md).
+
+
 ## World
 
 The toy world exposes four spatial "ecologies" at every physical timestep:
