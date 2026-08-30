@@ -77,6 +77,23 @@ patch temporarily less faithful / predictable. It is the smallest test of
 physical stigmergy, not a biological mechanism and not a reproduction of
 SwarmWorld's artifact ecology.
 
+### Experiment 1 receipt: mostly a negative result
+
+Across 24 matched seeds:
+
+| condition | source coverage / 4 | computation divergence | late prediction MSE | full 4/4 |
+|---|---:|---:|---:|---:|
+| NO_TRACE | 1.79 ± 0.71 | 0.028 ± 0.010 | **0.04 ± 0.03** | 0/24 |
+| PRIVATE_TRACE | 3.62 ± 0.48 | **0.922 ± 0.087** | 1.10 ± 0.02 | 15/24 |
+| SHARED_TRACE | **3.75 ± 0.43** | 0.917 ± 0.091 | 1.10 ± 0.02 | **18/24** |
+
+The shared field adds only a modest spreading effect beyond private
+self-avoidance, while both trace conditions destroy predictive quality. The
+mechanism is therefore best understood as **depletion / refractory
+self-avoidance**, not useful stigmergic computation.
+
+See [the full Experiment 1 receipt](results/EXPERIMENT1.md).
+
 Open [the live Experiment 1 field](stigmergy.html), and see
 [SWARMWORLD_NOTE.md](SWARMWORLD_NOTE.md) for the neighboring paper and the
 limits of the analogy.
