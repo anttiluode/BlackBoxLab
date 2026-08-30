@@ -14,10 +14,13 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
+      - name: Datarium unit tests — fail fast
+        run: python -m unittest tests.test_datarium_lineage -v
+      - name: Datarium 1 — lineage microscope
+        run: python experiments/datarium1_lineage.py
       - name: Experiment 0 — sampling-policy organogenesis
         run: python experiments/sampling_policy_organogenesis.py
       - name: Experiment 1 — stigmergic continuous field
         run: python experiments/stigmergic_field.py
-      - name: Datarium 1 — lineage microscope
-        run: python experiments/datarium1_lineage.py
-      - run: python -m unittest discover -s tests -v
+      - name: Full test suite
+        run: python -m unittest discover -s tests -v
