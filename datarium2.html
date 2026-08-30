@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Datarium 2 — Ecological Thinkers</title>
+<style>
+:root{--bg:#060910;--panel:#0d1320;--line:#243148;--ink:#eef5ff;--muted:#8c9bb0;--mint:#75efc8;--amber:#ffd37b;--cyan:#7ed8ff;--rose:#ff8d9b;--violet:#b7a0ff}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 35% -20%,#1c2940 0,transparent 34%),#060910;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+main{width:min(1480px,96vw);margin:auto;padding:28px 0 70px} a{color:#baddff;text-decoration:none}
+.kicker{font:800 11px ui-monospace,monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--mint)}
+h1{font-size:clamp(42px,6vw,82px);line-height:.9;letter-spacing:-.055em;margin:10px 0 16px}.lede{max-width:1020px;color:#c0ccdc;font-size:17px;line-height:1.6}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:18px 0}button{border:1px solid var(--line);background:#0f1725;color:var(--ink);border-radius:999px;padding:9px 13px;font-weight:800;cursor:pointer}button.active{background:#eff5ff;color:#07101b}.spacer{flex:1}
+.shell{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px}.stage{border:1px solid var(--line);border-radius:20px;background:#080d15;overflow:hidden}canvas{display:block;width:100%;height:auto}
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line)}.metric{padding:12px 14px;border-right:1px solid var(--line)}.metric b{display:block;font-size:21px}.metric span{font:700 9px ui-monospace,monospace;color:var(--muted);text-transform:uppercase}
+.side{display:grid;gap:12px;align-content:start}.card{border:1px solid var(--line);border-radius:16px;background:rgba(13,19,32,.93);overflow:hidden}.card h2{font-size:12px;letter-spacing:.07em;text-transform:uppercase;margin:0;padding:13px 15px;border-bottom:1px solid var(--line)}.body{padding:14px 15px}.big{font:900 28px ui-monospace,monospace;color:var(--cyan)}.guard{font-size:12px;line-height:1.55;color:#a6b3c5}.guard strong{color:var(--amber)}
+.matrix{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;margin-top:12px}.cell{aspect-ratio:1;border-radius:3px;background:#172235}.events{max-height:260px;overflow:auto}.event{padding:7px 0;border-bottom:1px solid #172235;font:650 11px ui-monospace,monospace;color:#aab7c9}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:15px}.flow{white-space:pre-wrap;font:700 11px/1.65 ui-monospace,monospace;background:#080d15;border:1px solid #1b273a;border-radius:11px;padding:12px;color:#dbe7f7}.body p{font-size:13px;line-height:1.55;color:#adbbcd}
+@media(max-width:1050px){.shell{grid-template-columns:1fr}.side{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.side{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<main>
+<div class="kicker">BlackBoxLab · Datarium 2</div>
+<h1>Ecological thinkers.</h1>
+<p class="lede">The field still makes and destroys bodies. A measured lineage now carries a tiny recurrent matrix and a scout. The scout surfs local gradients, samples resource and field state, can damp or excite the field, and can emit one scalar signal. Splits copy the matrix with mutation in EVOLVE; RANDOM destroys heredity; HOMEOSTAT is a hand-coded attacker.</p>
+
+<div class="toolbar">
+<button data-mode="none">NONE</button>
+<button data-mode="homeostat">HOMEOSTAT</button>
+<button data-mode="random">RANDOM</button>
+<button data-mode="evolve" class="active">EVOLVE</button>
+<button id="pause">Pause</button>
+<button id="pulse">Perturb world</button>
+<button id="reset">Reset</button>
+<span class="spacer"></span><a href="datarium1.html">← Datarium 1</a>
+</div>
+
+<div class="shell">
+<section class="stage">
+<canvas id="world" width="1080" height="720"></canvas>
+<div class="metrics">
+<div class="metric"><b id="time">0</b><span>field time</span></div>
+<div class="metric"><b id="domains">0</b><span>thinker bodies</span></div>
+<div class="metric"><b id="generation">0</b><span>max controller gen</span></div>
+<div class="metric"><b id="stability">—</b><span>stability</span></div>
+<div class="metric"><b id="contacts">0</b><span>close contacts</span></div>
+</div>
+</section>
+
+<aside class="side">
+<section class="card"><h2>Selected thinker</h2><div class="body" id="selected"><div class="big">—</div><div class="guard">Click a colored body. The circle is a measured field domain; the small white dot is its scout. Controller matrices are digital lineage state, not physics-native structure.</div></div></section>
+<section class="card"><h2>Recent lineage events</h2><div class="body events" id="events"></div></section>
+<section class="card"><h2>What selection means here</h2><div class="body guard"><strong>Field owns demography.</strong> A controller can only alter local field dynamics. If that changes whether its body persists, splits, merges or disappears, it can alter which controller ancestry survives. On a split, EVOLVE mutates the parent matrix. On a merge, parent matrices are blended. This is a hybrid artificial-life model.</div></section>
+</aside>
+</div>
+
+<div class="grid">
+<section class="card"><h2>The loop</h2><div class="body"><div class="flow">field creates body
+      ↓
+lineage carries matrix
+      ↓
+scout samples local world
+      ↓
+matrix chooses:
+move / excite / damp / signal
+      ↓
+field changes
+      ↓
+field decides next demographic event</div></div></section>
+<section class="card"><h2>The attackers</h2><div class="body"><div class="flow">NONE
+no controller influence
+
+HOMEOSTAT
+hand-coded stabilizer
+
+RANDOM
+matrices exist
+but heredity is destroyed
+
+EVOLVE
+split → mutation
+merge → blend</div><p>If EVOLVE cannot beat RANDOM/NONE on ecological outcomes, inherited matrices have not earned anything.</p></div></section>
+<section class="card"><h2>The overnight build</h2><div class="body"><div class="flow">python experiments/datarium2_thinkers.py \
+  --preset overnight \
+  --mode evolve \
+  --seed 7</div><p>The Python model checkpoints active matrices and scout state periodically. This browser is the aquarium; Python is the receipt.</p></div></section>
+</div>
+</main>
+
+<script>
+const cv=document.getElementById('world'),ctx=cv.getContext('2d');
+const N=72,S=N*N,DT=.02,CTRL=10,HIGH=.30,LOW=.24,MINAREA=10,MINMASS=4;
+let phi,prev,res,sig,support,domains=[],oldDomains=[],tracks=new Map(),thinkers=new Map(),nextID=1,t=0,stepN=0,mode='evolve',running=true,selected=null,targetE=null,events=[],contacts=0;
+let rngState=937451;
+const idx=(y,x)=>((y+N)%N)*N+((x+N)%N), td=(v,c)=>((v-c+N/2)%N+N)%N-N/2;
+function rng(){rngState=(1664525*rngState+1013904223)>>>0;return rngState/4294967296}
+function norm(){let u=Math.max(rng(),1e-9),v=rng();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function reset(){
+ rngState=937451;phi=new Float64Array(S);prev=new Float64Array(S);res=new Float64Array(S);sig=new Float64Array(S);support=new Uint8Array(S);res.fill(1);domains=[];oldDomains=[];tracks=new Map();thinkers=new Map();nextID=1;t=0;stepN=0;selected=null;targetE=null;events=[];contacts=0;
+ const sx=N*.25,sy=N*.5;for(let y=0;y<N;y++)for(let x=0;x<N;x++){let d=Math.hypot(x-sx,y-sy);phi[idx(y,x)]=1.5/Math.cosh(d/7)}
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){let gx=(phi[idx(y,x+1)]-phi[idx(y,x-1)])/2;prev[idx(y,x)]=phi[idx(y,x)]+.25*gx*DT}
+ renderEvents();
+}
+function lap(a,i,y,x){return a[idx(y,x+1)]+a[idx(y,x-1)]+a[idx(y+1,x)]+a[idx(y-1,x)]-4*a[i]}
+let force=new Float64Array(S),damp=new Float64Array(S);
+function fieldStep(){
+ const next=new Float64Array(S);
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){let i=idx(y,x),v=phi[i],vel=(phi[i]-prev[i])/DT,acc=lap(phi,i,y,x)-.1*v*v*v+.1*res[i]*v-.01*vel+force[i]-damp[i]*vel;res[i]=Math.max(0,Math.min(1,res[i]+DT*((1-res[i])/100-.033*v*v)));next[i]=2*v-prev[i]+DT*DT*acc}
+ prev=phi;phi=next;
+ const ns=new Float64Array(S);for(let y=0;y<N;y++)for(let x=0;x<N;x++){let i=idx(y,x);ns[i]=Math.max(-1,Math.min(1,.994*sig[i]+.005*lap(sig,i,y,x)))}sig=ns;t+=DT;stepN++;
+}
+function energy(){let s=0;for(let y=0;y<N;y++)for(let x=0;x<N;x++){let i=idx(y,x),v=(phi[i]-prev[i])/DT,gx=(phi[idx(y,x+1)]-phi[idx(y,x-1)])/2,gy=(phi[idx(y+1,x)]-phi[idx(y-1,x)])/2;s+=.5*v*v+.5*(gx*gx+gy*gy)+.025*phi[i]**4}return s/S}
+function comps(mask){let seen=new Uint8Array(S),out=[];for(let p=0;p<S;p++){if(!mask[p]||seen[p])continue;let st=[p],pix=[];seen[p]=1;while(st.length){let q=st.pop(),y=Math.floor(q/N),x=q%N;pix.push(q);for(const z of [idx(y+1,x),idx(y-1,x),idx(y,x+1),idx(y,x-1)])if(mask[z]&&!seen[z]){seen[z]=1;st.push(z)}}out.push(pix)}return out}
+function circMean(vals,ws){let re=0,im=0;for(let i=0;i<vals.length;i++){let a=2*Math.PI*vals[i]/N;re+=ws[i]*Math.cos(a);im+=ws[i]*Math.sin(a)}let a=Math.atan2(im,re);if(a<0)a+=2*Math.PI;return a*N/(2*Math.PI)}
+function describe(pix){let xs=[],ys=[],ws=[],mass=0;for(const p of pix){let y=Math.floor(p/N),x=p%N,w=Math.max(phi[p],0)+1e-9;xs.push(x);ys.push(y);ws.push(w);mass+=w}return{pix,area:pix.length,mass,cx:circMean(xs,ws),cy:circMean(ys,ws),id:-1}}
+function detect(){let raw=new Uint8Array(S);for(let i=0;i<S;i++)raw[i]=(phi[i]>=HIGH||(support[i]&&phi[i]>=LOW))?1:0;let kept=[],stable=new Uint8Array(S);for(const p of comps(raw)){let d=describe(p);if(d.area<MINAREA||d.mass<MINMASS)continue;kept.push(d);for(const q of p)stable[q]=1}support=stable;return kept}
+function randMatrix(rows,cols,scale=.18){return Array.from({length:rows},()=>Array.from({length:cols},()=>norm()*scale))}
+function newController(parentCtrls=[]){
+ if(mode==='none'||mode==='homeostat')return null;
+ if(mode==='random'||!parentCtrls.length)return{A:randMatrix(6,6),B:randMatrix(6,10),C:randMatrix(5,6),h:Array(6).fill(0)};
+ let base=JSON.parse(JSON.stringify(parentCtrls[0]));if(parentCtrls.length>1){for(let i=0;i<6;i++)for(let j=0;j<6;j++)base.A[i][j]=parentCtrls.reduce((s,c)=>s+c.A[i][j],0)/parentCtrls.length;for(let i=0;i<6;i++)for(let j=0;j<10;j++)base.B[i][j]=parentCtrls.reduce((s,c)=>s+c.B[i][j],0)/parentCtrls.length;for(let i=0;i<5;i++)for(let j=0;j<6;j++)base.C[i][j]=parentCtrls.reduce((s,c)=>s+c.C[i][j],0)/parentCtrls.length}
+ for(const M of [base.A,base.B,base.C])for(let i=0;i<M.length;i++)for(let j=0;j<M[i].length;j++)M[i][j]+=norm()*.035;base.h=Array(6).fill(0);return base
+}
+function ctrStep(c,s){let h=Array(6).fill(0);for(let i=0;i<6;i++){let z=0;for(let j=0;j<6;j++)z+=c.A[i][j]*c.h[j];for(let j=0;j<10;j++)z+=c.B[i][j]*s[j];h[i]=Math.tanh(z)}let a=Array(5).fill(0);for(let i=0;i<5;i++){let z=0;for(let j=0;j<6;j++)z+=c.C[i][j]*h[j];a[i]=Math.tanh(z)}c.h=h;return a}
+function addEvent(type,parents,children){events.unshift({t,type,parents,children});events=events.slice(0,60);renderEvents()}
+function newTrack(parents,d){let id=nextID++,gen=parents.length?1+Math.max(...parents.map(p=>thinkers.get(p)?.gen||0)):0,pc=parents.map(p=>thinkers.get(p)?.ctrl).filter(Boolean),ctrl=newController(pc);tracks.set(id,{id,parents,born:t});thinkers.set(id,{id,gen,ctrl,pos:[d.cx,d.cy],vel:[0,0],score:0,steps:0,actions:[0,0,0,0,0]});return id}
+function trackerStep(){
+ let cur=detect(),ol=new Int32Array(S),nl=new Int32Array(S);oldDomains.forEach((d,i)=>d.pix.forEach(p=>ol[p]=i+1));cur.forEach((d,j)=>d.pix.forEach(p=>nl[p]=j+1));let ot=Array.from({length:oldDomains.length},()=>[]),nt=Array.from({length:cur.length},()=>[]),cnt=new Map();
+ for(let p=0;p<S;p++)if(ol[p]&&nl[p]){let k=ol[p]+','+nl[p];cnt.set(k,(cnt.get(k)||0)+1)}
+ for(const[k,n]of cnt){let[a,b]=k.split(',').map(Number),oi=a-1,nj=b-1;if(n/Math.min(oldDomains[oi].area,cur[nj].area)>=.12){ot[oi].push(nj);nt[nj].push(oi)}}
+ let assigned=new Set(),visited=new Set();
+ for(let o0=0;o0<oldDomains.length;o0++){if(visited.has(o0)||!ot[o0].length)continue;let os=new Set(),ns=new Set(),q=[['o',o0]];while(q.length){let[s,k]=q.pop();if(s==='o'){if(os.has(k))continue;os.add(k);visited.add(k);for(const j of ot[k])q.push(['n',j])}else{if(ns.has(k))continue;ns.add(k);for(const i of nt[k])q.push(['o',i])}}
+ let parents=[...os].map(i=>oldDomains[i].id);if(os.size===1&&ns.size===1){let oi=[...os][0],nj=[...ns][0];cur[nj].id=oldDomains[oi].id;assigned.add(nj)}else{let typ=os.size===1?'split':ns.size===1?'merge':'rearrange',kids=[];for(const nj of ns){let id=newTrack(parents,cur[nj]);cur[nj].id=id;assigned.add(nj);kids.push(id)}addEvent(typ,parents,kids)}}
+ for(let i=0;i<oldDomains.length;i++)if(!ot[i].length)addEvent('death',[oldDomains[i].id],[]);
+ cur.forEach((d,j)=>{if(!assigned.has(j)){d.id=newTrack([],d);addEvent('birth',[],[d.id])}});oldDomains=cur;domains=cur;
+}
+function sample(a,pos){let x=Math.round(pos[0])%N,y=Math.round(pos[1])%N;return a[idx(y,x)]}
+function gaussian(pos,sigma=2.5){let a=new Float64Array(S);for(let y=0;y<N;y++)for(let x=0;x<N;x++){let dx=td(x,pos[0]),dy=td(y,pos[1]);a[idx(y,x)]=Math.exp(-(dx*dx+dy*dy)/(2*sigma*sigma))}return a}
+function control(){
+ if(!domains.length)return;let E=energy();if(targetE===null&&t>8)targetE=E;let ge=targetE?Math.tanh(Math.log((E+1e-8)/(targetE+1e-8))):0;force=new Float64Array(S);damp=new Float64Array(S);let sigadd=new Float64Array(S);contacts=0;
+ let gx=new Float64Array(S),gy=new Float64Array(S),vel=new Float64Array(S);for(let y=0;y<N;y++)for(let x=0;x<N;x++){let i=idx(y,x);gx[i]=(phi[idx(y,x+1)]-phi[idx(y,x-1)])/2;gy[i]=(phi[idx(y+1,x)]-phi[idx(y-1,x)])/2;vel[i]=(phi[i]-prev[i])/DT}
+ for(const d of domains){let th=thinkers.get(d.id);if(!th)continue;let p=th.pos,ph=sample(phi,p),vv=sample(vel,p),xx=sample(gx,p),yy=sample(gy,p),rr=sample(res,p),ss=sample(sig,p),dist=Math.hypot(td(d.cx,p[0]),td(d.cy,p[1])),le=Math.abs(ph)+.25*Math.abs(vv),leerr=targetE?Math.tanh(Math.log((le+.05)/(Math.sqrt(targetE)+.05))):0;s=[Math.tanh(ph/1.5),Math.tanh(vv/1.5),Math.tanh(xx),Math.tanh(yy),2*rr-1,leerr,ge,Math.tanh(Math.log1p(d.mass)/4-.8),Math.tanh(dist/8),ss];
+ let a;if(mode==='none')a=[0,0,0,0,0];else if(mode==='homeostat'){let gn=Math.hypot(xx,yy)||1;a=[xx/gn,yy/gn,Math.max(-1,Math.min(1,-.5*leerr)),Math.max(0,.8*leerr+.2*ge),Math.max(-1,Math.min(1,-ge))]}else a=ctrStep(th.ctrl,s);
+ let bind=[td(d.cx,p[0]),td(d.cy,p[1])];th.vel[0]=.88*th.vel[0]+.06*bind[0]+.14*a[0]+.018*Math.abs(ph)*xx;th.vel[1]=.88*th.vel[1]+.06*bind[1]+.14*a[1]+.018*Math.abs(ph)*yy;let sp=Math.hypot(...th.vel);if(sp>1){th.vel[0]/=sp;th.vel[1]/=sp}th.pos[0]=(th.pos[0]+th.vel[0]+N)%N;th.pos[1]=(th.pos[1]+th.vel[1]+N)%N;
+ let k=gaussian(th.pos);for(let i=0;i<S;i++){force[i]+=.16*a[2]*k[i];damp[i]+=.20*Math.max(0,a[3])*k[i];sigadd[i]+=.32*a[4]*k[i]}th.score+=Math.exp(-Math.abs(ge));th.steps++;for(let i=0;i<5;i++)th.actions[i]+=Math.abs(a[i])}
+ let act=domains.map(d=>thinkers.get(d.id)).filter(Boolean);for(let i=0;i<act.length;i++)for(let j=i+1;j<act.length;j++){let a=act[i],b=act[j],dd=Math.hypot(td(a.pos[0],b.pos[0]),td(a.pos[1],b.pos[1]));if(dd<8)contacts++}
+ for(let i=0;i<S;i++){force[i]=Math.max(-.8,Math.min(.8,force[i]));damp[i]=Math.max(0,Math.min(.8,damp[i]));sig[i]=Math.max(-1,Math.min(1,sig[i]+sigadd[i]))}
+}
+function pulse(){let x=rng()*N,y=rng()*N,amp=rng()<.5?-.7:.7,k=gaussian([x,y],5);for(let i=0;i<S;i++)phi[i]+=amp*k[i]}
+function color(id,a=1){return `hsla(${(id*137.508)%360},80%,68%,${a})`}
+function render(){
+ let im=ctx.createImageData(N,N);for(let i=0;i<S;i++){let v=Math.max(-1.3,Math.min(1.3,phi[i]))/1.3,rr,gg,bb;if(v>=0){rr=239;gg=235-115*v;bb=225-150*v}else{let u=-v;rr=220-145*u;gg=235-80*u;bb=248}im.data[4*i]=rr;im.data[4*i+1]=gg;im.data[4*i+2]=bb;im.data[4*i+3]=255}let tmp=document.createElement('canvas');tmp.width=N;tmp.height=N;tmp.getContext('2d').putImageData(im,0,0);ctx.drawImage(tmp,0,0,cv.width,cv.height);let sx=cv.width/N,sy=cv.height/N;
+ for(const d of domains){let th=thinkers.get(d.id),X=(d.cx+.5)*sx,Y=(d.cy+.5)*sy,R=Math.max(10,Math.sqrt(d.area/Math.PI)*sx*.32);ctx.strokeStyle=color(d.id);ctx.lineWidth=selected===d.id?4:2;ctx.beginPath();ctx.arc(X,Y,R,0,Math.PI*2);ctx.stroke();ctx.fillStyle='rgba(5,10,17,.75)';ctx.fillRect(X-22,Y-10,44,20);ctx.fillStyle=color(d.id);ctx.textAlign='center';ctx.font='900 11px ui-monospace,monospace';ctx.fillText('#'+d.id,X,Y+4);if(th){let px=(th.pos[0]+.5)*sx,py=(th.pos[1]+.5)*sy;ctx.strokeStyle='rgba(255,255,255,.35)';ctx.beginPath();ctx.moveTo(X,Y);ctx.lineTo(px,py);ctx.stroke();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(px,py,4,0,Math.PI*2);ctx.fill()}}
+ let act=domains.map(d=>thinkers.get(d.id)).filter(Boolean);for(let i=0;i<act.length;i++)for(let j=i+1;j<act.length;j++){let a=act[i],b=act[j],dd=Math.hypot(td(a.pos[0],b.pos[0]),td(a.pos[1],b.pos[1]));if(dd<8){ctx.strokeStyle='rgba(117,239,200,.24)';ctx.beginPath();ctx.moveTo((a.pos[0]+.5)*sx,(a.pos[1]+.5)*sy);ctx.lineTo((b.pos[0]+.5)*sx,(b.pos[1]+.5)*sy);ctx.stroke()}}
+ ctx.fillStyle='rgba(5,9,15,.72)';ctx.fillRect(14,14,520,58);ctx.fillStyle='#e2ecf9';ctx.textAlign='left';ctx.font='700 12px ui-monospace,monospace';ctx.fillText('DATARIUM 2 · '+mode.toUpperCase()+' · white dot = scout',28,38);ctx.fillStyle='#93a4ba';ctx.font='11px ui-monospace,monospace';ctx.fillText('field makes bodies · lineage carries controller',28,58);
+}
+function renderEvents(){let el=document.getElementById('events');el.innerHTML=events.slice(0,22).map(e=>`<div class="event">t ${e.t.toFixed(1)} · ${e.type} ${e.parents.length?'#'+e.parents.join(',#'):''} ${e.children.length?'→ #'+e.children.join(',#'):''}</div>`).join('')||'<div class="guard">Waiting for domains…</div>'}
+function renderSelected(){let el=document.getElementById('selected'),d=domains.find(x=>x.id===selected),th=d?thinkers.get(d.id):null;if(!d||!th){el.innerHTML='<div class="big">—</div><div class="guard">Click a colored body. The circle is a measured field domain; the small white dot is its scout.</div>';return}let ma=th.steps?th.actions.map(x=>x/th.steps):[0,0,0,0,0],ctrl=th.ctrl;let cells='';if(ctrl)for(let i=0;i<6;i++)for(let j=0;j<6;j++){let v=ctrl.A[i][j],light=18+Math.min(55,Math.abs(v)*180),h=v>=0?195:350;cells+=`<div class="cell" style="background:hsl(${h},70%,${light}%)"></div>`}el.innerHTML=`<div class="big">#${d.id} · G${th.gen}</div><div class="guard">mass ${d.mass.toFixed(1)} · age ${(t-(tracks.get(d.id)?.born||t)).toFixed(1)} · score ${th.score.toFixed(1)}</div><div class="guard" style="margin-top:9px">mean |actions|<br>move ${((ma[0]+ma[1])/2).toFixed(2)} · excite ${ma[2].toFixed(2)} · damp ${ma[3].toFixed(2)} · signal ${ma[4].toFixed(2)}</div>${ctrl?'<div class="matrix">'+cells+'</div><div class="guard">recurrent A matrix</div>':'<div class="guard" style="margin-top:10px">no digital matrix in this mode</div>'}`}
+}
+function status(){document.getElementById('time').textContent=t.toFixed(1);document.getElementById('domains').textContent=domains.length;document.getElementById('generation').textContent=Math.max(0,...domains.map(d=>thinkers.get(d.id)?.gen||0));let E=energy(),err=targetE?Math.abs(Math.tanh(Math.log((E+1e-8)/(targetE+1e-8)))):0;document.getElementById('stability').textContent=(Math.exp(-err)).toFixed(3);document.getElementById('contacts').textContent=contacts;renderSelected()}
+function loop(){if(running){for(let k=0;k<5;k++){fieldStep();if(stepN%CTRL===0){trackerStep();control()}}}render();status();requestAnimationFrame(loop)}
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-mode]').forEach(x=>x.classList.remove('active'));b.classList.add('active');mode=b.dataset.mode;reset()});
+document.getElementById('pause').onclick=e=>{running=!running;e.target.textContent=running?'Pause':'Run'};
+document.getElementById('pulse').onclick=pulse;document.getElementById('reset').onclick=reset;
+cv.onclick=e=>{let r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*N,y=(e.clientY-r.top)/r.height*N,best=null,bd=1e9;for(const d of domains){let dd=Math.hypot(td(x,d.cx),td(y,d.cy));if(dd<bd){bd=dd;best=d}}selected=best&&bd<10?best.id:null;renderSelected()};
+reset();loop();
+</script>
+</body>
+</html>
