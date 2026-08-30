@@ -84,7 +84,7 @@ class Organ:
         return cls(
             rng=rng,
             weights=np.zeros(len(LAGS) + 1, dtype=float),
-            values=-1.0 + 0.08 * rng.normal(size=ECOLOGIES),
+            values=np.full(ECOLOGIES, -1.0, dtype=float),
             visits=np.zeros(ECOLOGIES, dtype=float),
             history=deque(maxlen=max(LAGS) + 1),
         )
