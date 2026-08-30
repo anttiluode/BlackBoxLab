@@ -125,7 +125,7 @@ function world(){
   return [fast,slow,Math.tanh(persist),burst];
 }
 function makeOrgan(i){
-  return {w:[0,0,0,0,0],q:Array.from({length:K},()=>-1+.08*normal()),vis:[0,0,0,0],hist:[],counts:[0,0,0,0],choice:0,err:0,id:i};
+  return {w:[0,0,0,0,0],q:Array(K).fill(-1),vis:[0,0,0,0],hist:[],counts:[0,0,0,0],choice:0,err:0,id:i};
 }
 function reset(){
   t=0;persist=0;burst=0;recentErr=[];rngState=123456789+seed++;
