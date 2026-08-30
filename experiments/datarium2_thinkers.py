@@ -688,6 +688,17 @@ def run_mode(
                 active_ids=active_ids,
                 target_energy=target_energy,
             )
+            max_generation_now = max(
+                (thinkers[i].generation for i in active_ids if i in thinkers),
+                default=0,
+            )
+            print(
+                f"[checkpoint] t={field.t:.1f} "
+                f"domains={len(active_ids)} "
+                f"generation={max_generation_now} "
+                f"energy={field.energy_density():.5f}",
+                flush=True,
+            )
             next_checkpoint += checkpoint_interval
 
     post_events = [
@@ -925,7 +936,7 @@ def main() -> None:
             warmup=warmup,
             pulse_interval=pulse_interval,
             checkpoint_dir=checkpoint_dir,
-            checkpoint_interval=250.0,
+            checkpoint_interval=100.0,
         )
         out = ROOT / "results" / f"datarium2_{mode}_overnight_seed{args.seed}.json"
         out.write_text(json.dumps(result, indent=2) + "\n")
