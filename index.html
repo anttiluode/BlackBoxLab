@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BlackBoxLab — Sampling Policy → Organogenesis</title>
+<style>
+:root{--bg:#080a0f;--panel:#11151d;--panel2:#171d27;--ink:#edf3ff;--muted:#8d9aae;--line:#263044;--hot:#f6c86b;--good:#72e6b1;--bad:#ff7f88;--a:#7cc7ff;--b:#b49cff;--c:#ff9f72;--d:#7fe0d2}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 50% -20%,#1b2434 0,#080a0f 45%);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+main{width:min(1180px,94vw);margin:auto;padding:48px 0 80px}
+.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:28px;align-items:end;margin-bottom:28px}
+.kicker{font:600 12px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--hot)}
+h1{font-size:clamp(40px,6vw,78px);line-height:.93;margin:10px 0 18px;letter-spacing:-.055em}
+.lede{font-size:19px;line-height:1.55;color:#c6d0df;max-width:760px}
+.note{border:1px solid var(--line);background:rgba(17,21,29,.8);padding:18px 20px;border-radius:16px;color:#b9c4d4;line-height:1.5}
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}
+button{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:10px 14px;border-radius:999px;font-weight:700;cursor:pointer}
+button:hover{border-color:#53617b} button.active{background:#e9f0ff;color:#0b0d12;border-color:#e9f0ff}
+.stage{background:linear-gradient(180deg,rgba(21,27,38,.96),rgba(10,13,19,.96));border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.28)}
+canvas{width:100%;height:auto;display:block}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.metric{background:#0f131b;padding:16px 18px}.metric .v{font-size:27px;font-weight:800;letter-spacing:-.03em}.metric .l{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+.legend{display:flex;gap:15px;flex-wrap:wrap;padding:14px 18px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.card{border:1px solid var(--line);background:rgba(17,21,29,.75);border-radius:18px;padding:22px}
+.card h2{font-size:20px;margin:0 0 10px}.card p,.card li{color:#aeb9ca;line-height:1.55}
+.flow{font:600 14px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;color:#dce6f6;white-space:pre-wrap;background:#0a0d13;border:1px solid #20293a;border-radius:13px;padding:16px}
+.receipt{margin-top:18px;border:1px solid var(--line);background:#0c1017;border-radius:18px;padding:20px}
+.receipt h2{margin:0 0 8px}.receipt code{color:var(--good)}
+.small{font-size:13px;color:var(--muted)}
+a{color:#b7d8ff}
+@media(max-width:820px){.hero,.grid{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}main{padding-top:28px}}
+</style>
+</head>
+<body>
+<main>
+<section class="hero">
+<div>
+<div class="kicker">BlackBoxLab · Experiment 0</div>
+<h1>Sampling policy<br>can become anatomy.</h1>
+<div class="lede">Eight initially identical learners inhabit one continuous world. Nobody tells one to become “fast,” another “slow,” another “burst.” Each can look at only one temporal ecology at a time. What it samples trains its local predictor; what its predictor becomes changes where it wants to look next.</div>
+</div>
+<div class="note"><strong>The falsification is built in.</strong><br>If private self-interest makes every learner stare at the same easy signal, there is no spontaneous brain. Try <b>ECOLOGY</b>: it adds only a small crowding cost to finite observation territory, not named roles.</div>
+</section>
+
+<div class="controls">
+<button data-mode="yoked">YOKED · same data</button>
+<button data-mode="private">PRIVATE · own sampling</button>
+<button data-mode="ecology" class="active">ECOLOGY · finite territory</button>
+<button id="pause">Pause</button>
+<button id="reset">Reset</button>
+</div>
+
+<section class="stage">
+<canvas id="lab" width="1160" height="650"></canvas>
+<div class="metrics">
+<div class="metric"><div class="v" id="coverage">—</div><div class="l">ecologies covered / 4</div></div>
+<div class="metric"><div class="v" id="special">—</div><div class="l">mean specialization</div></div>
+<div class="metric"><div class="v" id="divergence">—</div><div class="l">computation divergence</div></div>
+<div class="metric"><div class="v" id="mse">—</div><div class="l">recent prediction MSE</div></div>
+</div>
+<div class="legend">
+<span><i class="dot" style="background:var(--a)"></i>fast wave</span>
+<span><i class="dot" style="background:var(--b)"></i>slow wave</span>
+<span><i class="dot" style="background:var(--c)"></i>persistent noise</span>
+<span><i class="dot" style="background:var(--d)"></i>burst + decay</span>
+<span>lines show where each organ samples now · bars inside organs are learned lag weights 1/2/4/8</span>
+</div>
+</section>
+
+<div class="grid">
+<article class="card"><h2>The loop</h2><div class="flow">same starting machinery
+        ↓
+different sampling history
+        ↓
+different temporal statistics
+        ↓
+different local weights
+        ↓
+different competence / value
+        ↓
+different future sampling
+        ↺</div><p>Sampling is not preprocessing here. It is inside the developmental loop.</p></article>
+<article class="card"><h2>The symmetry problem</h2><div class="flow">PRIVATE:
+“I predict this patch well”
+        ↓
+look there more
+        ↓
+get even better there
+
+possible result:
+everyone discovers the same comfort zone</div><p>That failure is useful. A population needs some source of asymmetry, scarce territory, topology, task pressure, developmental gradients, or stochastic history if distinct organs are to stabilize.</p></article>
+<article class="card"><h2>What “different computation” means here</h2><p>Every organ begins with the exact same autoregressive machinery. Only its learned coefficients differ. The little bars are the current weights on lags 1, 2, 4 and 8. Different sampled dynamics should sculpt different temporal filters.</p><p>This is intentionally much weaker than claiming cortical organogenesis. It asks whether <em>input ecology can be part of what makes a computational unit become what it is.</em></p></article>
+<article class="card"><h2>Connection to Child</h2><div class="flow">belief → sampling → evidence → belief
+
+becomes
+
+body → sampling → experience → body</div><p>Child showed that observation policy can make a learner epistemically self-sealing. BlackBoxLab asks whether the same feedback, distributed across a population, can create functional differentiation—or a monoculture.</p></article>
+</div>
+
+<section class="receipt">
+<h2>Reproducible receipt</h2>
+<p>Run <code>python experiments/sampling_policy_organogenesis.py</code>. It compares matched seeds for YOKED, PRIVATE, and ECOLOGY and records coverage, specialization, pairwise lag-weight divergence, and predictive error.</p>
+<p class="small">The ecological crowding term is explicit and should be attacked. Random fixed assignment and ordinary mixture-of-experts routing are obvious next baselines.</p>
+</section>
+</main>
+
+<script>
+const canvas=document.getElementById('lab'),ctx=canvas.getContext('2d');
+const W=canvas.width,H=canvas.height,K=4,N=8,LAGS=[1,2,4,8],MAXLAG=8;
+const colors=['#7cc7ff','#b49cff','#ff9f72','#7fe0d2'];
+let mode='ecology',running=true,t=0,seed=7,persist=0,burst=0;
+let organs=[],recentErr=[],rngState=123456789;
+
+function rng(){rngState=(1664525*rngState+1013904223)>>>0;return rngState/4294967296}
+function normal(){let u=Math.max(rng(),1e-9),v=rng();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function world(){
+  const fast=Math.sin(.34*t+.18*Math.sin(.013*t));
+  const slow=Math.sin(.052*t+.42*Math.sin(.0027*t));
+  persist=.94*persist+.22*normal();
+  if(rng()<.03) burst+= (rng()<.5?-1:1)*(.8+.7*rng());
+  burst*=.86;
+  return [fast,slow,Math.tanh(persist),burst];
+}
+function makeOrgan(i){
+  return {w:[0,0,0,0,0],q:Array.from({length:K},()=>-1+.08*normal()),vis:[0,0,0,0],hist:[],counts:[0,0,0,0],choice:0,err:0,id:i};
+}
+function reset(){
+  t=0;persist=0;burst=0;recentErr=[];rngState=123456789+seed++;
+  organs=Array.from({length:N},(_,i)=>makeOrgan(i));
+}
+function features(o){
+  if(o.hist.length<MAXLAG)return null;
+  return [1,...LAGS.map(l=>o.hist[o.hist.length-l])];
+}
+function dot(a,b){let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s}
+function choose(o,occ){
+  if(mode==='yoked')return 0;
+  if(rng()<.03)return Math.floor(rng()*K);
+  let best=-1e9,bi=0;
+  for(let z=0;z<K;z++){
+    let u=o.q[z]+1e-6*normal();
+    if(mode==='ecology')u-=.30*occ[z];
+    if(u>best){best=u;bi=z}
+  }
+  return bi;
+}
+function step(){
+  const x=world(),occ=[0,0,0,0];
+  for(const o of organs){
+    const z=choose(o,occ),f=features(o),pred=f?dot(o.w,f):0,e=x[z]-pred,err=e*e;
+    if(f){
+      const sc=1+dot(f,f);
+      for(let j=0;j<o.w.length;j++)o.w[j]=Math.max(-2,Math.min(2,o.w[j]+.035*e*f[j]/sc));
+    }
+    o.hist.push(x[z]);if(o.hist.length>MAXLAG+1)o.hist.shift();
+    o.vis[z]++;let eta=Math.min(.04,1/o.vis[z]),reward=-Math.min(err,4);
+    o.q[z]=(1-eta)*o.q[z]+eta*reward;
+    for(let j=0;j<K;j++)o.counts[j]*=.9993;
+    o.counts[z]+=1;o.choice=z;o.err=err;occ[z]++;
+    recentErr.push(err);if(recentErr.length>1200)recentErr.shift();
+  }
+  t++;
+}
+function specialization(o){
+  const s=o.counts.reduce((a,b)=>a+b,0)||1,p=o.counts.map(v=>v/s).filter(v=>v>1e-12);
+  let ent=0;for(const v of p)ent-=v*Math.log(v);
+  return 1-ent/Math.log(K);
+}
+function compDiv(){
+  let ds=[];
+  for(let i=0;i<N;i++)for(let j=i+1;j<N;j++){
+    const a=organs[i].w,b=organs[j].w,na=Math.sqrt(dot(a,a)),nb=Math.sqrt(dot(b,b));
+    ds.push(na*nb<1e-9?0:1-dot(a,b)/(na*nb));
+  }
+  return ds.reduce((a,b)=>a+b,0)/ds.length;
+}
+function metrics(){
+  const dom=organs.map(o=>o.counts.indexOf(Math.max(...o.counts)));
+  const cov=new Set(dom).size;
+  const sp=organs.reduce((s,o)=>s+specialization(o),0)/N;
+  const mse=recentErr.reduce((a,b)=>a+b,0)/(recentErr.length||1);
+  document.getElementById('coverage').textContent=cov+' / 4';
+  document.getElementById('special').textContent=sp.toFixed(3);
+  document.getElementById('divergence').textContent=compDiv().toFixed(3);
+  document.getElementById('mse').textContent=mse.toFixed(3);
+}
+function rounded(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();ctx.stroke()}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#0b0f16';ctx.fillRect(0,0,W,H);
+  ctx.font='12px ui-monospace,monospace';ctx.textAlign='left';
+  const laneX=70,laneY=70,laneW=1020,laneH=70,gap=14;
+  const vals=[
+    Math.sin(.34*t+.18*Math.sin(.013*t)),
+    Math.sin(.052*t+.42*Math.sin(.0027*t)),
+    Math.tanh(persist),burst
+  ];
+  const labels=['FAST MODULATED WAVE','SLOW MODULATED WAVE','PERSISTENT STOCHASTIC','BURST + DECAY'];
+  for(let z=0;z<K;z++){
+    const y=laneY+z*(laneH+gap);
+    ctx.fillStyle='#101722';ctx.strokeStyle='#273247';ctx.lineWidth=1;rounded(laneX,y,laneW,laneH,12);
+    ctx.fillStyle=colors[z];ctx.globalAlpha=.12;ctx.fillRect(laneX+2,y+2,laneW-4,laneH-4);ctx.globalAlpha=1;
+    ctx.fillStyle=colors[z];ctx.font='700 11px ui-monospace,monospace';ctx.fillText(labels[z],laneX+16,y+20);
+    ctx.strokeStyle=colors[z];ctx.lineWidth=2;ctx.beginPath();
+    for(let px=0;px<laneW-35;px+=5){
+      const tt=t-(laneW-35-px)/15;
+      let v;
+      if(z===0)v=Math.sin(.34*tt+.18*Math.sin(.013*tt));
+      else if(z===1)v=Math.sin(.052*tt+.42*Math.sin(.0027*tt));
+      else v=vals[z]*Math.exp(-(laneW-35-px)/380);
+      const yy=y+47-v*15;
+      px===0?ctx.moveTo(laneX+15+px,yy):ctx.lineTo(laneX+15+px,yy);
+    }
+    ctx.stroke();
+  }
+  const oy=480,spacing=125,start=75;
+  for(let i=0;i<N;i++){
+    const o=organs[i],x=start+i*spacing,z=o.choice;
+    const targetY=laneY+z*(laneH+gap)+laneH/2;
+    ctx.strokeStyle=colors[z];ctx.globalAlpha=.38;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x,oy-38);ctx.lineTo(laneX+laneW-10,targetY);ctx.stroke();ctx.globalAlpha=1;
+  }
+  for(let i=0;i<N;i++){
+    const o=organs[i],x=start+i*spacing,z=o.choice;
+    ctx.fillStyle='#111824';ctx.strokeStyle=colors[z];ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,510,42,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#dfe8f7';ctx.font='700 12px ui-monospace,monospace';ctx.textAlign='center';ctx.fillText('ORGAN '+(i+1),x,505);
+    const ws=o.w.slice(1),mx=Math.max(.25,...ws.map(Math.abs));
+    for(let j=0;j<4;j++){
+      const bx=x-26+j*14,bh=22*Math.abs(ws[j])/mx;
+      ctx.fillStyle=ws[j]>=0?colors[z]:'#ff7f88';ctx.fillRect(bx,536-bh,8,bh);
+    }
+    const dom=o.counts.indexOf(Math.max(...o.counts));
+    ctx.fillStyle='#8996aa';ctx.font='10px ui-monospace,monospace';ctx.fillText('niche '+(dom+1),x,566);
+  }
+  ctx.textAlign='left';ctx.fillStyle='#8290a6';ctx.font='12px ui-monospace,monospace';
+  ctx.fillText('WORLD: four signals exist at once',70,36);
+  ctx.fillText('POPULATION: identical machinery, private sampled histories',70,620);
+}
+function frame(){
+  if(running){for(let i=0;i<7;i++)step()}
+  draw();metrics();requestAnimationFrame(frame);
+}
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('[data-mode]').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');mode=b.dataset.mode;reset();
+});
+document.getElementById('pause').onclick=e=>{running=!running;e.target.textContent=running?'Pause':'Run'};
+document.getElementById('reset').onclick=reset;
+reset();frame();
+</script>
+</body>
+</html>
