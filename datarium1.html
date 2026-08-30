@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Datarium 1 — Lineage Microscope</title>
+<style>
+:root{
+  --bg:#060910;--panel:#0d1320;--panel2:#101827;--line:#243148;
+  --ink:#eef5ff;--muted:#8797ad;--cyan:#7fd6ff;--mint:#79edc9;
+  --amber:#ffd277;--rose:#ff8f9d;--violet:#b6a0ff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+body{background:
+ radial-gradient(circle at 30% -10%,#18253a 0,transparent 34%),
+ radial-gradient(circle at 90% 0,#17152b 0,transparent 28%),var(--bg)}
+main{width:min(1480px,96vw);margin:auto;padding:28px 0 60px}
+a{color:#b9dcff;text-decoration:none}
+.kicker{font:800 11px/1 ui-monospace,SFMono-Regular,monospace;letter-spacing:.18em;color:var(--mint);text-transform:uppercase}
+h1{font-size:clamp(40px,6vw,78px);line-height:.9;letter-spacing:-.055em;margin:11px 0 14px;max-width:900px}
+.lede{font-size:17px;line-height:1.6;color:#bfccdc;max-width:920px;margin-bottom:18px}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:18px 0}
+button,select{border:1px solid var(--line);background:#0f1725;color:var(--ink);border-radius:999px;padding:9px 13px;font-weight:750}
+button{cursor:pointer}
+button.active{background:#eff5ff;color:#08101a}
+.spacer{flex:1}
+.shell{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px;align-items:start}
+.stage{border:1px solid var(--line);border-radius:20px;background:#080d15;overflow:hidden;box-shadow:0 20px 80px #0008}
+canvas{display:block;width:100%;height:auto;cursor:crosshair}
+.statusbar{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line)}
+.stat{padding:12px 14px;border-right:1px solid var(--line)}
+.stat:last-child{border-right:0}
+.stat b{display:block;font-size:20px}.stat span{font:700 9px/1.2 ui-monospace,monospace;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.side{display:grid;gap:12px;position:sticky;top:12px}
+.card{border:1px solid var(--line);border-radius:16px;background:rgba(13,19,32,.91);overflow:hidden}
+.card h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin:0;padding:13px 15px;border-bottom:1px solid var(--line)}
+.cardbody{padding:14px 15px}
+.specimen-id{font:850 28px/1 ui-monospace,monospace;color:var(--cyan)}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}
+.mini div{padding:9px;background:#09101a;border:1px solid #1d293d;border-radius:10px}
+.mini b{display:block;font-size:15px}.mini span{display:block;font:700 9px ui-monospace,monospace;color:var(--muted);text-transform:uppercase;margin-top:3px}
+.parents{font:700 12px/1.5 ui-monospace,monospace;color:#b6c4d7;margin-top:12px}
+.eventlog{max-height:315px;overflow:auto}
+.event{display:grid;grid-template-columns:58px 1fr;gap:8px;padding:8px 0;border-bottom:1px solid #172235;font:650 11px/1.35 ui-monospace,monospace}
+.event:last-child{border-bottom:0}.event .t{color:#71839b}
+.event.split .msg{color:var(--mint)}.event.merge .msg{color:var(--violet)}.event.birth .msg{color:var(--cyan)}.event.death .msg{color:#a6b0bd}
+.guard{font-size:12px;line-height:1.55;color:#9eacbe}
+.guard strong{color:var(--amber)}
+.explain{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:16px}
+.explain .cardbody{font-size:13px;line-height:1.55;color:#aebcce}
+.flow{font:700 11px/1.65 ui-monospace,monospace;white-space:pre-wrap;background:#080d15;border:1px solid #1b273a;padding:12px;border-radius:11px;color:#dbe7f7}
+label{font:700 10px ui-monospace,monospace;color:var(--muted);text-transform:uppercase}
+input[type=range]{width:110px;vertical-align:middle}
+@media(max-width:1040px){.shell{grid-template-columns:1fr}.side{position:static;grid-template-columns:1fr 1fr}.explain{grid-template-columns:1fr}.statusbar{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:650px){.side{grid-template-columns:1fr}.statusbar{grid-template-columns:1fr 1fr}.stat{border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<main>
+<div class="kicker">BlackBoxLab · Datarium 1</div>
+<h1>Identity before<br>evolution.</h1>
+<p class="lede">The local-budget descendant of Antti's instanton already makes domains appear, move, collide and disappear. Datarium 1 does one boring but necessary thing: it gives those domains a conservative, torus-aware identity microscope. No genome. No fitness. No trait copied by Python.</p>
+
+<div class="toolbar">
+  <button id="pause">Pause</button>
+  <button id="reset">Reset world</button>
+  <button id="ids" class="active">IDs on</button>
+  <button id="trails" class="active">Trails on</button>
+  <label>speed <input id="speed" type="range" min="1" max="12" value="5"></label>
+  <span class="spacer"></span>
+  <a href="index.html">BlackBoxLab ←</a>
+</div>
+
+<div class="shell">
+  <section class="stage">
+    <canvas id="world" width="1080" height="720"></canvas>
+    <div class="statusbar">
+      <div class="stat"><b id="time">0.0</b><span>field time</span></div>
+      <div class="stat"><b id="domains">0</b><span>accepted domains</span></div>
+      <div class="stat"><b id="resource">1.00</b><span>mean resource r</span></div>
+      <div class="stat"><b id="tracks">0</b><span>IDs ever born</span></div>
+      <div class="stat"><b id="seams">0</b><span>seam continuations</span></div>
+    </div>
+  </section>
+
+  <aside class="side">
+    <section class="card">
+      <h2>Selected specimen</h2>
+      <div class="cardbody" id="specimen">
+        <div class="specimen-id">—</div>
+        <p class="guard">Click an outlined domain. The number is an observer-assigned persistent ID, not a genome or hidden object inserted into the field.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Lineage events</h2>
+      <div class="cardbody eventlog" id="events"></div>
+    </section>
+
+    <section class="card">
+      <h2>Instrument guardrail</h2>
+      <div class="cardbody guard">
+        <strong>Datarium 1 is not an evolution demo.</strong> A domain must first survive a high/low threshold hysteresis test and minimum area/mass floor. Identity then follows pixel overlap on the periodic field. Splits and merges terminate the old IDs and create explicit descendants.
+      </div>
+    </section>
+  </aside>
+</div>
+
+<section class="explain">
+  <article class="card"><h2>1 · Same physics, corrected observer</h2><div class="cardbody"><div class="flow">φ⁴ wave field
++ local resource r
++ periodic boundaries
+        ↓
+high / low hysteresis
+        ↓
+torus-connected components
+        ↓
+area + mass floor</div><p>The browser uses the same local-budget mechanism as Three Fates: activity burns resource, resource recovers, and resource gates the local growth term.</p></div></article>
+  <article class="card"><h2>2 · Identity is overlap, not a jumping dot</h2><div class="cardbody"><div class="flow">one old ↔ one new
+    continuation
+
+one old → many new
+    split
+
+many old → one new
+    merge
+
+nothing → new
+    birth</div><p>Crossing the left/right or top/bottom seam is ordinary motion because the detector lives on the same torus as the field.</p></div></article>
+  <article class="card"><h2>3 · What this unlocks</h2><div class="cardbody"><div class="flow">persistent identity
+      ↓
+physical phenotype
+      ↓
+sister resemblance?
+      ↓
+body-carried material?
+      ↓
+only then:
+heredity / divergence</div><p>The next Datarium can ask whether related domains inherit similar computational response without first assuming that they do.</p></div></article>
+</section>
+</main>
+
+<script>
+const cv=document.getElementById("world"), ctx=cv.getContext("2d");
+const N=84, SIZE=N*N, DT=.02, A=.1, B=.1, DAMP=.01, TAU=100, BURN=.033;
+const HIGH=.30, LOW=.24, MIN_AREA=18, MIN_MASS=7, MIN_OVERLAP=.12;
+let phi,prev,res,support,domains=[],oldDomains=[],tracks=new Map(),events=[],nextID=1,t=0,stepN=0;
+let running=true,showIDs=true,showTrails=true,seamContinuations=0,selected=null;
+const trails=new Map(), imgCanvas=document.createElement("canvas"), ictx=imgCanvas.getContext("2d");
+imgCanvas.width=N; imgCanvas.height=N;
+const image=ictx.createImageData(N,N);
+
+const idx=(y,x)=>((y+N)%N)*N+((x+N)%N);
+const tdelta=(v,c,p)=>((v-c+p/2)%p+p)%p-p/2;
+function reset(){
+  phi=new Float64Array(SIZE); prev=new Float64Array(SIZE); res=new Float64Array(SIZE); support=new Uint8Array(SIZE);
+  res.fill(1); domains=[];oldDomains=[];tracks=new Map();events=[];nextID=1;t=0;stepN=0;seamContinuations=0;selected=null;trails.clear();
+  const sx=N*.25,sy=N*.5;
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++){const d=Math.hypot(x-sx,y-sy);phi[idx(y,x)]=1.5/Math.cosh(d/10)}
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+    const gx=(phi[idx(y,x+1)]-phi[idx(y,x-1)])/2;
+    prev[idx(y,x)]=phi[idx(y,x)]+.25*gx*DT;
+  }
+  renderEvents();
+}
+function fieldStep(){
+  const next=new Float64Array(SIZE);
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+    const i=idx(y,x),v=phi[i];
+    const lap=phi[idx(y,x+1)]+phi[idx(y,x-1)]+phi[idx(y+1,x)]+phi[idx(y-1,x)]-4*v;
+    const acc=lap-B*v*v*v+A*res[i]*v-DAMP*(v-prev[i])/DT;
+    let rr=res[i]+DT*((1-res[i])/TAU-BURN*v*v);
+    res[i]=Math.max(0,Math.min(1,rr));
+    next[i]=2*v-prev[i]+DT*DT*acc;
+  }
+  prev=phi;phi=next;t+=DT;stepN++;
+}
+function periodicComponents(mask){
+  const seen=new Uint8Array(SIZE),out=[],stack=[];
+  for(let p=0;p<SIZE;p++){
+    if(!mask[p]||seen[p])continue;
+    stack.length=0;stack.push(p);seen[p]=1;const pix=[];
+    while(stack.length){
+      const q=stack.pop(),y=Math.floor(q/N),x=q%N;pix.push(q);
+      const ns=[idx(y+1,x),idx(y-1,x),idx(y,x+1),idx(y,x-1)];
+      for(const z of ns)if(mask[z]&&!seen[z]){seen[z]=1;stack.push(z)}
+    }
+    out.push(pix);
+  }
+  return out;
+}
+function circularMean(vals,weights){
+  let re=0,im=0,sw=0;
+  for(let k=0;k<vals.length;k++){const a=2*Math.PI*vals[k]/N,w=weights[k];re+=w*Math.cos(a);im+=w*Math.sin(a);sw+=w}
+  let a=Math.atan2(im,re);if(a<0)a+=2*Math.PI;return a*N/(2*Math.PI);
+}
+function describe(pix){
+  const xs=[],ys=[],ws=[];let mass=0;
+  for(const p of pix){const y=Math.floor(p/N),x=p%N,w=Math.max(phi[p],0)+1e-12;xs.push(x);ys.push(y);ws.push(w);mass+=w}
+  const cx=circularMean(xs,ws),cy=circularMean(ys,ws);
+  let cxx=0,cyy=0,cxy=0;
+  for(let k=0;k<pix.length;k++){const dx=tdelta(xs[k],cx,N),dy=tdelta(ys[k],cy,N),w=ws[k];cxx+=w*dx*dx;cyy+=w*dy*dy;cxy+=w*dx*dy}
+  cxx/=mass;cyy/=mass;cxy/=mass;
+  const tr=cxx+cyy,disc=Math.sqrt(Math.max(0,(cxx-cyy)*(cxx-cyy)+4*cxy*cxy));
+  const l1=Math.max((tr+disc)/2,1e-12),l2=Math.max((tr-disc)/2,0);
+  const ecc=Math.sqrt(Math.max(0,1-l2/l1));
+  const set=new Set(pix);let per=0;
+  for(const p of pix){const y=Math.floor(p/N),x=p%N;for(const q of [idx(y+1,x),idx(y-1,x),idx(y,x+1),idx(y,x-1)])if(!set.has(q))per++}
+  return {pix,area:pix.length,mass,cx,cy,ecc,compact:per?4*Math.PI*pix.length/(per*per):1,id:-1};
+}
+function detect(){
+  const raw=new Uint8Array(SIZE);
+  for(let i=0;i<SIZE;i++)raw[i]=(phi[i]>=HIGH||(support[i]&&phi[i]>=LOW))?1:0;
+  const comps=periodicComponents(raw),kept=[],stable=new Uint8Array(SIZE);
+  for(const pix of comps){const d=describe(pix);if(d.area<MIN_AREA||d.mass<MIN_MASS)continue;kept.push(d);for(const p of pix)stable[p]=1}
+  support=stable;return kept;
+}
+function addEvent(type,parents,children){
+  events.unshift({type,parents:[...parents],children:[...children],t});if(events.length>80)events.length=80;renderEvents();
+}
+function newTrack(parents){
+  const id=nextID++;tracks.set(id,{id,parents:[...parents],born:t,last:t});return id;
+}
+function trackerStep(){
+  const cur=detect(), old=oldDomains, oldLab=new Int32Array(SIZE),newLab=new Int32Array(SIZE);
+  old.forEach((d,i)=>d.pix.forEach(p=>oldLab[p]=i+1));cur.forEach((d,j)=>d.pix.forEach(p=>newLab[p]=j+1));
+  const ot=Array.from({length:old.length},()=>[]),nt=Array.from({length:cur.length},()=>[]);
+  const counts=new Map();
+  for(let p=0;p<SIZE;p++)if(oldLab[p]&&newLab[p]){const key=oldLab[p]+","+newLab[p];counts.set(key,(counts.get(key)||0)+1)}
+  for(const [key,n] of counts){const [oi1,nj1]=key.split(",").map(Number),oi=oi1-1,nj=nj1-1;const score=n/Math.min(old[oi].area,cur[nj].area);if(score>=MIN_OVERLAP){ot[oi].push(nj);nt[nj].push(oi)}}
+  const assigned=new Set(),visited=new Set();
+  for(let o0=0;o0<old.length;o0++){
+    if(visited.has(o0)||!ot[o0].length)continue;
+    const os=new Set(),ns=new Set(),q=[["o",o0]];
+    while(q.length){const [side,k]=q.pop();if(side==="o"){if(os.has(k))continue;os.add(k);visited.add(k);for(const j of ot[k])q.push(["n",j])}else{if(ns.has(k))continue;ns.add(k);for(const i of nt[k])q.push(["o",i])}}
+    const parents=[...os].map(i=>old[i].id).sort((a,b)=>a-b);
+    if(os.size===1&&ns.size===1){
+      const oi=[...os][0],nj=[...ns][0];cur[nj].id=old[oi].id;assigned.add(nj);
+      if(Math.abs(cur[nj].cx-old[oi].cx)>N/2||Math.abs(cur[nj].cy-old[oi].cy)>N/2)seamContinuations++;
+    }else{
+      const typ=os.size===1?"split":ns.size===1?"merge":"rearrangement",children=[];
+      for(const nj of [...ns].sort((a,b)=>a-b)){const id=newTrack(parents);cur[nj].id=id;assigned.add(nj);children.push(id)}
+      addEvent(typ,parents,children);
+    }
+  }
+  for(let i=0;i<old.length;i++)if(!ot[i].length)addEvent("death",[old[i].id],[]);
+  cur.forEach((d,j)=>{if(!assigned.has(j)){d.id=newTrack([]);addEvent("birth",[],[d.id])}});
+  for(const d of cur){
+    const tr=tracks.get(d.id);tr.last=t;
+    if(!trails.has(d.id))trails.set(d.id,[]);
+    const arr=trails.get(d.id);arr.push([d.cx,d.cy]);if(arr.length>70)arr.shift();
+  }
+  oldDomains=cur;domains=cur;
+  if(selected&&!tracks.has(selected))selected=null;
+}
+function idColor(id,a=1){const h=(id*137.508)%360;return `hsla(${h},78%,70%,${a})`}
+function renderField(){
+  const data=image.data;
+  for(let i=0;i<SIZE;i++){
+    let v=Math.max(-1.3,Math.min(1.3,phi[i]))/1.3,r,g,b;
+    if(v>=0){r=235;g=235-120*v;b=230-150*v}else{const u=-v;r=220-150*u;g=235-90*u;b=245}
+    data[4*i]=r;data[4*i+1]=g;data[4*i+2]=b;data[4*i+3]=255;
+  }
+  ictx.putImageData(image,0,0);
+  ctx.imageSmoothingEnabled=true;ctx.drawImage(imgCanvas,0,0,cv.width,cv.height);
+  const sx=cv.width/N,sy=cv.height/N;
+  if(showTrails){
+    ctx.lineWidth=1.5;
+    for(const d of domains){const arr=trails.get(d.id)||[];ctx.strokeStyle=idColor(d.id,.38);ctx.beginPath();let first=true,last=null;
+      for(const p of arr){if(last&&(Math.abs(p[0]-last[0])>N/2||Math.abs(p[1]-last[1])>N/2)){first=true}const X=(p[0]+.5)*sx,Y=(p[1]+.5)*sy;if(first){ctx.moveTo(X,Y);first=false}else ctx.lineTo(X,Y);last=p}ctx.stroke()}
+  }
+  for(const d of domains){
+    const X=(d.cx+.5)*sx,Y=(d.cy+.5)*sy,R=Math.max(10,Math.sqrt(d.area/Math.PI)*sx*.35);
+    ctx.strokeStyle=idColor(d.id,selected===d.id?1:.85);ctx.lineWidth=selected===d.id?4:2;ctx.beginPath();ctx.arc(X,Y,R,0,Math.PI*2);ctx.stroke();
+    if(showIDs){ctx.fillStyle="#07101a";ctx.font="900 12px ui-monospace,monospace";ctx.textAlign="center";ctx.textBaseline="middle";const s="#"+d.id;const m=ctx.measureText(s).width+10;ctx.fillStyle="rgba(4,9,16,.75)";ctx.fillRect(X-m/2,Y-10,m,20);ctx.fillStyle=idColor(d.id);ctx.fillText(s,X,Y)}
+  }
+  ctx.fillStyle="rgba(5,9,15,.72)";ctx.fillRect(14,14,480,58);ctx.fillStyle="#dce8f8";ctx.textAlign="left";ctx.font="700 12px ui-monospace,monospace";ctx.fillText("LOCAL BUDGET φ⁴ FIELD · periodic world",28,38);ctx.fillStyle="#93a4ba";ctx.font="11px ui-monospace,monospace";ctx.fillText("outline = accepted measured domain · click to inspect",28,58);
+}
+function renderEvents(){
+  const el=document.getElementById("events");el.innerHTML="";
+  if(!events.length){el.innerHTML='<div class="guard">Waiting for accepted domains…</div>';return}
+  for(const e of events.slice(0,24)){const row=document.createElement("div");row.className="event "+e.type;const msg=e.type==="birth"?`born #${e.children.join(",#")}`:e.type==="death"?`ended #${e.parents.join(",#")}`:`${e.type} #${e.parents.join(",#")} → #${e.children.join(",#")}`;row.innerHTML=`<span class="t">t ${e.t.toFixed(1)}</span><span class="msg">${msg}</span>`;el.appendChild(row)}
+}
+function renderSpecimen(){
+  const el=document.getElementById("specimen"),d=domains.find(x=>x.id===selected);
+  if(!d){el.innerHTML='<div class="specimen-id">—</div><p class="guard">Click an outlined domain. The number is an observer-assigned persistent ID, not a genome or hidden object inserted into the field.</p>';return}
+  const tr=tracks.get(d.id),age=t-tr.born;
+  const kids=[];for(const e of events)if(e.parents.includes(d.id))for(const c of e.children)kids.push(c);
+  el.innerHTML=`<div class="specimen-id">#${d.id}</div>
+  <div class="mini">
+   <div><b>${age.toFixed(1)}</b><span>observed age</span></div>
+   <div><b>${d.mass.toFixed(1)}</b><span>positive mass</span></div>
+   <div><b>${d.area}</b><span>cells</span></div>
+   <div><b>${d.compact.toFixed(3)}</b><span>compactness</span></div>
+   <div><b>${d.ecc.toFixed(3)}</b><span>eccentricity</span></div>
+   <div><b>${tr.parents.length}</b><span>parents</span></div>
+  </div>
+  <div class="parents">parents: ${tr.parents.length?tr.parents.map(x=>"#"+x).join(" · "):"none observed"}<br>known children: ${kids.length?kids.map(x=>"#"+x).join(" · "):"none yet"}</div>`;
+}
+function status(){
+  let rm=0;for(const x of res)rm+=x;rm/=SIZE;
+  document.getElementById("time").textContent=t.toFixed(1);
+  document.getElementById("domains").textContent=domains.length;
+  document.getElementById("resource").textContent=rm.toFixed(2);
+  document.getElementById("tracks").textContent=tracks.size;
+  document.getElementById("seams").textContent=seamContinuations;
+  renderSpecimen();
+}
+function loop(){
+  if(running){const speed=+document.getElementById("speed").value;for(let k=0;k<speed;k++){fieldStep();if(stepN%12===0)trackerStep()}}
+  renderField();status();requestAnimationFrame(loop);
+}
+cv.onclick=e=>{
+  const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*N,y=(e.clientY-r.top)/r.height*N;
+  let best=null,bd=1e9;for(const d of domains){const dist=Math.hypot(tdelta(x,d.cx,N),tdelta(y,d.cy,N));if(dist<bd){bd=dist;best=d}}
+  selected=best&&bd<10?best.id:null;renderSpecimen();
+};
+document.getElementById("pause").onclick=e=>{running=!running;e.target.textContent=running?"Pause":"Run"};
+document.getElementById("reset").onclick=reset;
+document.getElementById("ids").onclick=e=>{showIDs=!showIDs;e.target.classList.toggle("active",showIDs);e.target.textContent=showIDs?"IDs on":"IDs off"};
+document.getElementById("trails").onclick=e=>{showTrails=!showTrails;e.target.classList.toggle("active",showTrails);e.target.textContent=showTrails?"Trails on":"Trails off"};
+reset();loop();
+</script>
+</body>
+</html>
