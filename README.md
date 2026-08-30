@@ -102,6 +102,62 @@ The next stronger version, if this survives, is to replace the scalar
 refractory trace with a **persistent local operator** so that what passed
 through a region changes how future signals are mixed or filtered there.
 
+## Datarium 1 — lineage microscope
+
+The instanton-descended **Three Fates** field gives this repo a second kind of
+substrate: a two-dimensional periodic phi^4 wave field whose local resource
+`r(x,y)` is depleted by activity, recovers slowly, and gates growth.
+
+The LOCAL BUDGET arm is interesting because it produces continuing domain
+turnover rather than the extinction of NO BUDGET or the winner-take-all
+fixation of GLOBAL BUDGET. But the old observer was not good enough for
+genealogy: ordinary connected-component labels cut the periodic seam, one hard
+threshold turns breathing boundaries into births/deaths, and tiny threshold
+fragments count alongside substantial domains.
+
+Datarium 1 changes the **observer**, not the physics:
+
+~~~text
+same local-budget field
+        ↓
+high / low threshold hysteresis
+        ↓
+4-connected components ON THE TORUS
+        ↓
+minimum area + positive-mass floor
+        ↓
+frame-to-frame overlap graph
+        ↓
+continuation / split / merge / birth / death
+~~~
+
+A one-to-one overlap keeps the same persistent ID. A split terminates the
+parent ID and creates children that record that parent. A merge terminates all
+parents and creates a new child. No trait is copied, no fitness is assigned,
+and no genome exists.
+
+The instrument also records simple physical phenotype coordinates — positive
+mass, area, compactness and eccentricity — so a later Datarium can ask whether
+sisters resemble one another more than unrelated domains **before** adding an
+external heredity mechanism.
+
+Open **[Datarium 1 live](datarium1.html)**. Click a measured domain to inspect
+its identity and ancestry.
+
+Python receipt:
+
+~~~bash
+python experiments/datarium1_lineage.py
+~~~
+
+The reusable tracker lives in `datarium/lineage.py`.
+
+The stopping line is explicit:
+
+> **A lineage graph is not evolution. Datarium 1 earns only the right to ask
+> whether physical phenotype persists through field-generated demographic
+> events.**
+
 ## World
 
 The toy world exposes four spatial "ecologies" at every physical timestep:
