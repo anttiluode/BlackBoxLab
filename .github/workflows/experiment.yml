@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  datarium:
+  datarium1:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,10 +14,19 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
-      - name: Datarium unit tests
+      - name: Datarium 1 unit tests
         run: python -m unittest tests.test_datarium_lineage -v
       - name: Datarium 1 — lineage microscope
         run: python experiments/datarium1_lineage.py
+
+  datarium2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
       - name: Datarium 2 unit tests
         run: python -m unittest tests.test_datarium2 -v
       - name: Datarium 2 — ecological thinkers
