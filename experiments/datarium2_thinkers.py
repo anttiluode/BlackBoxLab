@@ -63,7 +63,7 @@ LOW_THRESHOLD = 0.24
 MIN_OVERLAP = 0.12
 
 CONTROL_EVERY = 10
-MUTATION_SIGMA = 0.05
+MUTATION_SIGMA = 0.025
 SCOUT_MAX_SPEED = 1.0
 SCOUT_BINDING = 0.060
 SCOUT_STEER = 0.14
@@ -250,6 +250,7 @@ def create_thinker(
     *,
     track_id: int,
     parents: tuple[int, ...],
+    event_type: str,
     domain_center: np.ndarray,
     t: float,
     mode: str,
@@ -257,55 +258,72 @@ def create_thinker(
     rng: np.random.Generator,
 ) -> Thinker:
     parent_thinkers = [thinkers[p] for p in parents if p in thinkers]
-    generation = (
-        1 + max((p.generation for p in parent_thinkers), default=-1)
-    )
 
     controller: TinyController | None
     hidden = np.zeros(6, dtype=float)
     scout_vel = np.zeros(2, dtype=float)
+    generation = 0
+
+    if parent_thinkers:
+        generation = max(p.generation for p in parent_thinkers)
 
     if mode in ("none", "homeostat"):
         controller = None
+        if event_type == "split" and parent_thinkers:
+            generation += 1
+
     elif mode == "random" or not parent_thinkers:
+        # RANDOM is the no-heredity attacker: every new measured body receives
+        # a fresh program even when its field ancestry is known.
         controller = TinyController.random(rng)
-    elif len(parent_thinkers) == 1:
+        if event_type == "split" and parent_thinkers:
+            generation += 1
+
+    elif event_type == "split" and len(parent_thinkers) == 1:
+        # A true reproductive event: copy + mutation. The active state is
+        # inherited weakly so the thinker can remain temporally continuous
+        # across a short-lived body boundary.
         parent = parent_thinkers[0]
-        controller = parent.controller.mutated(
-            rng, MUTATION_SIGMA
-        ) if parent.controller is not None else TinyController.random(rng)
-        hidden = parent.hidden.copy() + rng.normal(0.0, 0.01, parent.hidden.shape)
+        controller = (
+            parent.controller.mutated(rng, MUTATION_SIGMA)
+            if parent.controller is not None
+            else TinyController.random(rng)
+        )
+        hidden = parent.hidden.copy() + rng.normal(
+            0.0, 0.01, parent.hidden.shape
+        )
         scout_vel = parent.scout_vel.copy() * 0.5
+        generation = parent.generation + 1
         parent.descendants += 1
+
     else:
-        controllers = [
-            p.controller for p in parent_thinkers if p.controller is not None
-        ]
-        if controllers:
+        # Merge/rearrangement is competition, not reproduction. Pick one
+        # cognitive lineage by its measured local+global homeostatic score
+        # rather than averaging all programs into a non-Darwinian soup.
+        candidates = [p for p in parent_thinkers if p.controller is not None]
+        if candidates:
             raw_scores = np.asarray(
-                [controller_mean_score(p) for p in parent_thinkers],
+                [controller_mean_score(p) for p in candidates],
                 dtype=float,
             )
             raw_scores -= np.max(raw_scores)
-            weights = np.exp(2.0 * raw_scores)
-            controller = TinyController.blend(
-                [p.controller for p in parent_thinkers if p.controller is not None],
-                weights[: len(controllers)],
-            ).mutated(rng, MUTATION_SIGMA * 0.6)
-            hidden = np.average(
-                np.stack([p.hidden for p in parent_thinkers]),
-                axis=0,
-                weights=np.maximum(weights, 1e-6),
+            weights = np.exp(6.0 * raw_scores)
+            weights /= weights.sum()
+            winner_index = int(rng.choice(len(candidates), p=weights))
+            winner = candidates[winner_index]
+            controller = TinyController(
+                A=winner.controller.A.copy(),
+                B=winner.controller.B.copy(),
+                C=winner.controller.C.copy(),
+                b=winner.controller.b.copy(),
+                d=winner.controller.d.copy(),
             )
-            scout_vel = np.average(
-                np.stack([p.scout_vel for p in parent_thinkers]),
-                axis=0,
-                weights=np.maximum(weights, 1e-6),
-            ) * 0.5
+            hidden = winner.hidden.copy()
+            scout_vel = winner.scout_vel.copy() * 0.5
+            generation = winner.generation
+            winner.descendants += 1
         else:
             controller = TinyController.random(rng)
-        for parent in parent_thinkers:
-            parent.descendants += 1
 
     return Thinker(
         track_id=track_id,
@@ -419,6 +437,7 @@ def run_mode(
         min_overlap=MIN_OVERLAP,
     )
     thinkers: dict[int, Thinker] = {}
+    tracker_event_cursor = 0
 
     warmup_energies: list[float] = []
     energy_errors: list[float] = []
@@ -464,6 +483,14 @@ def run_mode(
 
         domains = tracker.update(field.phi, field.t)
 
+        new_tracker_events = tracker.events[tracker_event_cursor:]
+        tracker_event_cursor = len(tracker.events)
+        child_event_type: dict[int, str] = {}
+        for event in new_tracker_events:
+            event_type = str(event["type"])
+            for child_id in event["children"]:
+                child_event_type[int(child_id)] = event_type
+
         if not postwarmup_started and field.t >= warmup:
             target_energy = float(
                 np.median(warmup_energies[-max(10, len(warmup_energies) // 2):])
@@ -484,6 +511,10 @@ def run_mode(
                 thinker = create_thinker(
                     track_id=domain.track_id,
                     parents=tr.parents,
+                    event_type=child_event_type.get(
+                        domain.track_id,
+                        "continuation" if tr.parents else "birth",
+                    ),
                     domain_center=np.asarray([domain.cx, domain.cy]),
                     t=field.t,
                     mode=mode,
