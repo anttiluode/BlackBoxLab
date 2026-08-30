@@ -23,7 +23,7 @@ h1{font-size:clamp(42px,6vw,82px);line-height:.9;letter-spacing:-.055em;margin:1
 <main>
 <div class="kicker">BlackBoxLab · Datarium 2</div>
 <h1>Ecological thinkers.</h1>
-<p class="lede">The field still makes and destroys bodies. A measured lineage now carries a tiny recurrent matrix and a scout. The scout surfs local gradients, samples resource and field state, can damp or excite the field, and can emit one scalar signal. Splits copy the matrix with mutation in EVOLVE; RANDOM destroys heredity; HOMEOSTAT is a hand-coded attacker.</p>
+<p class="lede">The field still makes and destroys bodies. A measured lineage now carries a tiny recurrent matrix and a scout. The scout surfs local gradients, samples resource and field state, can damp or excite the field, and can emit one scalar signal. Splits copy the matrix with mutation in EVOLVE; merges are selection events where the better-performing parent program wins; RANDOM destroys heredity; HOMEOSTAT is a hand-coded attacker.</p>
 
 <div class="toolbar">
 <button data-mode="none">NONE</button>
@@ -80,7 +80,7 @@ but heredity is destroyed
 
 EVOLVE
 split → mutation
-merge → blend</div><p>If EVOLVE cannot beat RANDOM/NONE on ecological outcomes, inherited matrices have not earned anything.</p></div></section>
+merge → fitter parent wins</div><p>If EVOLVE cannot beat RANDOM/NONE on ecological outcomes, inherited matrices have not earned anything.</p></div></section>
 <section class="card"><h2>The overnight build</h2><div class="body"><div class="flow">python experiments/datarium2_thinkers.py \
   --preset overnight \
   --mode evolve \
@@ -116,24 +116,28 @@ function circMean(vals,ws){let re=0,im=0;for(let i=0;i<vals.length;i++){let a=2*
 function describe(pix){let xs=[],ys=[],ws=[],mass=0;for(const p of pix){let y=Math.floor(p/N),x=p%N,w=Math.max(phi[p],0)+1e-9;xs.push(x);ys.push(y);ws.push(w);mass+=w}return{pix,area:pix.length,mass,cx:circMean(xs,ws),cy:circMean(ys,ws),id:-1}}
 function detect(){let raw=new Uint8Array(S);for(let i=0;i<S;i++)raw[i]=(phi[i]>=HIGH||(support[i]&&phi[i]>=LOW))?1:0;let kept=[],stable=new Uint8Array(S);for(const p of comps(raw)){let d=describe(p);if(d.area<MINAREA||d.mass<MINMASS)continue;kept.push(d);for(const q of p)stable[q]=1}support=stable;return kept}
 function randMatrix(rows,cols,scale=.18){return Array.from({length:rows},()=>Array.from({length:cols},()=>norm()*scale))}
-function newController(parentCtrls=[]){
+function copyCtrl(c){return JSON.parse(JSON.stringify(c))}
+function mutateCtrl(base,sigma=.025){for(const M of [base.A,base.B,base.C])for(let i=0;i<M.length;i++)for(let j=0;j<M[i].length;j++)M[i][j]+=norm()*sigma;base.h=Array(6).fill(0);return base}
+function newController(parentIds=[],eventType='birth'){
  if(mode==='none'||mode==='homeostat')return null;
- if(mode==='random'||!parentCtrls.length)return{A:randMatrix(6,6),B:randMatrix(6,10),C:randMatrix(5,6),h:Array(6).fill(0)};
- let base=JSON.parse(JSON.stringify(parentCtrls[0]));if(parentCtrls.length>1){for(let i=0;i<6;i++)for(let j=0;j<6;j++)base.A[i][j]=parentCtrls.reduce((s,c)=>s+c.A[i][j],0)/parentCtrls.length;for(let i=0;i<6;i++)for(let j=0;j<10;j++)base.B[i][j]=parentCtrls.reduce((s,c)=>s+c.B[i][j],0)/parentCtrls.length;for(let i=0;i<5;i++)for(let j=0;j<6;j++)base.C[i][j]=parentCtrls.reduce((s,c)=>s+c.C[i][j],0)/parentCtrls.length}
- for(const M of [base.A,base.B,base.C])for(let i=0;i<M.length;i++)for(let j=0;j<M[i].length;j++)M[i][j]+=norm()*.035;base.h=Array(6).fill(0);return base
+ const parents=parentIds.map(id=>thinkers.get(id)).filter(Boolean);
+ if(mode==='random'||!parents.length)return{A:randMatrix(6,6),B:randMatrix(6,10),C:randMatrix(5,6),h:Array(6).fill(0)};
+ if(eventType==='split'&&parents.length===1)return mutateCtrl(copyCtrl(parents[0].ctrl),.025);
+ let winner=parents[0],best=-1e9;for(const p of parents){let score=p.steps?p.score/p.steps:0;if(score>best){best=score;winner=p}}
+ return copyCtrl(winner.ctrl)
 }
 function ctrStep(c,s){let h=Array(6).fill(0);for(let i=0;i<6;i++){let z=0;for(let j=0;j<6;j++)z+=c.A[i][j]*c.h[j];for(let j=0;j<10;j++)z+=c.B[i][j]*s[j];h[i]=Math.tanh(z)}let a=Array(5).fill(0);for(let i=0;i<5;i++){let z=0;for(let j=0;j<6;j++)z+=c.C[i][j]*h[j];a[i]=Math.tanh(z)}c.h=h;return a}
 function addEvent(type,parents,children){events.unshift({t,type,parents,children});events=events.slice(0,60);renderEvents()}
-function newTrack(parents,d){let id=nextID++,gen=parents.length?1+Math.max(...parents.map(p=>thinkers.get(p)?.gen||0)):0,pc=parents.map(p=>thinkers.get(p)?.ctrl).filter(Boolean),ctrl=newController(pc);tracks.set(id,{id,parents,born:t});thinkers.set(id,{id,gen,ctrl,pos:[d.cx,d.cy],vel:[0,0],score:0,steps:0,actions:[0,0,0,0,0]});return id}
+function newTrack(parents,d,eventType='birth'){let id=nextID++,baseGen=parents.length?Math.max(...parents.map(p=>thinkers.get(p)?.gen||0)):0,gen=(eventType==='split'&&parents.length)?baseGen+1:baseGen,ctrl=newController(parents,eventType);tracks.set(id,{id,parents,born:t});thinkers.set(id,{id,gen,ctrl,pos:[d.cx,d.cy],vel:[0,0],score:0,steps:0,actions:[0,0,0,0,0]});return id}
 function trackerStep(){
  let cur=detect(),ol=new Int32Array(S),nl=new Int32Array(S);oldDomains.forEach((d,i)=>d.pix.forEach(p=>ol[p]=i+1));cur.forEach((d,j)=>d.pix.forEach(p=>nl[p]=j+1));let ot=Array.from({length:oldDomains.length},()=>[]),nt=Array.from({length:cur.length},()=>[]),cnt=new Map();
  for(let p=0;p<S;p++)if(ol[p]&&nl[p]){let k=ol[p]+','+nl[p];cnt.set(k,(cnt.get(k)||0)+1)}
  for(const[k,n]of cnt){let[a,b]=k.split(',').map(Number),oi=a-1,nj=b-1;if(n/Math.min(oldDomains[oi].area,cur[nj].area)>=.12){ot[oi].push(nj);nt[nj].push(oi)}}
  let assigned=new Set(),visited=new Set();
  for(let o0=0;o0<oldDomains.length;o0++){if(visited.has(o0)||!ot[o0].length)continue;let os=new Set(),ns=new Set(),q=[['o',o0]];while(q.length){let[s,k]=q.pop();if(s==='o'){if(os.has(k))continue;os.add(k);visited.add(k);for(const j of ot[k])q.push(['n',j])}else{if(ns.has(k))continue;ns.add(k);for(const i of nt[k])q.push(['o',i])}}
- let parents=[...os].map(i=>oldDomains[i].id);if(os.size===1&&ns.size===1){let oi=[...os][0],nj=[...ns][0];cur[nj].id=oldDomains[oi].id;assigned.add(nj)}else{let typ=os.size===1?'split':ns.size===1?'merge':'rearrange',kids=[];for(const nj of ns){let id=newTrack(parents,cur[nj]);cur[nj].id=id;assigned.add(nj);kids.push(id)}addEvent(typ,parents,kids)}}
+ let parents=[...os].map(i=>oldDomains[i].id);if(os.size===1&&ns.size===1){let oi=[...os][0],nj=[...ns][0];cur[nj].id=oldDomains[oi].id;assigned.add(nj)}else{let typ=os.size===1?'split':ns.size===1?'merge':'rearrange',kids=[];for(const nj of ns){let id=newTrack(parents,cur[nj],typ);cur[nj].id=id;assigned.add(nj);kids.push(id)}addEvent(typ,parents,kids)}}
  for(let i=0;i<oldDomains.length;i++)if(!ot[i].length)addEvent('death',[oldDomains[i].id],[]);
- cur.forEach((d,j)=>{if(!assigned.has(j)){d.id=newTrack([],d);addEvent('birth',[],[d.id])}});oldDomains=cur;domains=cur;
+ cur.forEach((d,j)=>{if(!assigned.has(j)){d.id=newTrack([],d,'birth');addEvent('birth',[],[d.id])}});oldDomains=cur;domains=cur;
 }
 function sample(a,pos){let x=Math.round(pos[0])%N,y=Math.round(pos[1])%N;return a[idx(y,x)]}
 function gaussian(pos,sigma=2.5){let a=new Float64Array(S);for(let y=0;y<N;y++)for(let x=0;x<N;x++){let dx=td(x,pos[0]),dy=td(y,pos[1]);a[idx(y,x)]=Math.exp(-(dx*dx+dy*dy)/(2*sigma*sigma))}return a}
