@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  sampling-policy-organogenesis:
+  blackboxlab:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,5 +14,8 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
-      - run: python experiments/sampling_policy_organogenesis.py
+      - name: Experiment 0 — sampling-policy organogenesis
+        run: python experiments/sampling_policy_organogenesis.py
+      - name: Experiment 1 — stigmergic continuous field
+        run: python experiments/stigmergic_field.py
       - run: python -m unittest discover -s tests -v
