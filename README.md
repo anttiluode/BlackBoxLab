@@ -185,6 +185,79 @@ The stopping line is explicit:
 > whether physical phenotype persists through field-generated demographic
 > events.**
 
+## Datarium 2 — ecological thinkers
+
+Datarium 1 established that the local-budget field has short-lived bodies but
+long split/merge ancestry. Datarium 2 attaches a **tiny digital recurrent
+controller to that measured lineage**.
+
+Each active lineage body gets one bound scout. The scout senses local field
+value and velocity, gradient, resource, local/global homeostatic error, body
+mass, scout/body separation and one shared scalar signal. The 6-state recurrent
+matrix produces five bounded actions:
+
+~~~text
+steer x
+steer y
+excite field locally
+damp field locally
+emit social signal
+~~~
+
+The field still owns all demographic events.
+
+~~~text
+birth   → random program
+split   → copy + mutation
+merge   → higher-scoring parent program wins
+death   → field terminates the body
+~~~
+
+This is deliberately a **hybrid artificial-life model**. The matrix is not
+claimed to arise from the field.
+
+### First receipt
+
+The short two-seed CI comparison is negative on adaptation:
+
+| mode | stability | active domains | controller divergence | behavior divergence |
+|---|---:|---:|---:|---:|
+| NONE | 0.477 | 15.21 | 0.000 | 0.148 |
+| HOMEOSTAT | 0.476 | 8.11 | 0.000 | 0.225 |
+| RANDOM | 0.477 | 14.56 | 0.378 | 0.141 |
+| EVOLVE | 0.477 | 14.49 | 0.413 | 0.167 |
+
+EVOLVE produces inherited, behaviorally different programs but does **not**
+yet improve the shared environment over RANDOM or NONE. HOMEOSTAT changes
+demography strongly but also fails the fixed-energy stability objective.
+
+See [the full Datarium 2 receipt](results/DATARIUM2.md).
+
+Open **[Datarium 2 live](datarium2.html)**.
+
+### Leave it running overnight
+
+On Windows:
+
+~~~text
+run_datarium2_overnight.bat
+~~~
+
+Or directly:
+
+~~~bash
+python experiments/datarium2_thinkers.py --preset overnight --mode evolve --seed 7
+~~~
+
+The default overnight run uses a 96 x 96 field for 3000 simulated time units
+and writes forensic controller/scout checkpoints every 100 time units under
+`results/datarium2_overnight_seed7/`.
+
+The overnight run is an observation experiment, not a promised optimizer.
+Interesting evidence would be persistent separation from the RANDOM attacker
+in recovery, environmental persistence, lineage success, relationships or
+behavioral niches.
+
 ## World
 
 The toy world exposes four spatial "ecologies" at every physical timestep:
