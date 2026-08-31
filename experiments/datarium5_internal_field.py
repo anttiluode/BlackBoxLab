@@ -26,7 +26,7 @@ Important stopping lines:
 from __future__ import annotations
 
 import argparse
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 import json
 from pathlib import Path
 import sys
@@ -350,6 +350,7 @@ def morphology_variant(
     q2: np.ndarray,
     variant: str,
     seed: int,
+    phi: np.ndarray | None = None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     if variant == "intact":
         return fibre.copy(), q1.copy(), q2.copy()
@@ -357,12 +358,22 @@ def morphology_variant(
         return fibre.copy(), np.zeros_like(q1), np.zeros_like(q2)
     if variant == "scrambled":
         rng = np.random.default_rng(seed)
-        perm = rng.permutation(fibre.size)
-        return (
-            fibre.ravel()[perm].reshape(fibre.shape),
-            q1.ravel()[perm].reshape(q1.shape),
-            q2.ravel()[perm].reshape(q2.shape),
-        )
+        if phi is None:
+            support = np.ones(fibre.shape, dtype=bool)
+        else:
+            support = np.asarray(phi) >= 0.25
+        idx = np.flatnonzero(support.ravel())
+        perm = rng.permutation(idx)
+        sf = fibre.copy().ravel()
+        s1 = q1.copy().ravel()
+        s2 = q2.copy().ravel()
+        # Preserve the complete local tensor histogram *inside the same body*
+        # so the attacker destroys arrangement rather than moving material
+        # into extracellular space.
+        sf[idx] = fibre.ravel()[perm]
+        s1[idx] = q1.ravel()[perm]
+        s2[idx] = q2.ravel()[perm]
+        return sf.reshape(fibre.shape), s1.reshape(q1.shape), s2.reshape(q2.shape)
     if variant == "erased":
         z = np.zeros_like(fibre)
         return z.copy(), z.copy(), z.copy()
@@ -478,6 +489,42 @@ def functional_zoning(
     }
 
 
+def response_fingerprint(
+    phi: np.ndarray,
+    config: Config,
+    fibre: np.ndarray,
+    q1: np.ndarray,
+    q2: np.ndarray,
+) -> np.ndarray:
+    """Deterministic field response used only for causal morphology attacks."""
+    patterns = (
+        np.asarray([1.0, 0.0, 0.0, 0.0]),
+        np.asarray([0.0, 1.0, 0.0, 0.0]),
+        np.asarray([1.0, 0.0, 1.0, 0.0]),
+        np.asarray([0.0, 1.0, 0.0, 1.0]),
+    )
+    pieces: list[np.ndarray] = []
+    for pattern in patterns:
+        world = InternalField(
+            phi,
+            config,
+            fibre=fibre,
+            q1=q1,
+            q2=q2,
+            feedback=True,
+            plastic=False,
+        )
+        for _ in range(config.probe_steps):
+            world.step(pattern)
+        energy = (world.re * world.re + world.im * world.im) * phi
+        pieces.append(energy.ravel())
+    return np.concatenate(pieces)
+
+
+def relative_delta(a: np.ndarray, b: np.ndarray) -> float:
+    return float(np.linalg.norm(a - b) / (np.linalg.norm(b) + 1e-12))
+
+
 def probe_io(
     phi: np.ndarray,
     config: Config,
@@ -562,16 +609,25 @@ def run_seed(config: Config, seed: int) -> dict[str, object]:
     write_only = develop(phi, config, feedback=False)
 
     variants: dict[str, tuple[np.ndarray, np.ndarray, np.ndarray]] = {
-        "full_intact": morphology_variant(*full, "intact", seed + 100),
-        "full_isotropic": morphology_variant(*full, "isotropic", seed + 100),
-        "full_scrambled": morphology_variant(*full, "scrambled", seed + 100),
-        "full_erased": morphology_variant(*full, "erased", seed + 100),
+        "full_intact": morphology_variant(
+            *full, "intact", seed + 100, phi
+        ),
+        "full_isotropic": morphology_variant(
+            *full, "isotropic", seed + 100, phi
+        ),
+        "full_scrambled": morphology_variant(
+            *full, "scrambled", seed + 100, phi
+        ),
+        "full_erased": morphology_variant(
+            *full, "erased", seed + 100, phi
+        ),
         "write_only_intact": morphology_variant(
-            *write_only, "intact", seed + 200
+            *write_only, "intact", seed + 200, phi
         ),
     }
 
     rows: dict[str, object] = {}
+    fingerprints: dict[str, np.ndarray] = {}
     for name, (fibre, q1, q2) in variants.items():
         rows[name] = {
             "morphology": morphology_metrics(
@@ -581,8 +637,35 @@ def run_seed(config: Config, seed: int) -> dict[str, object]:
                 phi, config, fibre, q1, q2, seed + 1000
             ),
         }
+        fingerprints[name] = response_fingerprint(
+            phi, config, fibre, q1, q2
+        )
 
-    return {"seed": seed, "body": body, "rows": rows}
+    causal = {
+        "intact_vs_erased": relative_delta(
+            fingerprints["full_intact"],
+            fingerprints["full_erased"],
+        ),
+        "intact_vs_isotropic": relative_delta(
+            fingerprints["full_intact"],
+            fingerprints["full_isotropic"],
+        ),
+        "intact_vs_scrambled": relative_delta(
+            fingerprints["full_intact"],
+            fingerprints["full_scrambled"],
+        ),
+        "full_vs_write_only_morphology": float(
+            np.linalg.norm(full[0] - write_only[0])
+            / (np.linalg.norm(write_only[0]) + 1e-12)
+        ),
+    }
+
+    return {
+        "seed": seed,
+        "body": body,
+        "rows": rows,
+        "causal": causal,
+    }
 
 
 def _agg(values: list[float]) -> dict[str, float]:
@@ -615,6 +698,10 @@ def summarize(rows: list[dict[str, object]]) -> dict[str, object]:
     result["body"] = {
         key: _agg([float(row["body"][key]) for row in rows])
         for key in rows[0]["body"].keys()
+    }
+    result["causal"] = {
+        key: _agg([float(row["causal"][key]) for row in rows])
+        for key in rows[0]["causal"].keys()
     }
     return result
 
@@ -697,10 +784,19 @@ def print_receipt(receipt: dict[str, object]) -> None:
             f"{f['zone_entropy']['mean']:7.3f} "
             f"{f['response_map_separation']['mean']:7.3f}"
         )
+    causal = receipt["summary"]["causal"]
+    print("\ncausal morphology attacks")
+    for key in (
+        "intact_vs_erased",
+        "intact_vs_isotropic",
+        "intact_vs_scrambled",
+        "full_vs_write_only_morphology",
+    ):
+        print(f"{key:32s} {causal[key]['mean']:.4f} ± {causal[key]['std']:.4f}")
     print(
         "\nStopping line: this asks whether field-written internal morphology "
-        "changes a fixed body's I/O. It is not a neuron, FCI, moving organ, "
-        "heredity or intelligence claim."
+        "changes a fixed body's field and I/O. It is not a neuron, FCI, "
+        "moving organ, heredity or intelligence claim."
     )
 
 
