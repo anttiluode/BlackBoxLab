@@ -305,7 +305,7 @@ slower material scale. The stopping line matters:
 > **Datarium 3 has made infrastructure, not DNA. It does not copy a material
 > pattern into a daughter pattern.**
 
-Open **[[Datarium 3 live](datarium3.html)](https://anttiluode.github.io/BlackBoxLab/datarium3.html)** and press **REMOVE BUILDERS →
+Open **[Datarium 3 live](https://anttiluode.github.io/BlackBoxLab/datarium3.html)** and press **REMOVE BUILDERS →
 RELEASE STRANGERS** after the material has developed. See the
 [full Datarium 3 receipt](results/DATARIUM3.md) and run:
 
@@ -360,8 +360,65 @@ python experiments/datarium4_body.py --preset ci
 ~~~
 
 The next gate is to remove the explicit seed: Datarium 3-style builders must
-close a boundary through local materialization, after which that builder-made
-boundary must retain chemistry and enter the same movable-body regime.
+create the phase that becomes the boundary, after which that builder-made body
+must retain chemistry and enter the same movable-body regime.
+
+## Datarium 4B — the builders make the thing that leaves
+
+Datarium 4B removes the authored disk from 4A. The Datarium 3 builders run
+first, producing their slow oriented material. A second soluble precursor then
+uses one fixed **local** nucleation law:
+
+~~~text
+local material amount m(x,y)
++ local director magnitude |q(x,y)|
+        ↓
+pointwise catalyst
+        ↓
+second diffuse phase phi
+        ↓
+builders + fast wave removed
+        ↓
+source-free interface settling
+        ↓
+Datarium 4A local chemistry / stress
+~~~
+
+No component ID, loop detector, run-normalized threshold, center, body heading,
+fitness or steering vector enters phase creation. The body boundary is simply
+the interface of the second phase, so this is closer to a coacervate-like
+phase-separation route than a woven lipid membrane.
+
+The first two-seed CI-sized battery gives a real but bounded result. The
+**INTACT** builder history produces a thresholded phase whose largest component
+contains the whole measured high-phase population and then moves about **2.10
+cells toward an external food source** after the builders and fast wave are
+gone. On that exact intact body, **NO STRESS**, **PINNED**, and **UNIFORM FOOD**
+remain near zero displacement after a source-free settling period, closing the
+passive-coarsening shortcut caught in the first draft.
+
+Spatial arrangement matters: cell-scrambling the same local material/director
+triplets produces no thresholded connected body in this CI regime, and a scalar
+mean field produces no body phase at all.
+
+The stopping line is equally important. **WRITE ONLY** and **NO WAVE
+PRODUCTION** still produce smaller movable phase bodies. Datarium 4B therefore
+does *not* yet earn the claim that train feedback is necessary for body
+formation. It earns the narrower transition: builder-written oriented material
+can locally nucleate a movable compartment phase without a pre-drawn body, and
+intact spatial organization is more body-forming than matched scrambled or
+mean-field material.
+
+Open **[Datarium 4B live](https://anttiluode.github.io/BlackBoxLab/datarium4b.html)**.
+The browser exposes the build -> mature -> remove-builders handoff and its
+attackers. The Python experiment is authoritative:
+
+~~~bash
+python -m unittest tests.test_datarium4 tests.test_datarium4b -v
+python experiments/datarium4b_builder_body.py --preset ci
+~~~
+
+See [the Datarium 4B receipt](results/DATARIUM4B.md).
 
 ## World
 
