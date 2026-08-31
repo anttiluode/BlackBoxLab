@@ -1,0 +1,2496 @@
+{
+  "experiment": "Datarium 3 \u2014 material memory above wave assemblies",
+  "claim_boundary": "The experiment can establish transient measured assemblies, history-dependent material geometry, and downward causal influence on replacement particles. It does not implement or claim genomes, reproduction, heredity, organisms, open-ended evolution, or intelligence.",
+  "anti_cheating": {
+    "authored_particle_types": false,
+    "role_labels_in_dynamics": false,
+    "train_object_in_dynamics": false,
+    "links_or_bonds": false,
+    "fitness_or_global_sort": false,
+    "reproduction_or_genome_copy": false,
+    "assembly_detector_visible_to_physics": false,
+    "persistent_agent_memory": false,
+    "only_initial_particle_differences": "position, heading and oscillator phase"
+  },
+  "config": {
+    "n": 48,
+    "agents": 72,
+    "dt": 0.04,
+    "build_steps": 4000,
+    "probe_steps": 1200,
+    "observe_every": 25,
+    "wave_diffusion": 1.2,
+    "wave_rotation": 2.0,
+    "wave_damping": 0.2,
+    "wave_source": 1.0,
+    "wave_resource_gain": 0.1,
+    "wave_nonlinearity": 0.04,
+    "wave_memory": 0.97,
+    "wave_memory_material_gain": 0.02,
+    "wave_speed_material_gain": 0.16,
+    "wave_tensor_gain": 0.1,
+    "resource_recovery": 100.0,
+    "resource_burn": 0.012,
+    "resource_diffusion": 0.02,
+    "material_rate": 0.12,
+    "material_decay": 0.004,
+    "precursor_diffusion": 0.016,
+    "cooperative_half_density": 0.16,
+    "polymerization_wave_half": 0.003,
+    "polymerization_flow_power": 4.0,
+    "wave_attraction": 0.0,
+    "resonant_wave_attraction": 2.0,
+    "density_repulsion": 5.0,
+    "tensor_guidance": 40.0,
+    "phase_lock": 2.0,
+    "oscillator_frequency": 2.0,
+    "particle_speed": 0.8,
+    "rotational_noise": 0.04,
+    "local_smoothing_steps": 4,
+    "local_smoothing_rate": 0.16,
+    "envelope_diffusion": 0.04,
+    "matrix_threshold": 0.2
+  },
+  "arms": [
+    "no_memory",
+    "write_only",
+    "scalar",
+    "mean_field",
+    "tensor"
+  ],
+  "probe_variants": [
+    "intact",
+    "isotropic",
+    "patchwork",
+    "scrambled",
+    "rotated",
+    "erased"
+  ],
+  "ablations": [
+    "full",
+    "no_wave_sensing",
+    "no_wave_production",
+    "phase_shuffle_each_step",
+    "uniform_resource"
+  ],
+  "arm_summary": {
+    "no_memory": {
+      "coherent_fraction": {
+        "mean": 0.12733289930555555,
+        "std": 0.022133488456832724
+      },
+      "largest_assembly": {
+        "mean": 3.90625,
+        "std": 0.19040715010865533
+      },
+      "assembly_lifetime": {
+        "mean": 42.75,
+        "std": 5.7608593109014565
+      },
+      "matrix_spatial_std": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "agent_trace_enrichment": {
+        "mean": 0.0,
+        "std": 0.0
+      }
+    },
+    "write_only": {
+      "coherent_fraction": {
+        "mean": 0.12733289930555555,
+        "std": 0.022133488456832724
+      },
+      "largest_assembly": {
+        "mean": 3.90625,
+        "std": 0.19040715010865533
+      },
+      "assembly_lifetime": {
+        "mean": 42.75,
+        "std": 5.7608593109014565
+      },
+      "matrix_spatial_std": {
+        "mean": 0.010772823336029809,
+        "std": 0.00022911020833031514
+      },
+      "agent_trace_enrichment": {
+        "mean": 1.045195402678875,
+        "std": 0.12856679563469156
+      }
+    },
+    "scalar": {
+      "coherent_fraction": {
+        "mean": 0.11745876736111112,
+        "std": 0.014547520012152962
+      },
+      "largest_assembly": {
+        "mean": 3.8671875,
+        "std": 0.3322839112208865
+      },
+      "assembly_lifetime": {
+        "mean": 30.25,
+        "std": 2.8613807855648994
+      },
+      "matrix_spatial_std": {
+        "mean": 0.011474097557571474,
+        "std": 0.0007799240207375394
+      },
+      "agent_trace_enrichment": {
+        "mean": 1.0748552325605103,
+        "std": 0.1846886472955833
+      }
+    },
+    "mean_field": {
+      "coherent_fraction": {
+        "mean": 0.11100260416666666,
+        "std": 0.0238821295113292
+      },
+      "largest_assembly": {
+        "mean": 3.76171875,
+        "std": 0.39410558720625555
+      },
+      "assembly_lifetime": {
+        "mean": 27.5,
+        "std": 7.158910531638177
+      },
+      "matrix_spatial_std": {
+        "mean": 0.010802188869864752,
+        "std": 0.0006820077403699862
+      },
+      "agent_trace_enrichment": {
+        "mean": 0.9136707537359391,
+        "std": 0.07613830013986027
+      }
+    },
+    "tensor": {
+      "coherent_fraction": {
+        "mean": 0.5298936631944444,
+        "std": 0.0705998205600308
+      },
+      "largest_assembly": {
+        "mean": 13.43359375,
+        "std": 4.443923813737662
+      },
+      "assembly_lifetime": {
+        "mean": 94.0,
+        "std": 15.116216457830975
+      },
+      "matrix_spatial_std": {
+        "mean": 0.027504199245353793,
+        "std": 0.005764162268133778
+      },
+      "agent_trace_enrichment": {
+        "mean": 2.6648844505937825,
+        "std": 0.5537563229090172
+      }
+    }
+  },
+  "probe_summary": {
+    "intact": {
+      "coherent_fraction": {
+        "mean": 0.5253472222222222,
+        "std": 0.07227145090380246
+      },
+      "largest_assembly": {
+        "mean": 11.412500000000001,
+        "std": 1.5557855732715868
+      },
+      "material_enrichment": {
+        "mean": 2.0473123976870933,
+        "std": 0.32367206237155816
+      },
+      "nematic_alignment": {
+        "mean": 0.7240161522711327,
+        "std": 0.011672171251178592
+      }
+    },
+    "isotropic": {
+      "coherent_fraction": {
+        "mean": 0.1232638888888889,
+        "std": 0.0283385241704732
+      },
+      "largest_assembly": {
+        "mean": 4.2125,
+        "std": 0.4721956691881025
+      },
+      "material_enrichment": {
+        "mean": 0.9737038332760585,
+        "std": 0.07600048797362881
+      },
+      "nematic_alignment": {
+        "mean": 0.0,
+        "std": 0.0
+      }
+    },
+    "patchwork": {
+      "coherent_fraction": {
+        "mean": 0.3918402777777778,
+        "std": 0.035161715110198194
+      },
+      "largest_assembly": {
+        "mean": 7.8875,
+        "std": 0.852478005581376
+      },
+      "material_enrichment": {
+        "mean": 1.1911033171264653,
+        "std": 0.055738351329576385
+      },
+      "nematic_alignment": {
+        "mean": 0.46569569495541674,
+        "std": 0.03504437258314639
+      }
+    },
+    "scrambled": {
+      "coherent_fraction": {
+        "mean": 0.21076388888888886,
+        "std": 0.031232634063677
+      },
+      "largest_assembly": {
+        "mean": 5.525,
+        "std": 1.3059957886608977
+      },
+      "material_enrichment": {
+        "mean": 0.9862384240293569,
+        "std": 0.01686554987120184
+      },
+      "nematic_alignment": {
+        "mean": 0.20199816611516436,
+        "std": 0.01847922202067635
+      }
+    },
+    "rotated": {
+      "coherent_fraction": {
+        "mean": 0.2902777777777778,
+        "std": 0.059712127699860486
+      },
+      "largest_assembly": {
+        "mean": 5.6875,
+        "std": 0.936999866595508
+      },
+      "material_enrichment": {
+        "mean": 0.773282410940065,
+        "std": 0.05118731261909528
+      },
+      "nematic_alignment": {
+        "mean": 0.5124955582360213,
+        "std": 0.042089229808438884
+      }
+    },
+    "erased": {
+      "coherent_fraction": {
+        "mean": 0.1435763888888889,
+        "std": 0.051826624309022094
+      },
+      "largest_assembly": {
+        "mean": 4.425,
+        "std": 0.7595228765481656
+      },
+      "material_enrichment": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "nematic_alignment": {
+        "mean": 0.0,
+        "std": 0.0
+      }
+    }
+  },
+  "ablation_summary": {
+    "full": {
+      "coherent_fraction": {
+        "mean": 0.5298936631944444,
+        "std": 0.0705998205600308
+      },
+      "largest_assembly": {
+        "mean": 13.43359375,
+        "std": 4.443923813737662
+      },
+      "matrix_spatial_std": {
+        "mean": 0.027504199245353793,
+        "std": 0.005764162268133778
+      },
+      "field_rms": {
+        "mean": 0.5150289216335414,
+        "std": 0.03071730302102542
+      }
+    },
+    "no_wave_sensing": {
+      "coherent_fraction": {
+        "mean": 0.29492187500000006,
+        "std": 0.06276336564504378
+      },
+      "largest_assembly": {
+        "mean": 6.18359375,
+        "std": 1.5725215727231494
+      },
+      "matrix_spatial_std": {
+        "mean": 0.006157760774560194,
+        "std": 0.0005783604983669451
+      },
+      "field_rms": {
+        "mean": 0.24098654068380299,
+        "std": 0.05141504108601637
+      }
+    },
+    "no_wave_production": {
+      "coherent_fraction": {
+        "mean": 0.18538411458333334,
+        "std": 0.035844879458770795
+      },
+      "largest_assembly": {
+        "mean": 5.015625,
+        "std": 1.2298671644480554
+      },
+      "matrix_spatial_std": {
+        "mean": 0.0024815418646072064,
+        "std": 0.0010803275705579952
+      },
+      "field_rms": {
+        "mean": 0.0005488742127685355,
+        "std": 8.239597759781596e-06
+      }
+    },
+    "phase_shuffle_each_step": {
+      "coherent_fraction": {
+        "mean": 0.5888129340277777,
+        "std": 0.04100137740075455
+      },
+      "largest_assembly": {
+        "mean": 19.078125,
+        "std": 3.961160928116592
+      },
+      "matrix_spatial_std": {
+        "mean": 0.044797246590561904,
+        "std": 0.016433447935745513
+      },
+      "field_rms": {
+        "mean": 0.5288404030945729,
+        "std": 0.004020356239472534
+      }
+    },
+    "uniform_resource": {
+      "coherent_fraction": {
+        "mean": 0.4779188368055555,
+        "std": 0.09834780874467848
+      },
+      "largest_assembly": {
+        "mean": 11.25,
+        "std": 3.113925690045445
+      },
+      "matrix_spatial_std": {
+        "mean": 0.0341035822938687,
+        "std": 0.016705653741582418
+      },
+      "field_rms": {
+        "mean": 0.5415368534688396,
+        "std": 0.021266291056689927
+      }
+    }
+  },
+  "arm_rows": [
+    {
+      "mode": "no_memory",
+      "seed": 1,
+      "assembly": {
+        "tracks_created": 83,
+        "late_mean_assembly_count": 2.28125,
+        "late_mean_coherent_fraction": 0.11002604166666666,
+        "late_mean_largest_size": 4.015625,
+        "late_mean_alignment": 0.8725617338225159,
+        "late_mean_phase_coherence": 0.9994668798116422,
+        "late_mean_elongation": 4.616889860723188,
+        "max_lifetime_samples": 52,
+        "p90_lifetime_samples": 15.0
+      },
+      "material": {
+        "mean": 0.0,
+        "std": 0.0,
+        "max": 0.0,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.0,
+        "agent_sample_enrichment": 0.0,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0,
+        "polymerization_at_other_agents": 0.0,
+        "coherent_to_other_ratio": 0.0
+      },
+      "world": {
+        "resource_mean": 0.7190628441530743,
+        "field_rms": 0.5348700037599379,
+        "field_max_abs": 0.9259809086603861
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "write_only",
+      "seed": 1,
+      "assembly": {
+        "tracks_created": 83,
+        "late_mean_assembly_count": 2.28125,
+        "late_mean_coherent_fraction": 0.11002604166666666,
+        "late_mean_largest_size": 4.015625,
+        "late_mean_alignment": 0.8725617338225159,
+        "late_mean_phase_coherence": 0.9994668798116422,
+        "late_mean_elongation": 4.616889860723188,
+        "max_lifetime_samples": 52,
+        "p90_lifetime_samples": 15.0
+      },
+      "material": {
+        "mean": 0.010607144998585113,
+        "std": 0.010553747767772674,
+        "max": 0.06849834956260611,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.6032213069418997,
+        "agent_sample_enrichment": 0.8367568430650568,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0008077584935501519,
+        "polymerization_at_other_agents": 0.0008454174308797941,
+        "coherent_to_other_ratio": 0.9554552143005768
+      },
+      "world": {
+        "resource_mean": 0.7190628441530743,
+        "field_rms": 0.5348700037599379,
+        "field_max_abs": 0.9259809086603861
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "scalar",
+      "seed": 1,
+      "assembly": {
+        "tracks_created": 85,
+        "late_mean_assembly_count": 2.078125,
+        "late_mean_coherent_fraction": 0.09635416666666666,
+        "late_mean_largest_size": 3.34375,
+        "late_mean_alignment": 0.8168035875626433,
+        "late_mean_phase_coherence": 0.9214735518138728,
+        "late_mean_elongation": 5.119355577672751,
+        "max_lifetime_samples": 31,
+        "p90_lifetime_samples": 14.0
+      },
+      "material": {
+        "mean": 0.01063679443992306,
+        "std": 0.01054772063995347,
+        "max": 0.07429212043116168,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.5917476260550856,
+        "agent_sample_enrichment": 1.1028031683987178,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0006968785578697049,
+        "polymerization_at_other_agents": 0.000820845804974292,
+        "coherent_to_other_ratio": 0.848976205759563
+      },
+      "world": {
+        "resource_mean": 0.713997384579112,
+        "field_rms": 0.5429788049384088,
+        "field_max_abs": 0.8954231587660701
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "mean_field",
+      "seed": 1,
+      "assembly": {
+        "tracks_created": 87,
+        "late_mean_assembly_count": 2.8125,
+        "late_mean_coherent_fraction": 0.13433159722222224,
+        "late_mean_largest_size": 3.953125,
+        "late_mean_alignment": 0.85793568708643,
+        "late_mean_phase_coherence": 0.9526413739979481,
+        "late_mean_elongation": 4.530173391542954,
+        "max_lifetime_samples": 36,
+        "p90_lifetime_samples": 13.400000000000006
+      },
+      "material": {
+        "mean": 0.010894933009121692,
+        "std": 0.011688697694013369,
+        "max": 0.11367684049100298,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.6228410585204155,
+        "agent_sample_enrichment": 0.8073413876210469,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0009830977597875756,
+        "polymerization_at_other_agents": 0.0008395117875458979,
+        "coherent_to_other_ratio": 1.171035086345101
+      },
+      "world": {
+        "resource_mean": 0.7151758571150965,
+        "field_rms": 0.5417472493552177,
+        "field_max_abs": 0.8421169535700884
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "tensor",
+      "seed": 1,
+      "assembly": {
+        "tracks_created": 87,
+        "late_mean_assembly_count": 7.125,
+        "late_mean_coherent_fraction": 0.4963107638888889,
+        "late_mean_largest_size": 10.46875,
+        "late_mean_alignment": 0.9398326648348904,
+        "late_mean_phase_coherence": 0.9993351352903517,
+        "late_mean_elongation": 3.5247663066409882,
+        "max_lifetime_samples": 116,
+        "p90_lifetime_samples": 31.600000000000023
+      },
+      "material": {
+        "mean": 0.012396871631210997,
+        "std": 0.02006656082849426,
+        "max": 0.1589057075677187,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.8431145504341634,
+        "agent_sample_enrichment": 2.043890369827783,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.001494232998706101,
+        "polymerization_at_other_agents": 0.0008561077332807256,
+        "coherent_to_other_ratio": 1.745379627905719
+      },
+      "world": {
+        "resource_mean": 0.7201812819775812,
+        "field_rms": 0.5281197516210832,
+        "field_max_abs": 1.1431169152038987
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "no_memory",
+      "seed": 2,
+      "assembly": {
+        "tracks_created": 77,
+        "late_mean_assembly_count": 2.703125,
+        "late_mean_coherent_fraction": 0.1228298611111111,
+        "late_mean_largest_size": 3.59375,
+        "late_mean_alignment": 0.8979873592255534,
+        "late_mean_phase_coherence": 0.999854599160801,
+        "late_mean_elongation": 5.5387577976404145,
+        "max_lifetime_samples": 37,
+        "p90_lifetime_samples": 10.400000000000006
+      },
+      "material": {
+        "mean": 0.0,
+        "std": 0.0,
+        "max": 0.0,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.0,
+        "agent_sample_enrichment": 0.0,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0,
+        "polymerization_at_other_agents": 0.0,
+        "coherent_to_other_ratio": 0.0
+      },
+      "world": {
+        "resource_mean": 0.7149886077472738,
+        "field_rms": 0.537884176871514,
+        "field_max_abs": 1.0435464767612685
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "write_only",
+      "seed": 2,
+      "assembly": {
+        "tracks_created": 77,
+        "late_mean_assembly_count": 2.703125,
+        "late_mean_coherent_fraction": 0.1228298611111111,
+        "late_mean_largest_size": 3.59375,
+        "late_mean_alignment": 0.8979873592255534,
+        "late_mean_phase_coherence": 0.999854599160801,
+        "late_mean_elongation": 5.5387577976404145,
+        "max_lifetime_samples": 37,
+        "p90_lifetime_samples": 10.400000000000006
+      },
+      "material": {
+        "mean": 0.010807360470915187,
+        "std": 0.011100648362012579,
+        "max": 0.08880500851626777,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.5986994382518966,
+        "agent_sample_enrichment": 1.1519082876511795,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0011156840123293188,
+        "polymerization_at_other_agents": 0.0007644604643458304,
+        "coherent_to_other_ratio": 1.4594397786478077
+      },
+      "world": {
+        "resource_mean": 0.7149886077472738,
+        "field_rms": 0.537884176871514,
+        "field_max_abs": 1.0435464767612685
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "scalar",
+      "seed": 2,
+      "assembly": {
+        "tracks_created": 70,
+        "late_mean_assembly_count": 2.3125,
+        "late_mean_coherent_fraction": 0.11263020833333333,
+        "late_mean_largest_size": 3.84375,
+        "late_mean_alignment": 0.8487222653866087,
+        "late_mean_phase_coherence": 0.9372956458765411,
+        "late_mean_elongation": 5.1153232964216,
+        "max_lifetime_samples": 34,
+        "p90_lifetime_samples": 11.0
+      },
+      "material": {
+        "mean": 0.010745333019579197,
+        "std": 0.011755197785558755,
+        "max": 0.08668472445759388,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.5968203385672561,
+        "agent_sample_enrichment": 1.1460139718465092,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0012822714144418391,
+        "polymerization_at_other_agents": 0.0007101112045826954,
+        "coherent_to_other_ratio": 1.8057332490474454
+      },
+      "world": {
+        "resource_mean": 0.7100947209391206,
+        "field_rms": 0.5389722414224563,
+        "field_max_abs": 0.9643326101961385
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "mean_field",
+      "seed": 2,
+      "assembly": {
+        "tracks_created": 69,
+        "late_mean_assembly_count": 1.59375,
+        "late_mean_coherent_fraction": 0.0740017361111111,
+        "late_mean_largest_size": 3.203125,
+        "late_mean_alignment": 0.7888593625288929,
+        "late_mean_phase_coherence": 0.9060630774105212,
+        "late_mean_elongation": 4.506224085711829,
+        "max_lifetime_samples": 19,
+        "p90_lifetime_samples": 11.0
+      },
+      "material": {
+        "mean": 0.010434093529643652,
+        "std": 0.010897839156102884,
+        "max": 0.08700591735277581,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.6000017279459148,
+        "agent_sample_enrichment": 0.9556188573458656,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0012742982597477232,
+        "polymerization_at_other_agents": 0.0007520053579192632,
+        "coherent_to_other_ratio": 1.6945334825526615
+      },
+      "world": {
+        "resource_mean": 0.7109983642159995,
+        "field_rms": 0.5351741548115936,
+        "field_max_abs": 0.8636817579785904
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "tensor",
+      "seed": 2,
+      "assembly": {
+        "tracks_created": 83,
+        "late_mean_assembly_count": 7.515625,
+        "late_mean_coherent_fraction": 0.4832899305555556,
+        "late_mean_largest_size": 8.234375,
+        "late_mean_alignment": 0.9328589502543492,
+        "late_mean_phase_coherence": 0.9995735011507033,
+        "late_mean_elongation": 4.218680743005313,
+        "max_lifetime_samples": 85,
+        "p90_lifetime_samples": 29.39999999999999
+      },
+      "material": {
+        "mean": 0.014581554628058633,
+        "std": 0.023735695088150106,
+        "max": 0.24620190617204393,
+        "above_threshold_fraction": 0.00043402777777777775,
+        "component_count": 1,
+        "largest_component_fraction": 0.00043402777777777775,
+        "local_orientation_order": 0.8624706306077445,
+        "agent_sample_enrichment": 2.183909764633835,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.001456066031844106,
+        "polymerization_at_other_agents": 0.0010790185614558614,
+        "coherent_to_other_ratio": 1.3494355727579692
+      },
+      "world": {
+        "resource_mean": 0.7146581940053613,
+        "field_rms": 0.5209900038514884,
+        "field_max_abs": 0.8990068300248796
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "no_memory",
+      "seed": 3,
+      "assembly": {
+        "tracks_created": 74,
+        "late_mean_assembly_count": 3.5625,
+        "late_mean_coherent_fraction": 0.16471354166666666,
+        "late_mean_largest_size": 3.921875,
+        "late_mean_alignment": 0.9118915356127959,
+        "late_mean_phase_coherence": 0.9806990697357315,
+        "late_mean_elongation": 3.8878106156574197,
+        "max_lifetime_samples": 39,
+        "p90_lifetime_samples": 12.700000000000003
+      },
+      "material": {
+        "mean": 0.0,
+        "std": 0.0,
+        "max": 0.0,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.0,
+        "agent_sample_enrichment": 0.0,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0,
+        "polymerization_at_other_agents": 0.0,
+        "coherent_to_other_ratio": 0.0
+      },
+      "world": {
+        "resource_mean": 0.7913425217085376,
+        "field_rms": 0.4688849738305808,
+        "field_max_abs": 0.9112192057091439
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "write_only",
+      "seed": 3,
+      "assembly": {
+        "tracks_created": 74,
+        "late_mean_assembly_count": 3.5625,
+        "late_mean_coherent_fraction": 0.16471354166666666,
+        "late_mean_largest_size": 3.921875,
+        "late_mean_alignment": 0.9118915356127959,
+        "late_mean_phase_coherence": 0.9806990697357315,
+        "late_mean_elongation": 3.8878106156574197,
+        "max_lifetime_samples": 39,
+        "p90_lifetime_samples": 12.700000000000003
+      },
+      "material": {
+        "mean": 0.010092448986240054,
+        "std": 0.01087431614018629,
+        "max": 0.09227742813187902,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.5922245228370647,
+        "agent_sample_enrichment": 1.0407891059126066,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0008740029319736473,
+        "polymerization_at_other_agents": 0.0006083596395188698,
+        "coherent_to_other_ratio": 1.4366550207509006
+      },
+      "world": {
+        "resource_mean": 0.7913425217085376,
+        "field_rms": 0.4688849738305808,
+        "field_max_abs": 0.9112192057091439
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "scalar",
+      "seed": 3,
+      "assembly": {
+        "tracks_created": 82,
+        "late_mean_assembly_count": 2.71875,
+        "late_mean_coherent_fraction": 0.1349826388888889,
+        "late_mean_largest_size": 4.046875,
+        "late_mean_alignment": 0.8500639514324124,
+        "late_mean_phase_coherence": 0.9556075964558156,
+        "late_mean_elongation": 5.47095101872578,
+        "max_lifetime_samples": 26,
+        "p90_lifetime_samples": 12.0
+      },
+      "material": {
+        "mean": 0.01052636948144828,
+        "std": 0.012599152059294618,
+        "max": 0.14587224345272812,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.6149222663632692,
+        "agent_sample_enrichment": 1.2759848281410653,
+        "precursor_plus_matrix_mean": 1.0000000000000002
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0011140557146079688,
+        "polymerization_at_other_agents": 0.0007177204897810902,
+        "coherent_to_other_ratio": 1.5522138895540656
+      },
+      "world": {
+        "resource_mean": 0.7841886459965698,
+        "field_rms": 0.4827283550582469,
+        "field_max_abs": 0.8723635723044202
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "mean_field",
+      "seed": 3,
+      "assembly": {
+        "tracks_created": 80,
+        "late_mean_assembly_count": 2.625,
+        "late_mean_coherent_fraction": 0.12955729166666666,
+        "late_mean_largest_size": 4.265625,
+        "late_mean_alignment": 0.8654057751827242,
+        "late_mean_phase_coherence": 0.9897039021904248,
+        "late_mean_elongation": 4.791902609955525,
+        "max_lifetime_samples": 22,
+        "p90_lifetime_samples": 12.100000000000009
+      },
+      "material": {
+        "mean": 0.009374649186228542,
+        "std": 0.009771121768477184,
+        "max": 0.06744228101653457,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.614120472127663,
+        "agent_sample_enrichment": 1.0093047140980265,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0010140529445747226,
+        "polymerization_at_other_agents": 0.0006074913141080483,
+        "coherent_to_other_ratio": 1.669246817782676
+      },
+      "world": {
+        "resource_mean": 0.7885111182176547,
+        "field_rms": 0.46620731566254264,
+        "field_max_abs": 0.9249138404504764
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "tensor",
+      "seed": 3,
+      "assembly": {
+        "tracks_created": 68,
+        "late_mean_assembly_count": 4.96875,
+        "late_mean_coherent_fraction": 0.6519097222222223,
+        "late_mean_largest_size": 19.734375,
+        "late_mean_alignment": 0.9306522337385226,
+        "late_mean_phase_coherence": 0.8849419082980949,
+        "late_mean_elongation": 4.560115100360237,
+        "max_lifetime_samples": 99,
+        "p90_lifetime_samples": 37.300000000000004
+      },
+      "material": {
+        "mean": 0.015401745016876016,
+        "std": 0.03365195489767694,
+        "max": 0.36868805334604166,
+        "above_threshold_fraction": 0.006944444444444444,
+        "component_count": 11,
+        "largest_component_fraction": 0.0013020833333333333,
+        "local_orientation_order": 0.8759427416932892,
+        "agent_sample_enrichment": 3.180894683885376,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.001386935641897958,
+        "polymerization_at_other_agents": 0.0010678628134077367,
+        "coherent_to_other_ratio": 1.2987957096972114
+      },
+      "world": {
+        "resource_mean": 0.7870022946020214,
+        "field_rms": 0.46435798522197125,
+        "field_max_abs": 1.0206188180297673
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "no_memory",
+      "seed": 4,
+      "assembly": {
+        "tracks_created": 68,
+        "late_mean_assembly_count": 2.234375,
+        "late_mean_coherent_fraction": 0.11176215277777779,
+        "late_mean_largest_size": 4.09375,
+        "late_mean_alignment": 0.891702488041954,
+        "late_mean_phase_coherence": 0.9991011842537023,
+        "late_mean_elongation": 5.9108161867541735,
+        "max_lifetime_samples": 43,
+        "p90_lifetime_samples": 11.0
+      },
+      "material": {
+        "mean": 0.0,
+        "std": 0.0,
+        "max": 0.0,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.0,
+        "agent_sample_enrichment": 0.0,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0,
+        "polymerization_at_other_agents": 0.0,
+        "coherent_to_other_ratio": 0.0
+      },
+      "world": {
+        "resource_mean": 0.7296817886363564,
+        "field_rms": 0.5456592172126385,
+        "field_max_abs": 0.874753596694067
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "write_only",
+      "seed": 4,
+      "assembly": {
+        "tracks_created": 68,
+        "late_mean_assembly_count": 2.234375,
+        "late_mean_coherent_fraction": 0.11176215277777779,
+        "late_mean_largest_size": 4.09375,
+        "late_mean_alignment": 0.891702488041954,
+        "late_mean_phase_coherence": 0.9991011842537023,
+        "late_mean_elongation": 5.9108161867541735,
+        "max_lifetime_samples": 43,
+        "p90_lifetime_samples": 11.0
+      },
+      "material": {
+        "mean": 0.010546381549281105,
+        "std": 0.0105625810741477,
+        "max": 0.07262844192490682,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.6160903407629881,
+        "agent_sample_enrichment": 1.151327374086657,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0012388955367483203,
+        "polymerization_at_other_agents": 0.0007513714748025301,
+        "coherent_to_other_ratio": 1.6488455799111512
+      },
+      "world": {
+        "resource_mean": 0.7296817886363564,
+        "field_rms": 0.5456592172126385,
+        "field_max_abs": 0.874753596694067
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "scalar",
+      "seed": 4,
+      "assembly": {
+        "tracks_created": 74,
+        "late_mean_assembly_count": 2.546875,
+        "late_mean_coherent_fraction": 0.12586805555555558,
+        "late_mean_largest_size": 4.234375,
+        "late_mean_alignment": 0.9020900622923171,
+        "late_mean_phase_coherence": 0.9996181780722126,
+        "late_mean_elongation": 3.727897320758061,
+        "max_lifetime_samples": 30,
+        "p90_lifetime_samples": 12.400000000000006
+      },
+      "material": {
+        "mean": 0.011122253200738279,
+        "std": 0.010994319745479052,
+        "max": 0.09287743051124747,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.6299023140337695,
+        "agent_sample_enrichment": 0.7746189618557493,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0012665803092480105,
+        "polymerization_at_other_agents": 0.0007339759951646623,
+        "coherent_to_other_ratio": 1.7256426856824105
+      },
+      "world": {
+        "resource_mean": 0.7236013932704669,
+        "field_rms": 0.5523136277100311,
+        "field_max_abs": 0.8546208578533276
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "mean_field",
+      "seed": 4,
+      "assembly": {
+        "tracks_created": 78,
+        "late_mean_assembly_count": 2.3125,
+        "late_mean_coherent_fraction": 0.10611979166666666,
+        "late_mean_largest_size": 3.625,
+        "late_mean_alignment": 0.8989857411997949,
+        "late_mean_phase_coherence": 0.999206666684777,
+        "late_mean_elongation": 4.019355917280768,
+        "max_lifetime_samples": 33,
+        "p90_lifetime_samples": 12.599999999999994
+      },
+      "material": {
+        "mean": 0.011002463732017853,
+        "std": 0.010851096860865569,
+        "max": 0.08417898702671218,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.6164811218525902,
+        "agent_sample_enrichment": 0.8824180558788169,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.001136585753490727,
+        "polymerization_at_other_agents": 0.000791990641525964,
+        "coherent_to_other_ratio": 1.435099977779682
+      },
+      "world": {
+        "resource_mean": 0.7228246702618547,
+        "field_rms": 0.5531325781176423,
+        "field_max_abs": 1.0704635292322817
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    },
+    {
+      "mode": "tensor",
+      "seed": 4,
+      "assembly": {
+        "tracks_created": 72,
+        "late_mean_assembly_count": 6.03125,
+        "late_mean_coherent_fraction": 0.48806423611111116,
+        "late_mean_largest_size": 15.296875,
+        "late_mean_alignment": 0.9421204216495656,
+        "late_mean_phase_coherence": 0.9980937449711701,
+        "late_mean_elongation": 5.569954906550059,
+        "max_lifetime_samples": 76,
+        "p90_lifetime_samples": 24.9
+      },
+      "material": {
+        "mean": 0.014860055906022558,
+        "std": 0.03256258616709388,
+        "max": 0.5757296636780069,
+        "above_threshold_fraction": 0.006510416666666667,
+        "component_count": 7,
+        "largest_component_fraction": 0.001736111111111111,
+        "local_orientation_order": 0.8759232687894396,
+        "agent_sample_enrichment": 3.2508429840281363,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0019247439732391648,
+        "polymerization_at_other_agents": 0.0009448455971001509,
+        "coherent_to_other_ratio": 2.037098947287626
+      },
+      "world": {
+        "resource_mean": 0.7286724560768305,
+        "field_rms": 0.5466479458396227,
+        "field_max_abs": 1.0646503406575492
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      }
+    }
+  ],
+  "probe_rows": [
+    {
+      "variant": "intact",
+      "seed": 100001,
+      "assembly": {
+        "tracks_created": 33,
+        "late_mean_assembly_count": 5.4,
+        "late_mean_coherent_fraction": 0.41597222222222224,
+        "late_mean_largest_size": 10.4,
+        "late_mean_alignment": 0.926261240934435,
+        "late_mean_phase_coherence": 0.9287056211540274,
+        "late_mean_elongation": 3.2088253728973646,
+        "max_lifetime_samples": 48,
+        "p90_lifetime_samples": 20.0
+      },
+      "fresh_agent_material_enrichment": 1.7417376935220397,
+      "fresh_agent_nematic_alignment": 0.73119787356242,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "isotropic",
+      "seed": 100001,
+      "assembly": {
+        "tracks_created": 29,
+        "late_mean_assembly_count": 2.95,
+        "late_mean_coherent_fraction": 0.14583333333333331,
+        "late_mean_largest_size": 4.55,
+        "late_mean_alignment": 0.8976683581724408,
+        "late_mean_phase_coherence": 0.8984146285488807,
+        "late_mean_elongation": 4.891965949691336,
+        "max_lifetime_samples": 16,
+        "p90_lifetime_samples": 9.0
+      },
+      "fresh_agent_material_enrichment": 1.0208088435121998,
+      "fresh_agent_nematic_alignment": 0.0,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "patchwork",
+      "seed": 100001,
+      "assembly": {
+        "tracks_created": 35,
+        "late_mean_assembly_count": 5.3,
+        "late_mean_coherent_fraction": 0.3402777777777778,
+        "late_mean_largest_size": 7.45,
+        "late_mean_alignment": 0.9029870057020677,
+        "late_mean_phase_coherence": 0.9159994827362568,
+        "late_mean_elongation": 3.860169199452572,
+        "max_lifetime_samples": 28,
+        "p90_lifetime_samples": 18.200000000000003
+      },
+      "fresh_agent_material_enrichment": 1.2740875790801793,
+      "fresh_agent_nematic_alignment": 0.47239946955027606,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "scrambled",
+      "seed": 100001,
+      "assembly": {
+        "tracks_created": 45,
+        "late_mean_assembly_count": 3.85,
+        "late_mean_coherent_fraction": 0.1784722222222222,
+        "late_mean_largest_size": 3.8,
+        "late_mean_alignment": 0.8524752986248025,
+        "late_mean_phase_coherence": 0.8612557352124247,
+        "late_mean_elongation": 3.8820569734831296,
+        "max_lifetime_samples": 16,
+        "p90_lifetime_samples": 9.200000000000003
+      },
+      "fresh_agent_material_enrichment": 1.0079352240437816,
+      "fresh_agent_nematic_alignment": 0.2332636661568234,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "rotated",
+      "seed": 100001,
+      "assembly": {
+        "tracks_created": 28,
+        "late_mean_assembly_count": 4.0,
+        "late_mean_coherent_fraction": 0.2638888888888889,
+        "late_mean_largest_size": 7.3,
+        "late_mean_alignment": 0.9180138010298924,
+        "late_mean_phase_coherence": 0.9324505514686988,
+        "late_mean_elongation": 3.7886325881858816,
+        "max_lifetime_samples": 36,
+        "p90_lifetime_samples": 21.500000000000004
+      },
+      "fresh_agent_material_enrichment": 0.8413450166497858,
+      "fresh_agent_nematic_alignment": 0.582112661063452,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "erased",
+      "seed": 100001,
+      "assembly": {
+        "tracks_created": 25,
+        "late_mean_assembly_count": 3.15,
+        "late_mean_coherent_fraction": 0.17013888888888887,
+        "late_mean_largest_size": 5.3,
+        "late_mean_alignment": 0.8895148781413933,
+        "late_mean_phase_coherence": 0.8986073189949856,
+        "late_mean_elongation": 4.261198916808636,
+        "max_lifetime_samples": 16,
+        "p90_lifetime_samples": 10.0
+      },
+      "fresh_agent_material_enrichment": 0.0,
+      "fresh_agent_nematic_alignment": 0.0,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "intact",
+      "seed": 100002,
+      "assembly": {
+        "tracks_created": 31,
+        "late_mean_assembly_count": 6.8,
+        "late_mean_coherent_fraction": 0.5770833333333332,
+        "late_mean_largest_size": 14.1,
+        "late_mean_alignment": 0.924857141274108,
+        "late_mean_phase_coherence": 0.9165980058046681,
+        "late_mean_elongation": 4.002082995550766,
+        "max_lifetime_samples": 35,
+        "p90_lifetime_samples": 23.0
+      },
+      "fresh_agent_material_enrichment": 1.711977469705115,
+      "fresh_agent_nematic_alignment": 0.7394307267474872,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "isotropic",
+      "seed": 100002,
+      "assembly": {
+        "tracks_created": 23,
+        "late_mean_assembly_count": 2.7,
+        "late_mean_coherent_fraction": 0.14375,
+        "late_mean_largest_size": 4.8,
+        "late_mean_alignment": 0.8712002074760967,
+        "late_mean_phase_coherence": 0.9538943761764219,
+        "late_mean_elongation": 4.06233387245177,
+        "max_lifetime_samples": 16,
+        "p90_lifetime_samples": 11.000000000000004
+      },
+      "fresh_agent_material_enrichment": 0.9294556989039826,
+      "fresh_agent_nematic_alignment": 0.0,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "patchwork",
+      "seed": 100002,
+      "assembly": {
+        "tracks_created": 39,
+        "late_mean_assembly_count": 6.7,
+        "late_mean_coherent_fraction": 0.39375,
+        "late_mean_largest_size": 7.75,
+        "late_mean_alignment": 0.9181219782734912,
+        "late_mean_phase_coherence": 0.9613189668274581,
+        "late_mean_elongation": 3.628610593507942,
+        "max_lifetime_samples": 32,
+        "p90_lifetime_samples": 13.000000000000014
+      },
+      "fresh_agent_material_enrichment": 1.2053168805399501,
+      "fresh_agent_nematic_alignment": 0.5201952617173936,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "scrambled",
+      "seed": 100002,
+      "assembly": {
+        "tracks_created": 38,
+        "late_mean_assembly_count": 3.65,
+        "late_mean_coherent_fraction": 0.18541666666666665,
+        "late_mean_largest_size": 5.05,
+        "late_mean_alignment": 0.8734607403068777,
+        "late_mean_phase_coherence": 0.9586050093328454,
+        "late_mean_elongation": 4.265677769409214,
+        "max_lifetime_samples": 21,
+        "p90_lifetime_samples": 7.6000000000000085
+      },
+      "fresh_agent_material_enrichment": 0.9612860248766597,
+      "fresh_agent_nematic_alignment": 0.19459375920807445,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "rotated",
+      "seed": 100002,
+      "assembly": {
+        "tracks_created": 31,
+        "late_mean_assembly_count": 7.75,
+        "late_mean_coherent_fraction": 0.37361111111111117,
+        "late_mean_largest_size": 5.15,
+        "late_mean_alignment": 0.9390962051512364,
+        "late_mean_phase_coherence": 0.9563477403053889,
+        "late_mean_elongation": 4.3059375818319205,
+        "max_lifetime_samples": 45,
+        "p90_lifetime_samples": 22.0
+      },
+      "fresh_agent_material_enrichment": 0.7331719502301077,
+      "fresh_agent_nematic_alignment": 0.4839660405573536,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "erased",
+      "seed": 100002,
+      "assembly": {
+        "tracks_created": 21,
+        "late_mean_assembly_count": 2.85,
+        "late_mean_coherent_fraction": 0.15,
+        "late_mean_largest_size": 4.9,
+        "late_mean_alignment": 0.8977445911306038,
+        "late_mean_phase_coherence": 0.9855209509640117,
+        "late_mean_elongation": 3.8030352803121565,
+        "max_lifetime_samples": 19,
+        "p90_lifetime_samples": 12.0
+      },
+      "fresh_agent_material_enrichment": 0.0,
+      "fresh_agent_nematic_alignment": 0.0,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "intact",
+      "seed": 100003,
+      "assembly": {
+        "tracks_created": 27,
+        "late_mean_assembly_count": 6.7,
+        "late_mean_coherent_fraction": 0.50625,
+        "late_mean_largest_size": 10.7,
+        "late_mean_alignment": 0.9213299430800544,
+        "late_mean_phase_coherence": 0.953978224059898,
+        "late_mean_elongation": 4.14011381071403,
+        "max_lifetime_samples": 41,
+        "p90_lifetime_samples": 21.60000000000001
+      },
+      "fresh_agent_material_enrichment": 2.3051316655480703,
+      "fresh_agent_nematic_alignment": 0.7132057587646239,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "isotropic",
+      "seed": 100003,
+      "assembly": {
+        "tracks_created": 25,
+        "late_mean_assembly_count": 2.8,
+        "late_mean_coherent_fraction": 0.12777777777777782,
+        "late_mean_largest_size": 3.7,
+        "late_mean_alignment": 0.900171849220756,
+        "late_mean_phase_coherence": 0.9491557425920044,
+        "late_mean_elongation": 6.203522849541669,
+        "max_lifetime_samples": 21,
+        "p90_lifetime_samples": 11.0
+      },
+      "fresh_agent_material_enrichment": 0.875004031535577,
+      "fresh_agent_nematic_alignment": 0.0,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "patchwork",
+      "seed": 100003,
+      "assembly": {
+        "tracks_created": 40,
+        "late_mean_assembly_count": 7.05,
+        "late_mean_coherent_fraction": 0.4395833333333333,
+        "late_mean_largest_size": 9.3,
+        "late_mean_alignment": 0.9247433393167315,
+        "late_mean_phase_coherence": 0.9647294127322332,
+        "late_mean_elongation": 3.522293376454143,
+        "max_lifetime_samples": 36,
+        "p90_lifetime_samples": 17.200000000000003
+      },
+      "fresh_agent_material_enrichment": 1.160039134135524,
+      "fresh_agent_nematic_alignment": 0.43858432020306015,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "scrambled",
+      "seed": 100003,
+      "assembly": {
+        "tracks_created": 39,
+        "late_mean_assembly_count": 4.65,
+        "late_mean_coherent_fraction": 0.25625000000000003,
+        "late_mean_largest_size": 5.85,
+        "late_mean_alignment": 0.8979052188958498,
+        "late_mean_phase_coherence": 0.9790396297957077,
+        "late_mean_elongation": 3.820148896869204,
+        "max_lifetime_samples": 27,
+        "p90_lifetime_samples": 9.800000000000011
+      },
+      "fresh_agent_material_enrichment": 0.9834438784844184,
+      "fresh_agent_nematic_alignment": 0.1950120087249554,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "rotated",
+      "seed": 100003,
+      "assembly": {
+        "tracks_created": 21,
+        "late_mean_assembly_count": 3.95,
+        "late_mean_coherent_fraction": 0.21180555555555558,
+        "late_mean_largest_size": 5.0,
+        "late_mean_alignment": 0.9362036553728862,
+        "late_mean_phase_coherence": 0.9658082560635537,
+        "late_mean_elongation": 2.9874137103711162,
+        "max_lifetime_samples": 30,
+        "p90_lifetime_samples": 23.0
+      },
+      "fresh_agent_material_enrichment": 0.7154398630104538,
+      "fresh_agent_nematic_alignment": 0.509002335325575,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "erased",
+      "seed": 100003,
+      "assembly": {
+        "tracks_created": 25,
+        "late_mean_assembly_count": 4.2,
+        "late_mean_coherent_fraction": 0.19583333333333336,
+        "late_mean_largest_size": 4.2,
+        "late_mean_alignment": 0.8761252855575998,
+        "late_mean_phase_coherence": 0.9430865750905069,
+        "late_mean_elongation": 3.9623396387092766,
+        "max_lifetime_samples": 20,
+        "p90_lifetime_samples": 12.200000000000003
+      },
+      "fresh_agent_material_enrichment": 0.0,
+      "fresh_agent_nematic_alignment": 0.0,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "intact",
+      "seed": 100004,
+      "assembly": {
+        "tracks_created": 28,
+        "late_mean_assembly_count": 8.6,
+        "late_mean_coherent_fraction": 0.6020833333333332,
+        "late_mean_largest_size": 10.45,
+        "late_mean_alignment": 0.9219915225595722,
+        "late_mean_phase_coherence": 0.8912107172631535,
+        "late_mean_elongation": 3.9421502794624113,
+        "max_lifetime_samples": 45,
+        "p90_lifetime_samples": 27.3
+      },
+      "fresh_agent_material_enrichment": 2.4304027619731485,
+      "fresh_agent_nematic_alignment": 0.7122302500099996,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "isotropic",
+      "seed": 100004,
+      "assembly": {
+        "tracks_created": 25,
+        "late_mean_assembly_count": 1.55,
+        "late_mean_coherent_fraction": 0.07569444444444444,
+        "late_mean_largest_size": 3.8,
+        "late_mean_alignment": 0.8411319316002904,
+        "late_mean_phase_coherence": 0.9911935280278839,
+        "late_mean_elongation": 3.9717842987567074,
+        "max_lifetime_samples": 20,
+        "p90_lifetime_samples": 11.400000000000006
+      },
+      "fresh_agent_material_enrichment": 1.0695467591524745,
+      "fresh_agent_nematic_alignment": 0.0,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "patchwork",
+      "seed": 100004,
+      "assembly": {
+        "tracks_created": 42,
+        "late_mean_assembly_count": 6.65,
+        "late_mean_coherent_fraction": 0.39375,
+        "late_mean_largest_size": 7.05,
+        "late_mean_alignment": 0.9222724089439123,
+        "late_mean_phase_coherence": 0.9228273877793323,
+        "late_mean_elongation": 4.902016568598773,
+        "max_lifetime_samples": 36,
+        "p90_lifetime_samples": 12.799999999999997
+      },
+      "fresh_agent_material_enrichment": 1.124969674750208,
+      "fresh_agent_nematic_alignment": 0.4316037283509371,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "scrambled",
+      "seed": 100004,
+      "assembly": {
+        "tracks_created": 30,
+        "late_mean_assembly_count": 3.5,
+        "late_mean_coherent_fraction": 0.22291666666666665,
+        "late_mean_largest_size": 7.4,
+        "late_mean_alignment": 0.9226284358352336,
+        "late_mean_phase_coherence": 0.9905364251497308,
+        "late_mean_elongation": 3.687213913142538,
+        "max_lifetime_samples": 23,
+        "p90_lifetime_samples": 12.0
+      },
+      "fresh_agent_material_enrichment": 0.9922885687125681,
+      "fresh_agent_nematic_alignment": 0.18512323037080416,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "rotated",
+      "seed": 100004,
+      "assembly": {
+        "tracks_created": 30,
+        "late_mean_assembly_count": 6.05,
+        "late_mean_coherent_fraction": 0.31180555555555556,
+        "late_mean_largest_size": 5.3,
+        "late_mean_alignment": 0.9259929589840183,
+        "late_mean_phase_coherence": 0.9546007413682547,
+        "late_mean_elongation": 3.2010621228935774,
+        "max_lifetime_samples": 33,
+        "p90_lifetime_samples": 16.500000000000007
+      },
+      "fresh_agent_material_enrichment": 0.8031728138699128,
+      "fresh_agent_nematic_alignment": 0.4749011959977046,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    },
+    {
+      "variant": "erased",
+      "seed": 100004,
+      "assembly": {
+        "tracks_created": 20,
+        "late_mean_assembly_count": 1.25,
+        "late_mean_coherent_fraction": 0.05833333333333333,
+        "late_mean_largest_size": 3.3,
+        "late_mean_alignment": 0.8848511799122614,
+        "late_mean_phase_coherence": 0.9421321255094377,
+        "late_mean_elongation": 4.54985370284072,
+        "max_lifetime_samples": 19,
+        "p90_lifetime_samples": 11.200000000000003
+      },
+      "fresh_agent_material_enrichment": 0.0,
+      "fresh_agent_nematic_alignment": 0.0,
+      "builder_agents_removed": true,
+      "fast_field_zeroed": true,
+      "material_frozen": true
+    }
+  ],
+  "ablation_rows": [
+    {
+      "mode": "tensor",
+      "seed": 1,
+      "assembly": {
+        "tracks_created": 87,
+        "late_mean_assembly_count": 7.125,
+        "late_mean_coherent_fraction": 0.4963107638888889,
+        "late_mean_largest_size": 10.46875,
+        "late_mean_alignment": 0.9398326648348904,
+        "late_mean_phase_coherence": 0.9993351352903517,
+        "late_mean_elongation": 3.5247663066409882,
+        "max_lifetime_samples": 116,
+        "p90_lifetime_samples": 31.600000000000023
+      },
+      "material": {
+        "mean": 0.012396871631210997,
+        "std": 0.02006656082849426,
+        "max": 0.1589057075677187,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.8431145504341634,
+        "agent_sample_enrichment": 2.043890369827783,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.001494232998706101,
+        "polymerization_at_other_agents": 0.0008561077332807256,
+        "coherent_to_other_ratio": 1.745379627905719
+      },
+      "world": {
+        "resource_mean": 0.7201812819775812,
+        "field_rms": 0.5281197516210832,
+        "field_max_abs": 1.1431169152038987
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      },
+      "ablation": "full"
+    },
+    {
+      "mode": "tensor",
+      "seed": 1,
+      "assembly": {
+        "tracks_created": 92,
+        "late_mean_assembly_count": 5.8125,
+        "late_mean_coherent_fraction": 0.3995225694444445,
+        "late_mean_largest_size": 8.890625,
+        "late_mean_alignment": 0.9403469759604685,
+        "late_mean_phase_coherence": 0.4472364811105487,
+        "late_mean_elongation": 3.553968239072753,
+        "max_lifetime_samples": 83,
+        "p90_lifetime_samples": 16.900000000000006
+      },
+      "material": {
+        "mean": 0.004892488365586099,
+        "std": 0.006560841541140044,
+        "max": 0.0544548414790302,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.8217593832319116,
+        "agent_sample_enrichment": 1.523404321278373,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0005337734187241058,
+        "polymerization_at_other_agents": 0.000232873702710239,
+        "coherent_to_other_ratio": 2.292115469543403
+      },
+      "world": {
+        "resource_mean": 0.9391253964135198,
+        "field_rms": 0.28348044125882677,
+        "field_max_abs": 0.6472614166263613
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      },
+      "ablation": "no_wave_sensing"
+    },
+    {
+      "mode": "tensor",
+      "seed": 1,
+      "assembly": {
+        "tracks_created": 107,
+        "late_mean_assembly_count": 3.234375,
+        "late_mean_coherent_fraction": 0.15928819444444445,
+        "late_mean_largest_size": 4.171875,
+        "late_mean_alignment": 0.8797506382163653,
+        "late_mean_phase_coherence": 0.7545962248885413,
+        "late_mean_elongation": 4.723057165338465,
+        "max_lifetime_samples": 28,
+        "p90_lifetime_samples": 15.400000000000006
+      },
+      "material": {
+        "mean": 0.0005413609536530398,
+        "std": 0.0016616104690342858,
+        "max": 0.02107508014432143,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.8492824090999167,
+        "agent_sample_enrichment": 0.8670802948198979,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 4.730488940135087e-05,
+        "polymerization_at_other_agents": 8.064397812954068e-05,
+        "coherent_to_other_ratio": 0.5865892272672174
+      },
+      "world": {
+        "resource_mean": 0.9999021945435062,
+        "field_rms": 0.000542076177711094,
+        "field_max_abs": 0.0006241453444855078
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      },
+      "ablation": "no_wave_production"
+    },
+    {
+      "mode": "tensor",
+      "seed": 1,
+      "assembly": {
+        "tracks_created": 76,
+        "late_mean_assembly_count": 5.75,
+        "late_mean_coherent_fraction": 0.63671875,
+        "late_mean_largest_size": 24.578125,
+        "late_mean_alignment": 0.9378414708768614,
+        "late_mean_phase_coherence": 0.9999592738220558,
+        "late_mean_elongation": 4.482428589710835,
+        "max_lifetime_samples": 97,
+        "p90_lifetime_samples": 22.5
+      },
+      "material": {
+        "mean": 0.019183024120368913,
+        "std": 0.045545402443091104,
+        "max": 0.4931662550999195,
+        "above_threshold_fraction": 0.015190972222222222,
+        "component_count": 8,
+        "largest_component_fraction": 0.007378472222222222,
+        "local_orientation_order": 0.8765062909395295,
+        "agent_sample_enrichment": 4.341484096816745,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0022720135498658423,
+        "polymerization_at_other_agents": 0.0010152423432470798,
+        "coherent_to_other_ratio": 2.2379026670236106
+      },
+      "world": {
+        "resource_mean": 0.7101315238019688,
+        "field_rms": 0.5264612843965671,
+        "field_max_abs": 1.185864791415413
+      },
+      "interventions": {
+        "phase_shuffle_each_step": true,
+        "uniform_resource_each_step": false
+      },
+      "ablation": "phase_shuffle_each_step"
+    },
+    {
+      "mode": "tensor",
+      "seed": 1,
+      "assembly": {
+        "tracks_created": 88,
+        "late_mean_assembly_count": 5.640625,
+        "late_mean_coherent_fraction": 0.3450520833333333,
+        "late_mean_largest_size": 8.203125,
+        "late_mean_alignment": 0.9196513605398979,
+        "late_mean_phase_coherence": 0.9993880987698001,
+        "late_mean_elongation": 4.7350385461767726,
+        "max_lifetime_samples": 71,
+        "p90_lifetime_samples": 26.299999999999997
+      },
+      "material": {
+        "mean": 0.014293292894608753,
+        "std": 0.025164001347353818,
+        "max": 0.2798119367093153,
+        "above_threshold_fraction": 0.0013020833333333333,
+        "component_count": 3,
+        "largest_component_fraction": 0.00043402777777777775,
+        "local_orientation_order": 0.8363611445501299,
+        "agent_sample_enrichment": 2.170673649452975,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0015436576082315605,
+        "polymerization_at_other_agents": 0.001010249520526759,
+        "coherent_to_other_ratio": 1.527996376478039
+      },
+      "world": {
+        "resource_mean": 0.7088910626562952,
+        "field_rms": 0.5436136537507267,
+        "field_max_abs": 1.208546269795622
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": true
+      },
+      "ablation": "uniform_resource"
+    },
+    {
+      "mode": "tensor",
+      "seed": 2,
+      "assembly": {
+        "tracks_created": 83,
+        "late_mean_assembly_count": 7.515625,
+        "late_mean_coherent_fraction": 0.4832899305555556,
+        "late_mean_largest_size": 8.234375,
+        "late_mean_alignment": 0.9328589502543492,
+        "late_mean_phase_coherence": 0.9995735011507033,
+        "late_mean_elongation": 4.218680743005313,
+        "max_lifetime_samples": 85,
+        "p90_lifetime_samples": 29.39999999999999
+      },
+      "material": {
+        "mean": 0.014581554628058633,
+        "std": 0.023735695088150106,
+        "max": 0.24620190617204393,
+        "above_threshold_fraction": 0.00043402777777777775,
+        "component_count": 1,
+        "largest_component_fraction": 0.00043402777777777775,
+        "local_orientation_order": 0.8624706306077445,
+        "agent_sample_enrichment": 2.183909764633835,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.001456066031844106,
+        "polymerization_at_other_agents": 0.0010790185614558614,
+        "coherent_to_other_ratio": 1.3494355727579692
+      },
+      "world": {
+        "resource_mean": 0.7146581940053613,
+        "field_rms": 0.5209900038514884,
+        "field_max_abs": 0.8990068300248796
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      },
+      "ablation": "full"
+    },
+    {
+      "mode": "tensor",
+      "seed": 2,
+      "assembly": {
+        "tracks_created": 100,
+        "late_mean_assembly_count": 5.546875,
+        "late_mean_coherent_fraction": 0.2797309027777778,
+        "late_mean_largest_size": 5.0625,
+        "late_mean_alignment": 0.9422011721409627,
+        "late_mean_phase_coherence": 0.4707924099902437,
+        "late_mean_elongation": 3.4544045903299088,
+        "max_lifetime_samples": 60,
+        "p90_lifetime_samples": 16.10000000000001
+      },
+      "material": {
+        "mean": 0.005314664198053178,
+        "std": 0.0067153307836780585,
+        "max": 0.06159890048057736,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.8105744025548869,
+        "agent_sample_enrichment": 1.5380494604246997,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.00041257707789049935,
+        "polymerization_at_other_agents": 0.0002533838297624334,
+        "coherent_to_other_ratio": 1.6282691624365004
+      },
+      "world": {
+        "resource_mean": 0.925060550486313,
+        "field_rms": 0.29319762076434064,
+        "field_max_abs": 0.847189616282813
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      },
+      "ablation": "no_wave_sensing"
+    },
+    {
+      "mode": "tensor",
+      "seed": 2,
+      "assembly": {
+        "tracks_created": 86,
+        "late_mean_assembly_count": 3.546875,
+        "late_mean_coherent_fraction": 0.17513020833333331,
+        "late_mean_largest_size": 4.34375,
+        "late_mean_alignment": 0.9080985513611848,
+        "late_mean_phase_coherence": 0.6902336293783772,
+        "late_mean_elongation": 4.739944166767797,
+        "max_lifetime_samples": 54,
+        "p90_lifetime_samples": 16.0
+      },
+      "material": {
+        "mean": 0.0010876964586926578,
+        "std": 0.004319554577723641,
+        "max": 0.061714010628134384,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.8932036358359065,
+        "agent_sample_enrichment": 1.2937259406775417,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0005968759072676891,
+        "polymerization_at_other_agents": 8.632533091685808e-05,
+        "coherent_to_other_ratio": 6.91426136470062
+      },
+      "world": {
+        "resource_mean": 0.9999015304551467,
+        "field_rms": 0.0005629096480426344,
+        "field_max_abs": 0.0006696063796629412
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      },
+      "ablation": "no_wave_production"
+    },
+    {
+      "mode": "tensor",
+      "seed": 2,
+      "assembly": {
+        "tracks_created": 77,
+        "late_mean_assembly_count": 6.640625,
+        "late_mean_coherent_fraction": 0.5753038194444444,
+        "late_mean_largest_size": 13.4375,
+        "late_mean_alignment": 0.9274361475487753,
+        "late_mean_phase_coherence": 0.9999699167280994,
+        "late_mean_elongation": 3.6160700917199513,
+        "max_lifetime_samples": 117,
+        "p90_lifetime_samples": 22.00000000000003
+      },
+      "material": {
+        "mean": 0.015889072976670332,
+        "std": 0.028694994376491628,
+        "max": 0.3039590214283012,
+        "above_threshold_fraction": 0.002170138888888889,
+        "component_count": 2,
+        "largest_component_fraction": 0.001736111111111111,
+        "local_orientation_order": 0.840759292140104,
+        "agent_sample_enrichment": 2.759163364328912,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0019319483336421289,
+        "polymerization_at_other_agents": 0.0009850442807202036,
+        "coherent_to_other_ratio": 1.9612806951869481
+      },
+      "world": {
+        "resource_mean": 0.7105822104514569,
+        "field_rms": 0.5235219017160883,
+        "field_max_abs": 1.135877233931591
+      },
+      "interventions": {
+        "phase_shuffle_each_step": true,
+        "uniform_resource_each_step": false
+      },
+      "ablation": "phase_shuffle_each_step"
+    },
+    {
+      "mode": "tensor",
+      "seed": 2,
+      "assembly": {
+        "tracks_created": 77,
+        "late_mean_assembly_count": 6.90625,
+        "late_mean_coherent_fraction": 0.44140625,
+        "late_mean_largest_size": 8.171875,
+        "late_mean_alignment": 0.9285763577048108,
+        "late_mean_phase_coherence": 0.99970324603425,
+        "late_mean_elongation": 4.042558022705407,
+        "max_lifetime_samples": 95,
+        "p90_lifetime_samples": 27.400000000000006
+      },
+      "material": {
+        "mean": 0.014424970487189461,
+        "std": 0.02683940776549744,
+        "max": 0.25523896577008726,
+        "above_threshold_fraction": 0.0030381944444444445,
+        "component_count": 5,
+        "largest_component_fraction": 0.0013020833333333333,
+        "local_orientation_order": 0.8542554877379275,
+        "agent_sample_enrichment": 2.2299036318327614,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0012985176774760396,
+        "polymerization_at_other_agents": 0.001194567159828926,
+        "coherent_to_other_ratio": 1.0870193992064714
+      },
+      "world": {
+        "resource_mean": 0.7068133838205525,
+        "field_rms": 0.5461727428982208,
+        "field_max_abs": 1.1748028414507936
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": true
+      },
+      "ablation": "uniform_resource"
+    },
+    {
+      "mode": "tensor",
+      "seed": 3,
+      "assembly": {
+        "tracks_created": 68,
+        "late_mean_assembly_count": 4.96875,
+        "late_mean_coherent_fraction": 0.6519097222222223,
+        "late_mean_largest_size": 19.734375,
+        "late_mean_alignment": 0.9306522337385226,
+        "late_mean_phase_coherence": 0.8849419082980949,
+        "late_mean_elongation": 4.560115100360237,
+        "max_lifetime_samples": 99,
+        "p90_lifetime_samples": 37.300000000000004
+      },
+      "material": {
+        "mean": 0.015401745016876016,
+        "std": 0.03365195489767694,
+        "max": 0.36868805334604166,
+        "above_threshold_fraction": 0.006944444444444444,
+        "component_count": 11,
+        "largest_component_fraction": 0.0013020833333333333,
+        "local_orientation_order": 0.8759427416932892,
+        "agent_sample_enrichment": 3.180894683885376,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.001386935641897958,
+        "polymerization_at_other_agents": 0.0010678628134077367,
+        "coherent_to_other_ratio": 1.2987957096972114
+      },
+      "world": {
+        "resource_mean": 0.7870022946020214,
+        "field_rms": 0.46435798522197125,
+        "field_max_abs": 1.0206188180297673
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      },
+      "ablation": "full"
+    },
+    {
+      "mode": "tensor",
+      "seed": 3,
+      "assembly": {
+        "tracks_created": 89,
+        "late_mean_assembly_count": 4.328125,
+        "late_mean_coherent_fraction": 0.23307291666666669,
+        "late_mean_largest_size": 5.234375,
+        "late_mean_alignment": 0.9256207562986256,
+        "late_mean_phase_coherence": 0.42785177081475445,
+        "late_mean_elongation": 3.7870332791668426,
+        "max_lifetime_samples": 35,
+        "p90_lifetime_samples": 17.200000000000003
+      },
+      "material": {
+        "mean": 0.004939650235663538,
+        "std": 0.0061264454580941706,
+        "max": 0.07565607405699347,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.7754870009725091,
+        "agent_sample_enrichment": 1.4683054618392093,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.00038216094662055027,
+        "polymerization_at_other_agents": 0.0002499274466676701,
+        "coherent_to_other_ratio": 1.529087541952222
+      },
+      "world": {
+        "resource_mean": 0.9642863385570979,
+        "field_rms": 0.22154265700133474,
+        "field_max_abs": 0.5044197474263733
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      },
+      "ablation": "no_wave_sensing"
+    },
+    {
+      "mode": "tensor",
+      "seed": 3,
+      "assembly": {
+        "tracks_created": 83,
+        "late_mean_assembly_count": 4.046875,
+        "late_mean_coherent_fraction": 0.24652777777777776,
+        "late_mean_largest_size": 7.140625,
+        "late_mean_alignment": 0.9346187136900715,
+        "late_mean_phase_coherence": 0.523891260492561,
+        "late_mean_elongation": 3.9434163994207934,
+        "max_lifetime_samples": 40,
+        "p90_lifetime_samples": 16.0
+      },
+      "material": {
+        "mean": 0.0006562345048681056,
+        "std": 0.002195668886337798,
+        "max": 0.041659135517279726,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.8423684617187713,
+        "agent_sample_enrichment": 2.2016493553258125,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.00017204780733278368,
+        "polymerization_at_other_agents": 7.358569800369756e-05,
+        "coherent_to_other_ratio": 2.338060379424249
+      },
+      "world": {
+        "resource_mean": 0.99990201497142,
+        "field_rms": 0.0005462964689629233,
+        "field_max_abs": 0.0006338323788657633
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      },
+      "ablation": "no_wave_production"
+    },
+    {
+      "mode": "tensor",
+      "seed": 3,
+      "assembly": {
+        "tracks_created": 65,
+        "late_mean_assembly_count": 5.71875,
+        "late_mean_coherent_fraction": 0.6143663194444444,
+        "late_mean_largest_size": 19.734375,
+        "late_mean_alignment": 0.9305371531222268,
+        "late_mean_phase_coherence": 0.9999642958024471,
+        "late_mean_elongation": 3.977536838849442,
+        "max_lifetime_samples": 119,
+        "p90_lifetime_samples": 17.800000000000004
+      },
+      "material": {
+        "mean": 0.017056884765771788,
+        "std": 0.03373241061921897,
+        "max": 0.4540053176949796,
+        "above_threshold_fraction": 0.00390625,
+        "component_count": 4,
+        "largest_component_fraction": 0.002170138888888889,
+        "local_orientation_order": 0.8619512974779625,
+        "agent_sample_enrichment": 2.522580315566548,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0020726782576107458,
+        "polymerization_at_other_agents": 0.0011322887164059965,
+        "coherent_to_other_ratio": 1.8305209843997416
+      },
+      "world": {
+        "resource_mean": 0.7111968248941655,
+        "field_rms": 0.5334239637898182,
+        "field_max_abs": 1.3296639853031722
+      },
+      "interventions": {
+        "phase_shuffle_each_step": true,
+        "uniform_resource_each_step": false
+      },
+      "ablation": "phase_shuffle_each_step"
+    },
+    {
+      "mode": "tensor",
+      "seed": 3,
+      "assembly": {
+        "tracks_created": 93,
+        "late_mean_assembly_count": 7.953125,
+        "late_mean_coherent_fraction": 0.6143663194444444,
+        "late_mean_largest_size": 13.515625,
+        "late_mean_alignment": 0.9345609822690054,
+        "late_mean_phase_coherence": 0.9769003364490333,
+        "late_mean_elongation": 4.270481992408621,
+        "max_lifetime_samples": 108,
+        "p90_lifetime_samples": 29.799999999999997
+      },
+      "material": {
+        "mean": 0.011862462426847204,
+        "std": 0.021561450211127795,
+        "max": 0.2309784350390001,
+        "above_threshold_fraction": 0.0008680555555555555,
+        "component_count": 1,
+        "largest_component_fraction": 0.0008680555555555555,
+        "local_orientation_order": 0.8322015887174339,
+        "agent_sample_enrichment": 1.7597254846377632,
+        "precursor_plus_matrix_mean": 0.9999999855046201
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0010024237810617855,
+        "polymerization_at_other_agents": 0.0010593007412315885,
+        "coherent_to_other_ratio": 0.9463070694635949
+      },
+      "world": {
+        "resource_mean": 0.7626346943850574,
+        "field_rms": 0.5085099350643236,
+        "field_max_abs": 1.266814101939385
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": true
+      },
+      "ablation": "uniform_resource"
+    },
+    {
+      "mode": "tensor",
+      "seed": 4,
+      "assembly": {
+        "tracks_created": 72,
+        "late_mean_assembly_count": 6.03125,
+        "late_mean_coherent_fraction": 0.48806423611111116,
+        "late_mean_largest_size": 15.296875,
+        "late_mean_alignment": 0.9421204216495656,
+        "late_mean_phase_coherence": 0.9980937449711701,
+        "late_mean_elongation": 5.569954906550059,
+        "max_lifetime_samples": 76,
+        "p90_lifetime_samples": 24.9
+      },
+      "material": {
+        "mean": 0.014860055906022558,
+        "std": 0.03256258616709388,
+        "max": 0.5757296636780069,
+        "above_threshold_fraction": 0.006510416666666667,
+        "component_count": 7,
+        "largest_component_fraction": 0.001736111111111111,
+        "local_orientation_order": 0.8759232687894396,
+        "agent_sample_enrichment": 3.2508429840281363,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0019247439732391648,
+        "polymerization_at_other_agents": 0.0009448455971001509,
+        "coherent_to_other_ratio": 2.037098947287626
+      },
+      "world": {
+        "resource_mean": 0.7286724560768305,
+        "field_rms": 0.5466479458396227,
+        "field_max_abs": 1.0646503406575492
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      },
+      "ablation": "full"
+    },
+    {
+      "mode": "tensor",
+      "seed": 4,
+      "assembly": {
+        "tracks_created": 97,
+        "late_mean_assembly_count": 5.125,
+        "late_mean_coherent_fraction": 0.2673611111111111,
+        "late_mean_largest_size": 5.546875,
+        "late_mean_alignment": 0.9110707880953197,
+        "late_mean_phase_coherence": 0.44204424086411936,
+        "late_mean_elongation": 3.9649671670476945,
+        "max_lifetime_samples": 37,
+        "p90_lifetime_samples": 16.0
+      },
+      "material": {
+        "mean": 0.004441562676015073,
+        "std": 0.0052284253153285,
+        "max": 0.05214678197385687,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.7774554880332436,
+        "agent_sample_enrichment": 1.4227241088870866,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0002752364696395885,
+        "polymerization_at_other_agents": 0.00020921486196920526,
+        "coherent_to_other_ratio": 1.3155684339697276
+      },
+      "world": {
+        "resource_mean": 0.9698565698768351,
+        "field_rms": 0.16572544371070985,
+        "field_max_abs": 0.43111518448070985
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      },
+      "ablation": "no_wave_sensing"
+    },
+    {
+      "mode": "tensor",
+      "seed": 4,
+      "assembly": {
+        "tracks_created": 74,
+        "late_mean_assembly_count": 3.203125,
+        "late_mean_coherent_fraction": 0.1605902777777778,
+        "late_mean_largest_size": 4.40625,
+        "late_mean_alignment": 0.8655193918849609,
+        "late_mean_phase_coherence": 0.6182555203660397,
+        "late_mean_elongation": 4.632394060329753,
+        "max_lifetime_samples": 48,
+        "p90_lifetime_samples": 16.10000000000001
+      },
+      "material": {
+        "mean": 0.0005204622897348082,
+        "std": 0.0017493335253330998,
+        "max": 0.02103268043272429,
+        "above_threshold_fraction": 0.0,
+        "component_count": 0,
+        "largest_component_fraction": 0.0,
+        "local_orientation_order": 0.8818762874834335,
+        "agent_sample_enrichment": 0.8945682495185298,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.00012989098572508374,
+        "polymerization_at_other_agents": 6.603363709581036e-05,
+        "coherent_to_other_ratio": 1.9670426993075965
+      },
+      "world": {
+        "resource_mean": 0.999901975907431,
+        "field_rms": 0.0005442145563574902,
+        "field_max_abs": 0.0006294982775203966
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": false
+      },
+      "ablation": "no_wave_production"
+    },
+    {
+      "mode": "tensor",
+      "seed": 4,
+      "assembly": {
+        "tracks_created": 74,
+        "late_mean_assembly_count": 5.234375,
+        "late_mean_coherent_fraction": 0.5288628472222221,
+        "late_mean_largest_size": 18.5625,
+        "late_mean_alignment": 0.9221423170788107,
+        "late_mean_phase_coherence": 0.9999636758473568,
+        "late_mean_elongation": 4.805630668894527,
+        "max_lifetime_samples": 129,
+        "p90_lifetime_samples": 17.10000000000001
+      },
+      "material": {
+        "mean": 0.025269320421348683,
+        "std": 0.07121617892344592,
+        "max": 0.8329839856983627,
+        "above_threshold_fraction": 0.030381944444444444,
+        "component_count": 10,
+        "largest_component_fraction": 0.013454861111111112,
+        "local_orientation_order": 0.8785010085601738,
+        "agent_sample_enrichment": 4.347357729120611,
+        "precursor_plus_matrix_mean": 1.0
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.004215754229500519,
+        "polymerization_at_other_agents": 0.00127719749967483,
+        "coherent_to_other_ratio": 3.3007849038798227
+      },
+      "world": {
+        "resource_mean": 0.7066885246613146,
+        "field_rms": 0.5319544624758182,
+        "field_max_abs": 1.2117254602237564
+      },
+      "interventions": {
+        "phase_shuffle_each_step": true,
+        "uniform_resource_each_step": false
+      },
+      "ablation": "phase_shuffle_each_step"
+    },
+    {
+      "mode": "tensor",
+      "seed": 4,
+      "assembly": {
+        "tracks_created": 90,
+        "late_mean_assembly_count": 6.09375,
+        "late_mean_coherent_fraction": 0.5108506944444444,
+        "late_mean_largest_size": 15.109375,
+        "late_mean_alignment": 0.9034115349358984,
+        "late_mean_phase_coherence": 0.9989752958847784,
+        "late_mean_elongation": 3.200673842935224,
+        "max_lifetime_samples": 82,
+        "p90_lifetime_samples": 17.200000000000017
+      },
+      "material": {
+        "mean": 0.01996025861342031,
+        "std": 0.06284946985149575,
+        "max": 0.9991185528652325,
+        "above_threshold_fraction": 0.015190972222222222,
+        "component_count": 6,
+        "largest_component_fraction": 0.009982638888888888,
+        "local_orientation_order": 0.8493080628591472,
+        "agent_sample_enrichment": 3.6559099173869924,
+        "precursor_plus_matrix_mean": 0.9999966185812466
+      },
+      "coupling_audit": {
+        "polymerization_at_coherent_agents": 0.0029244628094048674,
+        "polymerization_at_other_agents": 0.0010607452366894327,
+        "coherent_to_other_ratio": 2.7569888654650723
+      },
+      "world": {
+        "resource_mean": 0.7108662144988934,
+        "field_rms": 0.5678510821620875,
+        "field_max_abs": 1.4641878865953593
+      },
+      "interventions": {
+        "phase_shuffle_each_step": false,
+        "uniform_resource_each_step": true
+      },
+      "ablation": "uniform_resource"
+    }
+  ]
+}

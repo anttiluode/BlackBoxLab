@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Datarium 3 — When motion hardens into matter</title>
+<style>
+:root{--bg:#05070b;--panel:#0b1018;--panel2:#101722;--line:#253043;--ink:#edf5ff;--muted:#8795a8;--cyan:#65dcff;--mint:#72efbf;--gold:#ffc66b;--rose:#ff7f96;--violet:#b8a2ff}
+*{box-sizing:border-box}html{color-scheme:dark}body{margin:0;background:radial-gradient(circle at 34% -12%,#1b2940 0,transparent 33%),radial-gradient(circle at 94% 10%,#2a1b2e 0,transparent 25%),var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+main{width:min(1520px,96vw);margin:auto;padding:30px 0 72px}a{color:#b8ddff;text-decoration:none}.kicker{font:800 11px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--mint)}
+h1{font-size:clamp(44px,7vw,94px);line-height:.88;letter-spacing:-.062em;margin:12px 0 18px;max-width:1050px}.lede{max-width:1050px;color:#bbc7d7;font-size:18px;line-height:1.62}.lede strong{color:var(--gold)}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:20px 0}.toolbar .label{font:750 10px ui-monospace,monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-left:8px}.toolbar .spacer{flex:1}
+button{border:1px solid var(--line);background:#0e1520;color:var(--ink);border-radius:999px;padding:9px 13px;font-weight:800;cursor:pointer}button:hover{border-color:#4e6380}button.active{background:#eff6ff;color:#07101a;border-color:#eff6ff}button.gold{border-color:#70582d;color:#ffd790}button.gold.active{background:var(--gold);color:#171005}
+.shell{display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:14px}.stage{border:1px solid var(--line);border-radius:20px;background:#070b11;overflow:hidden;position:relative}canvas{display:block;width:100%;height:auto}.stamp{position:absolute;left:16px;top:14px;padding:7px 10px;border-radius:999px;background:rgba(5,8,13,.78);border:1px solid rgba(255,255,255,.11);font:800 10px ui-monospace,monospace;letter-spacing:.08em;color:#dfeaff;text-transform:uppercase;backdrop-filter:blur(8px)}
+.metrics{display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid var(--line)}.metric{padding:11px 13px;border-right:1px solid var(--line);min-width:0}.metric b{display:block;font-size:20px;white-space:nowrap}.metric span{display:block;font:750 8px ui-monospace,monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.side{display:grid;gap:12px;align-content:start}.card{border:1px solid var(--line);border-radius:16px;background:rgba(11,16,24,.94);overflow:hidden}.card h2{font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:0;padding:13px 15px;border-bottom:1px solid var(--line);color:#dfe9f7}.body{padding:14px 15px}.big{font:900 28px ui-monospace,monospace;color:var(--cyan)}.guard{font-size:12px;line-height:1.58;color:#aab7c9}.guard strong{color:var(--gold)}
+.assay{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}.assay button{font-size:11px;padding:8px}.readout{margin-top:11px;padding:10px;border:1px solid #233047;border-radius:10px;background:#070b11;font:700 10px/1.6 ui-monospace,monospace;color:#9fb0c5}.readout strong{color:var(--mint)}
+.barrow{display:grid;grid-template-columns:76px 1fr 42px;gap:7px;align-items:center;margin:8px 0;font:750 9px ui-monospace,monospace;color:#9baabd}.bar{height:7px;background:#171f2d;border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--mint));border-radius:9px;transition:width .2s}.barrow.gold .bar i{background:linear-gradient(90deg,#c38a35,var(--gold))}
+.lower{display:grid;grid-template-columns:1.1fr .9fr .9fr;gap:14px;margin-top:14px}.flow{white-space:pre-wrap;font:700 11px/1.65 ui-monospace,monospace;background:#070b11;border:1px solid #1b2637;border-radius:11px;padding:12px;color:#d9e5f5}.body p,.body li{font-size:13px;line-height:1.58;color:#acb9cb}.body ul{padding-left:18px}.receipt{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:11px}.pill{border:1px solid #27334a;border-radius:11px;padding:10px;background:#090e16}.pill b{display:block;font:900 20px ui-monospace,monospace}.pill span{font-size:9px;color:var(--muted);text-transform:uppercase}
+.stop{border-color:#59353d}.stop h2{color:#ffacb8}
+@media(max-width:1080px){.shell{grid-template-columns:1fr}.side{grid-template-columns:1fr 1fr}.lower{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:680px){.side{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}.receipt{grid-template-columns:1fr 1fr}main{padding-top:20px}}
+</style>
+</head>
+<body>
+<main>
+<div class="kicker">BlackBoxLab · Datarium 3 · experiment, not organism</div>
+<h1>When motion hardens into matter.</h1>
+<p class="lede">Identical oscillating scouts write and read one fast wave. Nobody is assigned a role; there are no links, genomes, fitness scores, or <code>Train</code> objects. When locally dense scouts move coherently with wave flow, they can convert precursor into a slow <strong>oriented material phase</strong>. If that material later organizes strangers after every builder is removed, the trains have accidentally made a layer above themselves.</p>
+
+<div class="toolbar">
+<span class="label">world</span>
+<button data-mode="no_memory">NO MEMORY</button>
+<button data-mode="write_only">WRITE ONLY</button>
+<button data-mode="mean_field">MEAN FIELD</button>
+<button data-mode="tensor" class="active">ORIENTED MATTER</button>
+<span class="label">view</span>
+<button data-view="composite" class="active">COMPOSITE</button>
+<button data-view="wave">WAVE</button>
+<button data-view="matter">MATTER</button>
+<button id="pause">Pause</button>
+<button id="speed">Speed ×4</button>
+<button id="reset">Reset</button>
+<span class="spacer"></span>
+<a href="datarium2.html">← Datarium 2</a>
+</div>
+
+<div class="shell">
+<section class="stage">
+<canvas id="world" width="1080" height="760"></canvas>
+<div class="stamp" id="stamp">builders active · oriented matter</div>
+<div class="metrics">
+<div class="metric"><b id="time">0</b><span>field time</span></div>
+<div class="metric"><b id="coherent">0%</b><span>in assemblies</span></div>
+<div class="metric"><b id="largest">0</b><span>largest assembly</span></div>
+<div class="metric"><b id="lifetime">0</b><span>max persistence</span></div>
+<div class="metric"><b id="material">0.000</b><span>material mean</span></div>
+<div class="metric"><b id="reuse">0.00×</b><span>trace enrichment</span></div>
+</div>
+</section>
+
+<aside class="side">
+<section class="card">
+<h2>Builder-removal assay</h2>
+<div class="body guard"><strong>This is the decisive button.</strong> It snapshots the slow material, deletes every scout, zeros the fast wave, and releases the same naïve population. Choose which information survives.
+<button id="beginAssay" class="gold" style="width:100%;margin-top:11px">REMOVE BUILDERS → RELEASE STRANGERS</button>
+<div class="assay">
+<button data-probe="intact">INTACT</button>
+<button data-probe="isotropic">NO DIRECTION</button>
+<button data-probe="patchwork">PATCHWORK</button>
+<button data-probe="scrambled">CELL SHUFFLE</button>
+<button data-probe="rotated">ROTATE 90°</button>
+<button data-probe="erased">ERASE</button>
+</div>
+<div class="readout" id="assayReadout">Build for field time ≈ 100, then remove the builders. The Python receipt runs every intervention from identical fresh initial states.</div>
+</div>
+</section>
+
+<section class="card"><h2>Live causal links</h2><div class="body">
+<div class="barrow"><span>wave order</span><div class="bar"><i id="waveBar"></i></div><b id="waveValue">0</b></div>
+<div class="barrow gold"><span>material</span><div class="bar"><i id="matterBar"></i></div><b id="matterValue">0</b></div>
+<div class="barrow"><span>reuse</span><div class="bar"><i id="reuseBar"></i></div><b id="reuseValue">0</b></div>
+<p>The cyan/violet carrier is fast. Gold fibres are slow. Little white strokes are scouts; a brighter halo marks membership in a component detected only by the observer.</p>
+</div></section>
+
+<section class="card stop"><h2>Stopping line</h2><div class="body guard">A causal material memory is <strong>not DNA</strong>. Nothing here copies a material sequence into a daughter structure. No reproduction or open-ended evolution claim has been earned.</div></section>
+</aside>
+</div>
+
+<div class="lower">
+<section class="card"><h2>The only generative loop</h2><div class="body"><div class="flow">identical oscillators emit local phase
+        ↓
+two-quadrature wave propagates + interferes
+        ↓
+phase-sensitive gradients move scouts
+        ↓
+dense coherent wave-following motion
+converts precursor → oriented matter
+        ↓
+matter changes later propagation + motion
+        ↺</div><p>The chemistry sees only local density, phase coherence, motion flux, wave amplitude and their alignment. It never sees a measured assembly.</p></div></section>
+
+<section class="card"><h2>Current reproducible receipt</h2><div class="body"><p>Four matched receipt seeds, 48² field, 72 identical scouts. Python remains authoritative.</p><div class="receipt">
+<div class="pill"><b>12.7%</b><span>wave-only coherence</span></div>
+<div class="pill"><b>53.0%</b><span>full-loop coherence</span></div>
+<div class="pill"><b>52.5%</b><span>fresh / intact</span></div>
+<div class="pill"><b>14.4%</b><span>fresh / erased</span></div>
+</div><p>Across four matched seeds, patch-shuffling preserved local fibre texture but reduced fresh-population coherence to 39.2%; cell scrambling reduced it to 21.1%.</p></div></section>
+
+<section class="card"><h2>What the attackers say</h2><div class="body"><ul>
+<li><b>WRITE ONLY</b> proves that merely drawing history is not enough.</li>
+<li><b>MEAN FIELD</b> removes spatial addressability.</li>
+<li><b>NO WAVE PRODUCTION</b> largely prevents the slow layer from forming.</li>
+<li><b>PATCHWORK</b> asks whether local texture alone explains the effect.</li>
+<li><b>ROTATE 90°</b> separates generic order from reuse of the written routes.</li>
+</ul><p><a href="results/DATARIUM3.md">Read the full receipt →</a></p></div></section>
+</div>
+</main>
+
+<script>
+const canvas=document.getElementById('world'),ctx=canvas.getContext('2d');
+const N=64,S=N*N,P=84,DT=.04,TAU=100;
+let re,im,res,prec,m,q1,q2,env,agents,localMaps,lastPoly;
+let mode='tensor',view='composite',running=true,stepsPerFrame=4,stepN=0,time=0,frozen=false,probe='';
+let saved=null,rngState=0x9e3779b9,groups=[],oldGroups=[],nextGroup=1,maxLife=0,coherentSet=new Set();
+const idx=(y,x)=>((y+N)%N)*N+((x+N)%N);
+const td=v=>((v+N/2)%N+N)%N-N/2;
+function rng(){rngState=(1664525*rngState+1013904223)>>>0;return rngState/4294967296}
+function normal(){let u=Math.max(rng(),1e-9),v=rng();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function field(fill=0){let a=new Float64Array(S);if(fill)a.fill(fill);return a}
+function clone(a){return new Float64Array(a)}
+function lap(a,y,x){let i=idx(y,x);return a[idx(y+1,x)]+a[idx(y-1,x)]+a[idx(y,x+1)]+a[idx(y,x-1)]-4*a[i]}
+function reset(seed=0x9e3779b9){
+ rngState=seed>>>0;re=field();im=field();res=field(1);prec=field(1);m=field();q1=field();q2=field();env=field();lastPoly=field();stepN=0;time=0;frozen=false;probe='';saved=null;oldGroups=[];groups=[];nextGroup=1;maxLife=0;coherentSet=new Set();
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){let cx=N*.25,cy=N*.5,d=Math.hypot(x-cx,y-cy),a=.35/Math.cosh(d/6.4),p=.22*(x-cx);re[idx(y,x)]=a*Math.cos(p);im[idx(y,x)]=a*Math.sin(p)}
+ spawnAgents(seed^0xa511e9b3);renderAssay();
+}
+function spawnAgents(seed){rngState=seed>>>0;agents=Array.from({length:P},(_,id)=>({id,x:rng()*N,y:rng()*N,h:rng()*Math.PI*2,p:rng()*Math.PI*2}));}
+function zeroFastAndSpawn(seed=0x51f15e){re.fill(0);im.fill(0);env.fill(0);res.fill(1);stepN=0;time=0;oldGroups=[];groups=[];nextGroup=1;maxLife=0;coherentSet=new Set();spawnAgents(seed);}
+function smoothStack(raw){let a=raw;for(let k=0;k<4;k++){let b=Array.from({length:7},()=>field());for(let c=0;c<7;c++)for(let y=0;y<N;y++)for(let x=0;x<N;x++){let i=idx(y,x);b[c][i]=a[c][i]+.16*lap(a[c],y,x)}a=b}return a}
+function raster(){let raw=Array.from({length:7},()=>field());for(const a of agents){let x=Math.floor(a.x)%N,y=Math.floor(a.y)%N,i=idx(y,x),v=[1,Math.sin(a.p),Math.cos(a.p),Math.cos(a.h),Math.sin(a.h),Math.cos(2*a.h),Math.sin(2*a.h)];for(let c=0;c<7;c++)raw[c][i]+=v[c]}return smoothStack(raw)}
+function feedback(){if(mode==='no_memory'||mode==='write_only'||probe==='erased')return{kind:'none',mean:0};if(mode==='mean_field')return{kind:'mean',mean:m.reduce((a,b)=>a+b,0)/S};if(mode==='scalar'||probe==='isotropic')return{kind:'scalar',mean:0};return{kind:'tensor',mean:0}}
+function materialAt(i,fb){return fb.kind==='none'?0:fb.kind==='mean'?fb.mean:m[i]}
+function qAt(i,fb){return fb.kind==='tensor'?[q1[i],q2[i]]:[0,0]}
+function physicsStep(){
+ localMaps=raster();let [rho,sinp,cosp,hx,hy,c2,s2]=localMaps,fb=feedback();
+ if(mode!=='no_memory'&&!frozen){let nm=clone(m),np=clone(prec),nq1=clone(q1),nq2=clone(q2);for(let y=0;y<N;y++)for(let x=0;x<N;x++){let i=idx(y,x),d=rho[i],pc=Math.hypot(sinp[i],cosp[i])/(d+1e-9),mc=Math.hypot(hx[i],hy[i])/(d+1e-9),coh=Math.min(1,pc*mc),d4=d**4,coop=d4/(d4+.16**4+1e-12),rex=(re[idx(y,x+1)]-re[idx(y,x-1)])/2,rey=(re[idx(y+1,x)]-re[idx(y-1,x)])/2,imx=(im[idx(y,x+1)]-im[idx(y,x-1)])/2,imy=(im[idx(y+1,x)]-im[idx(y-1,x)])/2,fx=cosp[i]*rex+sinp[i]*imx,fy=cosp[i]*rey+sinp[i]*imy,fm=Math.hypot(fx,fy),flow=Math.max(0,(hx[i]*fx+hy[i]*fy)/(d*fm+1e-9)),gate=env[i]/(env[i]+.003),poly=.12*prec[i]*coop*coh**4*gate*flow**4,dec=.004*m[i];lastPoly[i]=poly;nm[i]=Math.max(0,Math.min(1,m[i]+DT*(poly-dec)));np[i]=Math.max(0,Math.min(1,prec[i]+DT*(.016*lap(prec,y,x)-poly+dec)));nq1[i]=q1[i]+DT*(poly*c2[i]/(d+1e-9)-.004*q1[i]);nq2[i]=q2[i]+DT*(poly*s2[i]/(d+1e-9)-.004*q2[i]);let z=Math.hypot(nq1[i],nq2[i]),sc=Math.min(1,nm[i]/(z+1e-12));nq1[i]*=sc;nq2[i]*=sc}m=nm;prec=np;q1=nq1;q2=nq2}else lastPoly.fill(0);
+ let nr=field(),ni=field(),nres=field(),nenv=field();
+ function op(a,y,x,mm,qq1,qq2){let i=idx(y,x),xx=a[idx(y,x+1)]-2*a[i]+a[idx(y,x-1)],yy=a[idx(y+1,x)]-2*a[i]+a[idx(y-1,x)],xy=(a[idx(y+1,x+1)]-a[idx(y+1,x-1)]-a[idx(y-1,x+1)]+a[idx(y-1,x-1)])/4;return 1.2*((1+.16*mm)*(xx+yy)+.10*(qq1*(xx-yy)+2*qq2*xy))}
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){let i=idx(y,x),mm=materialAt(i,fb),[qq1,qq2]=qAt(i,fb),mag=re[i]*re[i]+im[i]*im[i],growth=.10*res[i]-.20*(1-.70*mm)-.04*mag,dr=op(re,y,x,mm,qq1,qq2)-2*im[i]+growth*re[i]+cosp[i],di=op(im,y,x,mm,qq1,qq2)+2*re[i]+growth*im[i]+sinp[i];nr[i]=re[i]+DT*dr;ni[i]=im[i]+DT*di;let nmag=nr[i]*nr[i]+ni[i]*ni[i];nres[i]=Math.max(0,Math.min(1,res[i]+DT*((1-res[i])/TAU-.012*nmag+.02*lap(res,y,x))));let memory=Math.min(.997,.970+.020*mm);nenv[i]=Math.max(0,memory*env[i]+(1-memory)*nmag+.04*lap(env,y,x))}
+ re=nr;im=ni;res=nres;env=nenv;
+ for(const a of agents){let x=Math.floor(a.x)%N,y=Math.floor(a.y)%N,i=idx(y,x),ex=(env[idx(y,x+1)]-env[idx(y,x-1)])/2,ey=(env[idx(y+1,x)]-env[idx(y-1,x)])/2,rex=(re[idx(y,x+1)]-re[idx(y,x-1)])/2,rey=(re[idx(y+1,x)]-re[idx(y-1,x)])/2,imx=(im[idx(y,x+1)]-im[idx(y,x-1)])/2,imy=(im[idx(y+1,x)]-im[idx(y-1,x)])/2,dx=(rho[idx(y,x+1)]-rho[idx(y,x-1)])/2,dy=(rho[idx(y+1,x)]-rho[idx(y-1,x)])/2,rx=Math.cos(a.p)*rex+Math.sin(a.p)*imx,ry=Math.cos(a.p)*rey+Math.sin(a.p)*imy,fx=2*rx-5*dx,fy=2*ry-5*dy,tor=Math.cos(a.h)*fy-Math.sin(a.h)*fx;if(fb.kind==='tensor')tor+=40*(q2[i]*Math.cos(2*a.h)-q1[i]*Math.sin(2*a.h));a.h+=DT*tor+Math.sqrt(DT)*.04*normal();a.p+=DT*(2+2*(-Math.sin(a.p)*re[i]+Math.cos(a.p)*im[i]));a.x=(a.x+DT*.8*Math.cos(a.h)+N)%N;a.y=(a.y+DT*.8*Math.sin(a.h)+N)%N}
+ stepN++;time+=DT;if(stepN%25===0)measure();
+}
+function measure(){let seen=new Uint8Array(P),current=[];for(let s=0;s<P;s++){if(seen[s])continue;let stack=[s],members=[];seen[s]=1;while(stack.length){let i=stack.pop();members.push(i);for(let j=0;j<P;j++){if(seen[j]||i===j)continue;let a=agents[i],b=agents[j],d=Math.hypot(td(a.x-b.x),td(a.y-b.y));if(d<=4&&Math.cos(a.h-b.h)>=.5){seen[j]=1;stack.push(j)}}}if(members.length>=3)current.push({members,id:-1,life:1})}
+ let candidates=[];for(let oi=0;oi<oldGroups.length;oi++)for(let ni=0;ni<current.length;ni++){let A=new Set(oldGroups[oi].members),B=new Set(current[ni].members),inter=0;for(const z of A)if(B.has(z))inter++;let jac=inter/(A.size+B.size-inter||1);if(jac>=.25)candidates.push([jac,oi,ni])}candidates.sort((a,b)=>b[0]-a[0]);let uo=new Set(),un=new Set();for(const[,oi,ni]of candidates){if(uo.has(oi)||un.has(ni))continue;current[ni].id=oldGroups[oi].id;current[ni].life=oldGroups[oi].life+1;uo.add(oi);un.add(ni)}for(const g of current)if(g.id<0)g.id=nextGroup++;groups=current;oldGroups=current;coherentSet=new Set();for(const g of groups){maxLife=Math.max(maxLife,g.life);for(const z of g.members)coherentSet.add(z)}
+}
+function snapshot(){saved={m:clone(m),q1:clone(q1),q2:clone(q2)};}
+function permutation(n,seed){let old=rngState;rngState=seed>>>0,a=Array.from({length:n},(_,i)=>i);for(let i=n-1;i>0;i--){let j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]]}rngState=old;return a}
+function applyProbe(kind){if(!saved)snapshot();m=clone(saved.m);q1=clone(saved.q1);q2=clone(saved.q2);if(kind==='isotropic'){q1.fill(0);q2.fill(0)}else if(kind==='rotated'){for(let i=0;i<S;i++){q1[i]*=-1;q2[i]*=-1}}else if(kind==='erased'){m.fill(0);q1.fill(0);q2.fill(0)}else if(kind==='scrambled'){let p=permutation(S,0x31415926),mm=field(),a=field(),b=field();for(let i=0;i<S;i++){mm[i]=m[p[i]];a[i]=q1[p[i]];b[i]=q2[p[i]]}m=mm;q1=a;q2=b}else if(kind==='patchwork'){let tile=8,side=N/tile,p=permutation(side*side,0x27182818),mm=field(),a=field(),b=field();for(let d=0;d<p.length;d++){let dy=Math.floor(d/side),dx=d%side,sy=Math.floor(p[d]/side),sx=p[d]%side;for(let yy=0;yy<tile;yy++)for(let xx=0;xx<tile;xx++){let di=idx(dy*tile+yy,dx*tile+xx),si=idx(sy*tile+yy,sx*tile+xx);mm[di]=m[si];a[di]=q1[si];b[di]=q2[si]}}m=mm;q1=a;q2=b}probe=kind;frozen=true;mode=kind==='erased'?'no_memory':kind==='isotropic'?'scalar':'tensor';prec=field(1);zeroFastAndSpawn(0x51f15e);document.querySelectorAll('[data-probe]').forEach(b=>b.classList.toggle('active',b.dataset.probe===kind));renderAssay();}
+function beginAssay(){snapshot();applyProbe('intact')}
+function renderAssay(){let el=document.getElementById('assayReadout');if(!frozen){el.innerHTML=`Builders active. Material mean <strong>${mean(m).toFixed(4)}</strong>. Wait until field time ≈ 100 for a meaningful intervention.`}else el.innerHTML=`Builders deleted · wave zeroed · fresh seed fixed<br>surviving material: <strong>${probe.toUpperCase()}</strong>`;document.getElementById('stamp').textContent=frozen?`builders removed · ${probe}`:`builders active · ${mode.replace('_',' ')}`}
+function mean(a){let s=0;for(const v of a)s+=v;return s/a.length}
+function draw(){let W=canvas.width,H=canvas.height,gw=W/N,gh=H/N;ctx.fillStyle='#05070b';ctx.fillRect(0,0,W,H);for(let y=0;y<N;y++)for(let x=0;x<N;x++){let i=idx(y,x),amp=Math.min(1.4,Math.hypot(re[i],im[i])),mm=m[i],rr=0,gg=0,bb=0;if(view==='wave'){let phase=Math.atan2(im[i],re[i]);rr=10+70*amp*(.5+.5*Math.cos(phase));gg=13+110*amp*(.5+.5*Math.sin(phase));bb=20+180*amp}else if(view==='matter'){rr=8+240*Math.min(1,mm*5);gg=10+170*Math.min(1,mm*5);bb=14+45*Math.min(1,mm*5)}else{rr=7+190*Math.min(1,mm*4)+35*amp;gg=10+115*Math.min(1,mm*4)+45*amp;bb=17+155*amp}ctx.fillStyle=`rgb(${Math.min(255,rr)|0},${Math.min(255,gg)|0},${Math.min(255,bb)|0})`;ctx.fillRect(x*gw,y*gh,gw+1,gh+1)}
+ if(view!=='wave'){ctx.lineWidth=1;for(let y=2;y<N;y+=4)for(let x=2;x<N;x+=4){let i=idx(y,x),z=Math.hypot(q1[i],q2[i]);if(z<.015)continue;let a=.5*Math.atan2(q2[i],q1[i]),L=Math.min(8,2+z*70),px=(x+.5)*gw,py=(y+.5)*gh;ctx.strokeStyle=`rgba(255,205,112,${Math.min(.85,.2+z*6)})`;ctx.beginPath();ctx.moveTo(px-Math.cos(a)*L,py-Math.sin(a)*L);ctx.lineTo(px+Math.cos(a)*L,py+Math.sin(a)*L);ctx.stroke()}}
+ for(const a of agents){let px=a.x*gw,py=a.y*gh,on=coherentSet.has(a.id);if(on){ctx.fillStyle='rgba(101,220,255,.18)';ctx.beginPath();ctx.arc(px,py,6,0,Math.PI*2);ctx.fill()}ctx.strokeStyle=on?'#dffaff':'#91a1b5';ctx.lineWidth=on?1.8:1;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px+Math.cos(a.h)*5,py+Math.sin(a.h)*5);ctx.stroke();ctx.fillStyle=`hsl(${(a.p*180/Math.PI)%360} 85% 72%)`;ctx.beginPath();ctx.arc(px,py,on?2.3:1.7,0,Math.PI*2);ctx.fill()}
+ updateUI();
+}
+function updateUI(){let mf=mean(m),sample=0;for(const a of agents)sample+=m[idx(Math.floor(a.y),Math.floor(a.x))];sample/=P;let reuse=mf>1e-9?sample/mf:0,coh=coherentSet.size/P,largest=Math.max(0,...groups.map(g=>g.members.length)),wave=Math.min(1,Math.sqrt(mean(Array.from({length:S},(_,i)=>re[i]*re[i]+im[i]*im[i]))));document.getElementById('time').textContent=time.toFixed(1);document.getElementById('coherent').textContent=(100*coh).toFixed(1)+'%';document.getElementById('largest').textContent=largest;document.getElementById('lifetime').textContent=maxLife;document.getElementById('material').textContent=mf.toFixed(4);document.getElementById('reuse').textContent=reuse.toFixed(2)+'×';document.getElementById('waveBar').style.width=(100*wave)+'%';document.getElementById('matterBar').style.width=(100*Math.min(1,mf/.04))+'%';document.getElementById('reuseBar').style.width=(100*Math.min(1,reuse/2.5))+'%';document.getElementById('waveValue').textContent=wave.toFixed(2);document.getElementById('matterValue').textContent=mf.toFixed(3);document.getElementById('reuseValue').textContent=reuse.toFixed(2);if(stepN%100===0)renderAssay()}
+function loop(){if(running)for(let k=0;k<stepsPerFrame;k++)physicsStep();draw();requestAnimationFrame(loop)}
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-mode]').forEach(x=>x.classList.remove('active'));b.classList.add('active');mode=b.dataset.mode;reset()});
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-view]').forEach(x=>x.classList.remove('active'));b.classList.add('active');view=b.dataset.view});
+document.querySelectorAll('[data-probe]').forEach(b=>b.onclick=()=>applyProbe(b.dataset.probe));
+document.getElementById('beginAssay').onclick=beginAssay;document.getElementById('pause').onclick=e=>{running=!running;e.target.textContent=running?'Pause':'Run'};document.getElementById('speed').onclick=e=>{stepsPerFrame=stepsPerFrame===1?4:stepsPerFrame===4?12:1;e.target.textContent='Speed ×'+stepsPerFrame};document.getElementById('reset').onclick=()=>reset();
+reset();loop();
+</script>
+</body>
+</html>

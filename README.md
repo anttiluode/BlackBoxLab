@@ -258,6 +258,61 @@ Interesting evidence would be persistent separation from the RANDOM attacker
 in recovery, environmental persistence, lineage success, relationships or
 behavioral niches.
 
+## Datarium 3 — when motion hardens into matter
+
+The attached historical `train.html` had a powerful visual loop but an impure
+emergence claim: five authored writing roles, type-specific forces and rewards,
+a global fitness sort, crossover and mutation were already in the source.
+
+Datarium 3 keeps only the local field idea and starts again:
+
+~~~text
+identical phase oscillators
+        ↓ write / read
+fast two-quadrature wave
+        ↓
+transient co-moving assemblies (observer only)
+        ↓ local coherent wave-following reaction
+precursor becomes slow oriented matter
+        ↓
+matter changes later wave propagation and motion
+~~~
+
+There are no particle types, roles, links, genomes, fitness scores,
+reproduction rules or `Train` objects. The assembly observer is post-hoc and is
+never visible to the physics.
+
+### Four-seed receipt
+
+| condition | late coherent fraction | largest measured assembly | maximum persistence |
+|---|---:|---:|---:|
+| wave only | 0.127 ± 0.022 | 3.91 ± 0.19 | 42.8 ± 5.8 samples |
+| write-only material | 0.127 ± 0.022 | 3.91 ± 0.19 | 42.8 ± 5.8 |
+| scalar material | 0.117 ± 0.015 | 3.87 ± 0.33 | 30.2 ± 2.9 |
+| mean-field material | 0.111 ± 0.024 | 3.76 ± 0.39 | 27.5 ± 7.2 |
+| **oriented material** | **0.530 ± 0.071** | **13.43 ± 4.44** | **94.0 ± 15.1** |
+
+The decisive intervention snapshots the slow material, deletes every builder,
+zeros the fast wave and releases the same naïve population. Intact material
+produces **0.525 ± 0.072** fresh-population coherence versus **0.144 ± 0.052**
+after erasure. Removing direction while preserving scalar material gives
+0.123; shuffling intact local patches gives 0.392; cell-scrambling the same
+histogram gives 0.211.
+
+So history now survives outside the agents and has causal influence at a
+slower material scale. The stopping line matters:
+
+> **Datarium 3 has made infrastructure, not DNA. It does not copy a material
+> pattern into a daughter pattern.**
+
+Open **[Datarium 3 live](datarium3.html)** and press **REMOVE BUILDERS →
+RELEASE STRANGERS** after the material has developed. See the
+[full Datarium 3 receipt](results/DATARIUM3.md) and run:
+
+~~~bash
+python experiments/datarium3_layers.py --preset ci
+~~~
+
 ## World
 
 The toy world exposes four spatial "ecologies" at every physical timestep:
