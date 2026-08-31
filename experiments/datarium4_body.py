@@ -101,24 +101,43 @@ class BodyWorld:
         active_stress: float | None = None,
         uniform_food: bool = False,
         pinned: bool = False,
+        initial_phi: np.ndarray | None = None,
     ) -> None:
         self.cfg = config
         self.n = config.n
         self.yy, self.xx = np.mgrid[0 : self.n, 0 : self.n]
-        self.cx0 = self.n / 2.0
-        self.cy0 = self.n / 2.0
+
+        if initial_phi is None:
+            seed_cx = self.n / 2.0
+            seed_cy = self.n / 2.0
+            r = np.hypot(self.xx - seed_cx, self.yy - seed_cy)
+            self.phi = 1.0 / (
+                1.0 + np.exp((r - config.radius) / config.interface_width)
+            )
+        else:
+            initial_phi = np.asarray(initial_phi, dtype=float)
+            if initial_phi.shape != (self.n, self.n):
+                raise ValueError(
+                    f"initial_phi must have shape {(self.n, self.n)}, "
+                    f"got {initial_phi.shape}"
+                )
+            self.phi = np.clip(initial_phi.copy(), 0.0, 1.0)
+
+        self.initial_mass = float(np.sum(self.phi))
+        if self.initial_mass <= 1e-9:
+            raise ValueError("initial_phi must contain nonzero material")
+
+        # The assay places the external source relative to the measured initial
+        # phase center. This is experimental setup only: the source vector and
+        # center are never supplied to the local chemistry or force law.
+        self.cx0 = float(np.sum(self.phi * self.xx) / self.initial_mass)
+        self.cy0 = float(np.sum(self.phi * self.yy) / self.initial_mass)
         self.source_angle = float(source_angle)
         self.source_unit = np.asarray(
             [np.cos(self.source_angle), np.sin(self.source_angle)], dtype=float
         )
         self.source_x = self.cx0 + config.source_radius * self.source_unit[0]
         self.source_y = self.cy0 + config.source_radius * self.source_unit[1]
-
-        r = np.hypot(self.xx - self.cx0, self.yy - self.cy0)
-        self.phi = 1.0 / (
-            1.0 + np.exp((r - config.radius) / config.interface_width)
-        )
-        self.initial_mass = float(np.sum(self.phi))
 
         self.activator = np.zeros_like(self.phi)
         self.ux = np.zeros_like(self.phi)
