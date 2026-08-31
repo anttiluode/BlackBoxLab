@@ -142,12 +142,18 @@ def phase_from_scaffold(
     if scaffold.shape != (config.n, config.n):
         raise ValueError(scaffold.shape)
 
-    catalyst = 1.0 / (
-        1.0
-        + np.exp(
-            -(scaffold - config.scaffold_half)
-            / max(config.scaffold_sharpness, 1e-9)
-        )
+    width = max(config.scaffold_sharpness, 1e-9)
+    raw_catalyst = 1.0 / (
+        1.0 + np.exp(-(scaffold - config.scaffold_half) / width)
+    )
+    # Exactly zero written scaffold must make exactly zero second phase.  The
+    # subtraction removes the sigmoid's nonzero baseline without consulting
+    # any run statistic.
+    baseline = 1.0 / (1.0 + np.exp(config.scaffold_half / width))
+    catalyst = np.clip(
+        (raw_catalyst - baseline) / (1.0 - baseline),
+        0.0,
+        1.0,
     )
     phi = np.zeros_like(scaffold)
     precursor = np.ones_like(scaffold)
