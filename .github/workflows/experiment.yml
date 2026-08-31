@@ -45,6 +45,19 @@ jobs:
       - name: Datarium 3 — material memory above wave assemblies
         run: python experiments/datarium3_layers.py --preset ci
 
+  datarium4:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Datarium 4 unit tests
+        run: python -m unittest tests.test_datarium4 -v
+      - name: Datarium 4A — geography becomes body
+        run: python experiments/datarium4_body.py --preset ci
+
   blackboxlab:
     runs-on: ubuntu-latest
     steps:
