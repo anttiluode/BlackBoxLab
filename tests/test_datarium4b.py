@@ -43,18 +43,36 @@ class Datarium4BLocalConversionTests(unittest.TestCase):
     def test_scramble_preserves_scaffold_histogram_but_not_geometry(self):
         scaffold = np.zeros((32, 32))
         scaffold[8:24, 14:18] = np.linspace(0.03, 0.14, 16)[:, None]
-        scrambled = scaffold_variant(scaffold, "scrambled", 4)
+        q1 = 0.5 * scaffold
+        q2 = -0.25 * scaffold
+        scrambled, sq1, sq2 = scaffold_variant(
+            scaffold, q1, q2, "scrambled", 4
+        )
         self.assertTrue(
             np.allclose(np.sort(scaffold.ravel()), np.sort(scrambled.ravel()))
+        )
+        self.assertTrue(
+            np.allclose(np.sort(q1.ravel()), np.sort(sq1.ravel()))
+        )
+        self.assertTrue(
+            np.allclose(np.sort(q2.ravel()), np.sort(sq2.ravel()))
         )
         self.assertFalse(np.allclose(scaffold, scrambled))
 
     def test_mean_field_preserves_only_total_amount(self):
         rng = np.random.default_rng(3)
         scaffold = rng.uniform(0.0, 0.1, (32, 32))
-        mean_field = scaffold_variant(scaffold, "mean_field", 0)
-        self.assertAlmostEqual(float(np.mean(mean_field)), float(np.mean(scaffold)))
+        q1 = 0.3 * scaffold
+        q2 = 0.1 * scaffold
+        mean_field, mq1, mq2 = scaffold_variant(
+            scaffold, q1, q2, "mean_field", 0
+        )
+        self.assertAlmostEqual(
+            float(np.mean(mean_field)), float(np.mean(scaffold))
+        )
         self.assertAlmostEqual(float(np.std(mean_field)), 0.0)
+        self.assertEqual(float(np.max(np.abs(mq1))), 0.0)
+        self.assertEqual(float(np.max(np.abs(mq2))), 0.0)
 
 
 class Datarium4BBodyHandoffTests(unittest.TestCase):
