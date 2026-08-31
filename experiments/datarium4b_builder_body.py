@@ -518,6 +518,9 @@ def summarize(receipts: list[dict[str, object]]) -> dict[str, object]:
             "scaffold_std": _aggregate_scalar(
                 float(row["scaffold_std"]) for row in rows
             ),
+            "director_mean": _aggregate_scalar(
+                float(row["director_mean"]) for row in rows
+            ),
             "phase_mass": _aggregate_scalar(
                 float(row["phase_mass"]) for row in rows
             ),
@@ -605,8 +608,8 @@ def preset(name: str) -> tuple[Config, tuple[int, ...]]:
 def print_receipt(receipt: dict[str, object]) -> None:
     print("BlackBoxLab — Datarium 4B: remove the explicit body seed")
     print(
-        f"{'arm':20s} {'scaf mean':>10s} {'phase':>10s} "
-        f"{'largest':>10s} {'edges':>10s} {'retain':>10s} {'move':>10s}"
+        f"{'arm':20s} {'scaf':>8s} {'director':>9s} {'phase':>9s} "
+        f"{'largest':>9s} {'retain':>9s} {'open':>9s} {'move':>9s}"
     )
     for name in (
         "intact",
@@ -619,12 +622,13 @@ def print_receipt(receipt: dict[str, object]) -> None:
         row = receipt["summary"][name]
         print(
             f"{name:20s} "
-            f"{row['scaffold_mean']['mean']:10.4f} "
-            f"{row['phase_mass']['mean']:10.2f} "
-            f"{row['largest_component_fraction_of_phase']['mean']:10.3f} "
-            f"{row['exposed_edges_per_phase_cell']['mean']:10.3f} "
-            f"{row['retained_inside_fraction']['mean']:10.3f} "
-            f"{row['toward_source']['mean']:10.3f}"
+            f"{row['scaffold_mean']['mean']:8.4f} "
+            f"{row['director_mean']['mean']:9.4f} "
+            f"{row['phase_mass']['mean']:9.2f} "
+            f"{row['largest_component_fraction_of_phase']['mean']:9.3f} "
+            f"{row['retained_inside_fraction']['mean']:9.3f} "
+            f"{row['open_retained_inside_fraction']['mean']:9.3f} "
+            f"{row['toward_source']['mean']:9.3f}"
         )
     print("\nmovement mechanism attackers")
     for name in (
