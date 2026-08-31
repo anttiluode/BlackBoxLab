@@ -54,9 +54,11 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements.txt
       - name: Datarium 4 unit tests
-        run: python -m unittest tests.test_datarium4 -v
+        run: python -m unittest tests.test_datarium4 tests.test_datarium4b -v
       - name: Datarium 4A — geography becomes body
         run: python experiments/datarium4_body.py --preset ci
+      - name: Datarium 4B — builders make the body phase
+        run: python experiments/datarium4b_builder_body.py --preset ci
 
   blackboxlab:
     runs-on: ubuntu-latest
