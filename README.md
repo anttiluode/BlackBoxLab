@@ -420,6 +420,89 @@ python experiments/datarium4b_builder_body.py --preset ci
 
 See [the Datarium 4B receipt](results/DATARIUM4B.md).
 
+## Datarium 5A — the signal changes the thing that changes the signal
+
+Datarium 4B made a builder-nucleated body. Datarium 5A pins that body so the
+next causal rung can be isolated:
+
+~~~text
+boundary rhythms
+        ↓
+fast two-quadrature internal field
+        ↓
+interference + local gradient tensor
+        ↓
+slow oriented internal fibres
+        ↓
+anisotropic propagation
+        ↓
+changed future field
+        ↺
+~~~
+
+Four boundary patches oscillate at nearby frequencies. "Moiré-like" means only
+interference / beat geometry here; this is **not** an entorhinal-cortex or grid
+cell model. No neuron, synapse, role, genome, controller or reward is inserted.
+
+The important correction from the fractal detour is methodological: Datarium 5
+does **not** optimize a box-counting dimension. It measures fibre area,
+junction-like internal structure and rough dyadic scale occupancy, then asks
+whether the morphology is causal and functional.
+
+### First CI-sized receipt
+
+The D4B nucleus is locally expanded and then pinned. Across two matched seeds:
+
+~~~text
+raw D4B phase mass        15.78
+grown body mass          105.01
+high-phase area           93.0 cells
+
+FULL intact fibre area    24.430
+junction proxy             0.707
+active dyadic bands        3.0
+~~~
+
+The decisive morphology intervention freezes development and applies the same
+probe fields:
+
+~~~text
+INTACT vs ERASED field response       0.1727 ± 0.0287
+INTACT vs ISOTROPIC                    0.1727 ± 0.0287
+INTACT vs SCRAMBLED                    0.1864 ± 0.0184
+FULL vs WRITE-ONLY grown morphology    0.1694 ± 0.1038
+~~~
+
+So Datarium 5A earns a real **field → morphology → field** closure: signal
+history writes slow oriented internal structure, and deleting direction,
+scrambling address or erasing that structure changes later spatial field
+responses by roughly 17–19%.
+
+The functional result is deliberately weaker. A cheap fixed linear surrogate,
+transfer-rank score, functional-zone entropy and response-map separation barely
+change between intact and erased/isotropic arms. The morphology is therefore
+**causal but not yet demonstrably a more complex internal computer**.
+
+That negative result determines the next gate: make fibre amount and
+junction-local chemistry alter a second physical property—conductivity,
+damping, permeability or nonlinear susceptibility—and test whether the exact
+internal arrangement improves or complicates held-out I/O. Do not tune
+fractal dimension.
+
+Open **[Datarium 5 live](https://anttiluode.github.io/BlackBoxLab/datarium5.html)**.
+See [the full Datarium 5A receipt](results/DATARIUM5.md) and run:
+
+~~~bash
+python -m unittest tests.test_datarium5 -v
+python experiments/datarium5_internal_field.py --preset ci
+~~~
+
+The stopping line:
+
+> **Datarium 5A has field/substrate closure, not a neural organ. The internal
+> morphology is causal, but higher functional complexity, portable internal
+> structure, heredity and intelligence remain unearned.**
+
 ## World
 
 The toy world exposes four spatial "ecologies" at every physical timestep:
