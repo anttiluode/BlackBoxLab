@@ -36,9 +36,14 @@ import argparse
 from dataclasses import asdict, dataclass, replace
 import json
 from pathlib import Path
+import sys
 from typing import Iterable
 
 import numpy as np
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from datarium.lineage import periodic_components
 from experiments.datarium3_layers import Config as D3Config
