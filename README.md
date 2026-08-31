@@ -305,7 +305,7 @@ slower material scale. The stopping line matters:
 > **Datarium 3 has made infrastructure, not DNA. It does not copy a material
 > pattern into a daughter pattern.**
 
-Open **[Datarium 3 live](datarium3.html)** and press **REMOVE BUILDERS →
+Open **[[Datarium 3 live](datarium3.html)](https://anttiluode.github.io/BlackBoxLab/datarium3.html)** and press **REMOVE BUILDERS →
 RELEASE STRANGERS** after the material has developed. See the
 [full Datarium 3 receipt](results/DATARIUM3.md) and run:
 
