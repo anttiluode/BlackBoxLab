@@ -180,13 +180,15 @@ function buildStep(){
  time+=DT;
 }
 function permuteScaffold(){
- let arr=Array.from(m),idx=Array.from({length:S},(_,i)=>i);for(let i=S-1;i>0;i--){let j=Math.floor(rng()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]]}let out=field();for(let i=0;i<S;i++)out[i]=arr[idx[i]];m=out;
+ let am=Array.from(m),a1=Array.from(q1),a2=Array.from(q2),idx=Array.from({length:S},(_,i)=>i);
+ for(let i=S-1;i>0;i--){let j=Math.floor(rng()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]]}
+ let om=field(),o1=field(),o2=field();for(let i=0;i<S;i++){let j=idx[i];om[i]=am[j];o1[i]=a1[j];o2[i]=a2[j]}m=om;q1=o1;q2=o2;
 }
 function matureAndRelease(){
  if(stage!=='build')return;
  if(probe==='scrambled')permuteScaffold();
- if(probe==='mean'){let mm=mean(m);m.fill(mm)}
- if(probe==='erased')m.fill(0);
+ if(probe==='mean'){let mm=mean(m);m.fill(mm);q1.fill(0);q2.fill(0)}
+ if(probe==='erased'){m.fill(0);q1.fill(0);q2.fill(0)}
  phi.fill(0);let bodyPrec=field(1),width=.010,half=.028,baseline=1/(1+Math.exp(half/width));
  let oh=.010,ow=.004,obase=1/(1+Math.exp(oh/ow));
  for(let k=0;k<150;k++){
