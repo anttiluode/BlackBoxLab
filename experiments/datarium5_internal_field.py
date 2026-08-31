@@ -51,7 +51,7 @@ class Config:
     agents: int = 52
     builder_steps: int = 900
     phase_steps: int = 150
-    body_growth_steps: int = 150
+    body_growth_steps: int = 600
 
     develop_steps: int = 750
     probe_steps: int = 75
@@ -63,23 +63,23 @@ class Config:
     wave_frequency: float = 1.8
     wave_damping: float = 0.16
     outside_damping: float = 2.8
-    wave_saturation: float = 0.28
-    fibre_feedback: float = 0.24
+    wave_saturation: float = 0.45
+    fibre_feedback: float = 0.80
 
     fast_tau: float = 0.7
-    slow_tau: float = 7.0
-    fibre_gain: float = 0.42
-    fibre_half: float = 0.006
-    fibre_decay: float = 0.010
-    director_gain: float = 0.55
-    director_decay: float = 0.018
+    slow_tau: float = 3.0
+    fibre_gain: float = 1.20
+    fibre_half: float = 0.002
+    fibre_decay: float = 0.006
+    director_gain: float = 1.50
+    director_decay: float = 0.010
     fibre_diffusion: float = 0.025
 
-    drive_gain: float = 0.55
+    drive_gain: float = 0.80
     port_sigma: float = 1.5
     body_growth_diffusion: float = 0.24
-    body_growth_gain: float = 0.90
-    body_growth_bias: float = 0.08
+    body_growth_gain: float = 1.40
+    body_growth_bias: float = 0.05
 
     fibre_threshold: float = 0.18
     ridge: float = 1e-4
@@ -636,8 +636,8 @@ def preset(name: str) -> tuple[Config, tuple[int, ...]]:
                 agents=36,
                 builder_steps=300,
                 phase_steps=100,
-                body_growth_steps=90,
-                develop_steps=180,
+                body_growth_steps=220,
+                develop_steps=220,
                 probe_steps=32,
                 probe_tail=8,
                 probe_trials=16,
@@ -651,8 +651,8 @@ def preset(name: str) -> tuple[Config, tuple[int, ...]]:
                 agents=44,
                 builder_steps=650,
                 phase_steps=125,
-                body_growth_steps=120,
-                develop_steps=360,
+                body_growth_steps=420,
+                develop_steps=520,
                 probe_steps=45,
                 probe_tail=10,
                 probe_trials=20,
