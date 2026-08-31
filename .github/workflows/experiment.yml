@@ -76,6 +76,19 @@ jobs:
           node --check /tmp/datarium4.html.js
           node --check /tmp/datarium4b.html.js
 
+  datarium5:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Datarium 5 unit tests
+        run: python -m unittest tests.test_datarium5 -v
+      - name: Datarium 5A — field grows internal morphology
+        run: python experiments/datarium5_internal_field.py --preset ci
+
   blackboxlab:
     runs-on: ubuntu-latest
     steps:
