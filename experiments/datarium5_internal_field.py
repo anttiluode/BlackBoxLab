@@ -69,7 +69,7 @@ class Config:
     fast_tau: float = 0.7
     slow_tau: float = 7.0
     fibre_gain: float = 0.42
-    fibre_half: float = 0.018
+    fibre_half: float = 0.006
     fibre_decay: float = 0.010
     director_gain: float = 0.55
     director_decay: float = 0.018
@@ -78,8 +78,8 @@ class Config:
     drive_gain: float = 0.55
     port_sigma: float = 1.5
     body_growth_diffusion: float = 0.24
-    body_growth_gain: float = 0.75
-    body_growth_bias: float = 0.24
+    body_growth_gain: float = 0.90
+    body_growth_bias: float = 0.08
 
     fibre_threshold: float = 0.18
     ridge: float = 1e-4
@@ -178,7 +178,9 @@ def port_masks(
         y = cy + radius * np.sin(angle)
         d2 = (xx - x) ** 2 + (yy - y) ** 2
         mask = np.exp(-d2 / (2.0 * config.port_sigma**2)) * phi
-        mask /= float(np.sum(mask)) + 1e-12
+        # Drives are physical local patches: unit local amplitude, not a
+        # globally conserved injection divided by patch area.
+        mask /= float(np.max(mask)) + 1e-12
         drive_masks.append(mask)
 
         ra = angle + np.pi / 4.0
