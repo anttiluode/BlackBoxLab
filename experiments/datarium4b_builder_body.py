@@ -66,6 +66,8 @@ class Config:
     # Local scaffold -> phase chemistry. No run-normalization or component ID.
     scaffold_half: float = 0.028
     scaffold_sharpness: float = 0.010
+    orientation_half: float = 0.010
+    orientation_sharpness: float = 0.004
     phase_gain: float = 0.95
     phase_diffusion: float = 0.18
     phase_sharpen: float = 1.45
@@ -117,50 +119,97 @@ def build_scaffold(
 
 def scaffold_variant(
     matrix: np.ndarray,
+    q1: np.ndarray,
+    q2: np.ndarray,
     variant: str,
     seed: int,
-) -> np.ndarray:
-    """Apply post-build attackers without changing the material histogram."""
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Apply post-build attackers to the full local material state.
+
+    SCRAMBLED preserves each cell's (m,q1,q2) triplet and therefore the scalar
+    and director histograms while destroying spatial arrangement. MEAN FIELD
+    preserves only scalar amount and deliberately removes local direction.
+    """
     matrix = np.asarray(matrix, dtype=float)
+    q1 = np.asarray(q1, dtype=float)
+    q2 = np.asarray(q2, dtype=float)
     if variant == "intact":
-        return matrix.copy()
+        return matrix.copy(), q1.copy(), q2.copy()
     if variant == "scrambled":
         rng = np.random.default_rng(seed)
-        return matrix.ravel()[rng.permutation(matrix.size)].reshape(matrix.shape)
+        perm = rng.permutation(matrix.size)
+        return (
+            matrix.ravel()[perm].reshape(matrix.shape),
+            q1.ravel()[perm].reshape(q1.shape),
+            q2.ravel()[perm].reshape(q2.shape),
+        )
     if variant == "mean_field":
-        return np.full_like(matrix, float(np.mean(matrix)))
+        return (
+            np.full_like(matrix, float(np.mean(matrix))),
+            np.zeros_like(q1),
+            np.zeros_like(q2),
+        )
     if variant == "erased":
-        return np.zeros_like(matrix)
+        return (
+            np.zeros_like(matrix),
+            np.zeros_like(q1),
+            np.zeros_like(q2),
+        )
     raise ValueError(variant)
 
 
 def phase_from_scaffold(
     scaffold: np.ndarray,
     config: Config,
+    q1: np.ndarray | None = None,
+    q2: np.ndarray | None = None,
 ) -> np.ndarray:
-    """Local fixed-law conversion from builder scaffold into a second phase.
+    """Local fixed-law conversion from oriented scaffold into a second phase.
 
-    The catalyst is a sigmoid of *local absolute scaffold amount*. There is no
-    division by run mean/max and no component detection. The subsequent
-    diffusion + bistable sharpening is also local.
+    Datarium 3's earned material state is not merely scalar amount; direction
+    was load-bearing in the builder-removal assay. The phase catalyst therefore
+    requires both local material amount and local *absolute director content*.
+    This is still pointwise chemistry: no run normalization, component ID,
+    loop detector, center, or desired shape enters the law.
     """
     scaffold = np.asarray(scaffold, dtype=float)
     if scaffold.shape != (config.n, config.n):
         raise ValueError(scaffold.shape)
+    if q1 is None:
+        q1 = scaffold
+    if q2 is None:
+        q2 = np.zeros_like(scaffold)
+    q1 = np.asarray(q1, dtype=float)
+    q2 = np.asarray(q2, dtype=float)
 
     width = max(config.scaffold_sharpness, 1e-9)
-    raw_catalyst = 1.0 / (
+    raw_material = 1.0 / (
         1.0 + np.exp(-(scaffold - config.scaffold_half) / width)
     )
-    # Exactly zero written scaffold must make exactly zero second phase.  The
-    # subtraction removes the sigmoid's nonzero baseline without consulting
-    # any run statistic.
-    baseline = 1.0 / (1.0 + np.exp(config.scaffold_half / width))
-    catalyst = np.clip(
-        (raw_catalyst - baseline) / (1.0 - baseline),
+    material_baseline = 1.0 / (
+        1.0 + np.exp(config.scaffold_half / width)
+    )
+    material_gate = np.clip(
+        (raw_material - material_baseline) / (1.0 - material_baseline),
         0.0,
         1.0,
     )
+
+    director = np.hypot(q1, q2)
+    owidth = max(config.orientation_sharpness, 1e-9)
+    raw_orientation = 1.0 / (
+        1.0 + np.exp(-(director - config.orientation_half) / owidth)
+    )
+    orientation_baseline = 1.0 / (
+        1.0 + np.exp(config.orientation_half / owidth)
+    )
+    orientation_gate = np.clip(
+        (raw_orientation - orientation_baseline)
+        / (1.0 - orientation_baseline),
+        0.0,
+        1.0,
+    )
+    catalyst = material_gate * orientation_gate
     phi = np.zeros_like(scaffold)
     precursor = np.ones_like(scaffold)
     dt = 0.035
@@ -326,17 +375,33 @@ def one_seed(config: Config, seed: int) -> dict[str, object]:
     no_wave = build_scaffold(config, seed, "no_wave_production")
 
     scaffolds = {
-        "intact": full.matrix.copy(),
-        "scrambled": scaffold_variant(full.matrix, "scrambled", seed + 1000),
-        "mean_field": scaffold_variant(full.matrix, "mean_field", seed + 1000),
-        "write_only": write_only.matrix.copy(),
-        "no_wave_production": no_wave.matrix.copy(),
-        "erased": np.zeros_like(full.matrix),
+        "intact": scaffold_variant(
+            full.matrix, full.q1, full.q2, "intact", seed + 1000
+        ),
+        "scrambled": scaffold_variant(
+            full.matrix, full.q1, full.q2, "scrambled", seed + 1000
+        ),
+        "mean_field": scaffold_variant(
+            full.matrix, full.q1, full.q2, "mean_field", seed + 1000
+        ),
+        "write_only": (
+            write_only.matrix.copy(),
+            write_only.q1.copy(),
+            write_only.q2.copy(),
+        ),
+        "no_wave_production": (
+            no_wave.matrix.copy(),
+            no_wave.q1.copy(),
+            no_wave.q2.copy(),
+        ),
+        "erased": scaffold_variant(
+            full.matrix, full.q1, full.q2, "erased", seed + 1000
+        ),
     }
 
     raw_phases = {
-        name: phase_from_scaffold(scaffold, config)
-        for name, scaffold in scaffolds.items()
+        name: phase_from_scaffold(bundle[0], config, bundle[1], bundle[2])
+        for name, bundle in scaffolds.items()
     }
     # Remove builder/scaffold influence, then let every nonzero candidate
     # undergo the same source-free interface relaxation before any movement
@@ -384,8 +449,11 @@ def one_seed(config: Config, seed: int) -> dict[str, object]:
             }
 
         rows[name] = {
-            "scaffold_mean": float(np.mean(scaffolds[name])),
-            "scaffold_std": float(np.std(scaffolds[name])),
+            "scaffold_mean": float(np.mean(scaffolds[name][0])),
+            "scaffold_std": float(np.std(scaffolds[name][0])),
+            "director_mean": float(
+                np.mean(np.hypot(scaffolds[name][1], scaffolds[name][2]))
+            ),
             **metrics,
             "retention": retention,
             "open_retention": open_retention,
