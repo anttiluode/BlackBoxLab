@@ -94,7 +94,7 @@ self-avoidance**, not useful stigmergic computation.
 
 See [the full Experiment 1 receipt](results/EXPERIMENT1.md).
 
-Open [the live Experiment 1 field](stigmergy.html), and see
+Open [the live Experiment 1 field](https://anttiluode.github.io/BlackBoxLab/stigmergy.html), and see
 [SWARMWORLD_NOTE.md](SWARMWORLD_NOTE.md) for the neighboring paper and the
 limits of the analogy.
 
@@ -141,7 +141,7 @@ mass, area, compactness and eccentricity — so a later Datarium can ask whether
 sisters resemble one another more than unrelated domains **before** adding an
 external heredity mechanism.
 
-Open **[Datarium 1 live](datarium1.html)**. Click a measured domain to inspect
+Open **[Datarium 1 live](https://anttiluode.github.io/BlackBoxLab/datarium1.html)**. Click a measured domain to inspect
 its identity and ancestry.
 
 Python receipt:
@@ -233,7 +233,7 @@ demography strongly but also fails the fixed-energy stability objective.
 
 See [the full Datarium 2 receipt](results/DATARIUM2.md).
 
-Open **[Datarium 2 live](datarium2.html)**.
+Open **[Datarium 2 live](https://anttiluode.github.io/BlackBoxLab/datarium2.html)**.
 
 ### Leave it running overnight
 
@@ -312,6 +312,56 @@ RELEASE STRANGERS** after the material has developed. See the
 ~~~bash
 python experiments/datarium3_layers.py --preset ci
 ~~~
+
+The independent `Claude/order.py` and `Claude/recency.py` attacks sharpen the
+memory claim. Mean material alone sits near chance, while spatial geometry and
+the director field separate matched histories even when only 14.7% of the
+early material survives. That is still not inheritance, but it says the record
+is in arrangement rather than merely amount.
+
+## Datarium 4A — geography becomes body
+
+Datarium 3's material was still nailed to the lattice. Datarium 4A isolates the
+missing body-physics rung with a deliberately explicit diffuse compartment
+seed:
+
+~~~text
+selective movable boundary
+        ↓
+inside / outside soluble chemistry
+        ↓
+local food uptake creates chemical polarity
+        ↓
+local boundary stress enters a damped solvent
+        ↓
+the whole material phase translates
+~~~
+
+There is no `Cell` object, body heading, steering command, source vector,
+fitness or controller in the dynamics. The center of mass is an observer-only
+measurement.
+
+Across eight source angles, the ACTIVE arm moves **17.715 ± 0.767 cells toward
+the source** with only **0.087 ± 0.020 cells sideways**. UNIFORM FOOD, NO STRESS
+and PINNED controls remain at approximately zero translation. In a separate
+passive-cargo assay, the selective diffuse interface retains **79.4%** of the
+initial inside cargo versus **47.8%** with no barrier.
+
+The stopping line is the important part: **the initial compartment is seeded**.
+This validates movable compartment mechanics, not the claim that the
+train/material system has built an organism.
+
+Open **[Datarium 4 live](https://anttiluode.github.io/BlackBoxLab/datarium4.html)**.
+See the [full Datarium 4A receipt](results/DATARIUM4.md) and run:
+
+~~~bash
+python -m unittest tests.test_datarium4 -v
+python experiments/datarium4_body.py --preset ci
+~~~
+
+The next gate is to remove the explicit seed: Datarium 3-style builders must
+close a boundary through local materialization, after which that builder-made
+boundary must retain chemistry and enter the same movable-body regime.
 
 ## World
 
