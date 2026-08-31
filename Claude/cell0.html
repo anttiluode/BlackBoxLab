@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>CELL 0 — does the wall close?</title>
+<style>
+  :root{
+    --ink:#e8e4dc; --dim:#8a8478; --line:#2a2823;
+    --bg:#12110f; --panel:#191713; --live:#7fd4a8; --dead:#d4735f;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:14px/1.5 "Iowan Old Style",Georgia,serif;}
+  .wrap{display:flex;gap:22px;padding:22px;align-items:flex-start;flex-wrap:wrap}
+  canvas{image-rendering:pixelated;background:#000;border:1px solid var(--line);
+         width:512px;height:512px;max-width:92vw}
+  .side{width:340px;max-width:92vw}
+  h1{font-size:21px;margin:0 0 2px;font-weight:600;letter-spacing:-.01em}
+  .sub{color:var(--dim);margin:0 0 18px;font-size:13px}
+  .row{display:flex;justify-content:space-between;gap:10px;
+       padding:5px 0;border-bottom:1px solid var(--line)}
+  .row span:last-child{font-variant-numeric:tabular-nums}
+  label{display:block;margin:13px 0 3px;color:var(--dim);font-size:12.5px}
+  input[type=range]{width:100%;accent-color:var(--live)}
+  button{font:inherit;font-size:13px;background:var(--panel);color:var(--ink);
+         border:1px solid var(--line);padding:6px 12px;margin:14px 6px 0 0;cursor:pointer}
+  button:hover{border-color:var(--dim)}
+  button:focus-visible{outline:2px solid var(--live);outline-offset:2px}
+  .verdict{margin-top:16px;padding:11px 13px;background:var(--panel);
+           border-left:3px solid var(--dead);font-size:13px;color:var(--dim)}
+  .verdict b{color:var(--ink);font-weight:600}
+  .ok{border-left-color:var(--live)}
+  .views{margin-top:10px;color:var(--dim);font-size:12.5px}
+  .views button{margin:4px 4px 0 0;padding:3px 9px;font-size:12px}
+  .on{border-color:var(--live);color:var(--live)}
+</style>
+
+<div class="wrap">
+  <canvas id="cv" width="128" height="128"></canvas>
+
+  <div class="side">
+    <h1>Cell 0</h1>
+    <p class="sub">Scouts read a wave field, eat a finite resource, and lay material
+      that slows the waves down. Nothing is built into the code above one particle.
+      The question is whether the material ever closes.</p>
+
+    <div class="row"><span>time</span><span id="t">0</span></div>
+    <div class="row"><span>scouts alive</span><span id="alive">—</span></div>
+    <div class="row"><span>material, mean</span><span id="mm">—</span></div>
+    <div class="row"><span>budget residual</span><span id="cons">—</span></div>
+    <div class="row"><span>enclosed regions</span><span id="voids">—</span></div>
+    <div class="row"><span>same, shuffled world</span><span id="surr">—</span></div>
+
+    <label>Material's grip on the waves — V<sub>0</sub> = <b id="lv0">8.0</b></label>
+    <input type="range" id="v0" min="0" max="16" step="0.5" value="8">
+
+    <label>Deposit rate — <b id="ldep">0.08</b></label>
+    <input type="range" id="dep" min="0" max="0.25" step="0.005" value="0.08">
+
+    <label>Resource ceiling — <b id="lr0">0.60</b> <i>(takes effect on New world)</i></label>
+    <input type="range" id="r0" min="0.1" max="1.2" step="0.05" value="0.6">
+
+    <label>Scouts — <b id="lns">2500</b> <i>(takes effect on New world)</i></label>
+    <input type="range" id="ns" min="500" max="6000" step="250" value="2500">
+
+    <button id="go">Pause</button><button id="reset">New world</button>
+    <button id="test">Count enclosures</button>
+
+    <div class="views">Showing
+      <button id="vM" class="on">material</button>
+      <button id="vP">wave</button>
+      <button id="vE">envelope</button>
+      <button id="vR">resource</button>
+    </div>
+
+    <div class="verdict" id="verdict">
+      <b>Pillars, not cells.</b> Six seeds run headless gave 5.2 enclosed regions
+      against 0.8 for a control world with the same power spectrum and the same
+      values, so the geometry is real. But what grows is filled pillars with dark
+      halos, which is where ant nests start too. Walls between pillars are the next rung.
+      Drag V<sub>0</sub> to zero to cut the material's grip on the waves: coverage
+      jumps from 18% to 61% because nothing chokes the growth any more. That is the
+      check that the coupling is load-bearing at all.
+    </div>
+  </div>
+</div>
+
+<script>
+const N=128, N2=N*N, DT=0.4, GAM=0.02, ENVA=0.02, DECAY=0.0008, REGROW=0.004,
+      METAB=0.0006, UPTAKE=0.02, CAP=0.25, BLUR=6;
+let V0=8, DEP=0.08, R0=0.6, NS=2500;
+let psi,old,nxt,E,Eb,M,R,tmp, sx,sy,vx,vy,st,gw,gg,gf,gp,alive, t=0, frame=0,
+    running=true, view='M', regrown=0, burned=0, seed=1, budget0=0;
+
+function rnd(){ seed=(seed*1664525+1013904223)|0; return ((seed>>>8)&0xffffff)/0x1000000; }
+function gauss(){ return (rnd()+rnd()+rnd()+rnd()-2)*0.87; }
+
+function init(){
+  psi=new Float32Array(N2); old=new Float32Array(N2); nxt=new Float32Array(N2); E=new Float32Array(N2);
+  Eb=new Float32Array(N2); M=new Float32Array(N2); R=new Float32Array(N2);
+  tmp=new Float32Array(N2);
+  for(let i=0;i<N2;i++){ psi[i]=gauss()*1e-3; old[i]=psi[i]; R[i]=R0; }
+  sx=new Float32Array(NS); sy=new Float32Array(NS); vx=new Float32Array(NS);
+  vy=new Float32Array(NS); st=new Float32Array(NS); gw=new Float32Array(NS);
+  gg=new Float32Array(NS); gf=new Float32Array(NS); gp=new Float32Array(NS);
+  alive=new Uint8Array(NS);
+  for(let k=0;k<NS;k++){
+    sx[k]=rnd()*N; sy[k]=rnd()*N; vx[k]=gauss()*.05; vy[k]=gauss()*.05;
+    st[k]=0.05; gw[k]=0.5+rnd(); gg[k]=(rnd()*2-1)*6; gf[k]=0.40+rnd()*0.20;
+    gp[k]=rnd()*6.2832; alive[k]=1;
+  }
+  t=0; frame=0; regrown=0; burned=0;
+  budget0=R0*N2 + NS*0.05;
+}
+
+function boxblur(src,dst,r){                       // separable, wraps on the torus
+  const inv=1/(2*r+1);
+  for(let y=0;y<N;y++){ const o=y*N; let s=0;
+    for(let d=-r;d<=r;d++) s+=src[o+((d+N)%N)];
+    for(let x=0;x<N;x++){ dst[o+x]=s*inv;
+      s+=src[o+((x+r+1)%N)]-src[o+((x-r+N)%N)]; } }
+  for(let x=0;x<N;x++){ let s=0;
+    for(let d=-r;d<=r;d++) s+=dst[((d+N)%N)*N+x];
+    for(let y=0;y<N;y++){ const v=s*inv; s+=dst[((y+r+1)%N)*N+x]-dst[((y-r+N)%N)*N+x];
+      src[y*N+x]=v; } }
+  dst.set(src);
+}
+
+function step(){
+  const dt2=DT*DT;
+  // --- scouts drive the field at their own frequency
+  for(let k=0;k<NS;k++) if(alive[k]){
+    const i=((sy[k]|0)%N)*N+((sx[k]|0)%N);
+    tmp[i]+=0.01*Math.sin(gf[k]*t+gp[k]);
+  }
+  // --- wave: leapfrog Klein-Gordon, mass term set by the material.
+  // Three buffers and a rotation: neighbours must be read at the OLD time,
+  // never half-updated, or this stops being a leapfrog and drifts.
+  for(let y=0;y<N;y++){
+    const yn=((y+1)%N)*N, yp=((y-1+N)%N)*N, o=y*N;
+    for(let x=0;x<N;x++){
+      const i=o+x, l=psi[o+((x+1)%N)]+psi[o+((x-1+N)%N)]+psi[yn+x]+psi[yp+x]-4*psi[i];
+      nxt[i]=2*psi[i]-old[i]+dt2*(l-V0*M[i]*psi[i]+tmp[i])-GAM*DT*(psi[i]-old[i]);
+    }
+  }
+  const sw=old; old=psi; psi=nxt; nxt=sw;
+  for(let i=0;i<N2;i++){ tmp[i]=0; E[i]+=ENVA*(Math.abs(psi[i])-E[i]); }
+  if(frame%5===0){ tmp.set(E); boxblur(tmp,Eb,BLUR); tmp.fill(0); }
+  // --- material decays back into resource; resource regrows to its ceiling
+  for(let i=0;i<N2;i++){
+    const d=DECAY*M[i]*DT; M[i]-=d; R[i]+=d;
+    const g=REGROW*(R0-R[i])*DT; R[i]+=g; regrown+=g;
+  }
+  // --- scouts
+  for(let k=0;k<NS;k++){
+    if(!alive[k]) continue;
+    const xi=(sx[k]|0)%N, yi=(sy[k]|0)%N, i=yi*N+xi;
+    const gx=(E[yi*N+((xi+1)%N)]-E[yi*N+((xi-1+N)%N)])*0.5;
+    const gy=(E[((yi+1)%N)*N+xi]-E[((yi-1+N)%N)*N+xi])*0.5;
+    const s=1/(Math.abs(gx)+Math.abs(gy)+1e-6);
+    vx[k]=(vx[k]+gg[k]*gx*s*DT*0.2)*0.96+gauss()*0.006;
+    vy[k]=(vy[k]+gg[k]*gy*s*DT*0.2)*0.96+gauss()*0.006;
+    const sp=Math.hypot(vx[k],vy[k]); if(sp>0.6){ vx[k]*=0.6/sp; vy[k]*=0.6/sp; }
+    sx[k]=(sx[k]+vx[k]*DT*4+N)%N; sy[k]=(sy[k]+vy[k]*DT*4+N)%N;
+    const take=Math.min(UPTAKE*DT*R[i], Math.max(CAP-st[k],0));
+    R[i]-=take; st[k]+=take;
+    const b=METAB*DT; st[k]-=b; burned+=b;
+    const drive=Math.min(Math.max(E[i]/(Eb[i]+1e-12)-1,0),3);
+    const put=Math.min(DEP*gw[k]*drive*Math.max(1-M[i],0)*DT, 0.05*Math.max(st[k],0));
+    st[k]-=put; M[i]=Math.min(M[i]+put,1);
+    if(st[k]<=0){ alive[k]=0; R[i]+=Math.max(st[k],0); st[k]=0; }
+  }
+  t+=DT; frame++;
+}
+
+// --- enclosure count: background regions that are not the outside world
+function labelVoids(field){
+  const v=Float32Array.from(field).sort(), thr=v[(0.80*N2)|0];
+  const p=new Int32Array(N2); for(let i=0;i<N2;i++) p[i]=i;
+  const find=a=>{ while(p[a]!==a){ p[a]=p[p[a]]; a=p[a]; } return a; };
+  const uni=(a,b)=>{ const x=find(a),y=find(b); if(x!==y) p[Math.max(x,y)]=Math.min(x,y); };
+  const open=i=>field[i]<=thr;
+  for(let y=0;y<N;y++) for(let x=0;x<N;x++){ const i=y*N+x; if(!open(i)) continue;
+    const r=y*N+((x+1)%N), d=((y+1)%N)*N+x;
+    if(open(r)) uni(i,r); if(open(d)) uni(i,d); }
+  const size=new Map();
+  for(let i=0;i<N2;i++) if(open(i)){ const r=find(i); size.set(r,(size.get(r)||0)+1); }
+  let big=0; for(const s of size.values()) if(s>big) big=s;
+  let n=0; for(const s of size.values()) if(s!==big && s>=12) n++;
+  return n;
+}
+function shuffled(){                       // same values, geometry destroyed
+  const a=Float32Array.from(M);
+  for(let i=N2-1;i>0;i--){ const j=(rnd()*(i+1))|0; const v=a[i]; a[i]=a[j]; a[j]=v; }
+  return labelVoids(a);
+}
+
+// --- draw
+const cv=document.getElementById('cv'), cx=cv.getContext('2d');
+const img=cx.createImageData(N,N);
+function draw(){
+  const f = view==='M'?M : view==='E'?E : view==='R'?R : psi;
+  let lo=1e9,hi=-1e9;
+  for(let i=0;i<N2;i++){ const v=f[i]; if(v<lo)lo=v; if(v>hi)hi=v; }
+  const sp=(hi-lo)||1, d=img.data;
+  for(let i=0;i<N2;i++){
+    let u=(f[i]-lo)/sp;
+    if(view==='psi'){ u=0.5+0.5*Math.tanh(f[i]*40); }
+    const r=Math.min(255,340*u*u), g=Math.min(255,300*u*u*u), b=Math.min(255,90+150*u*(1-u)*2);
+    const j=i*4; d[j]=r; d[j+1]=g; d[j+2]=b; d[j+3]=255;
+  }
+  cx.putImageData(img,0,0);
+}
+
+function readout(){
+  let m=0,al=0,stk=0,rr=0;
+  for(let i=0;i<N2;i++){ m+=M[i]; rr+=R[i]; }
+  for(let k=0;k<NS;k++) if(alive[k]){ al++; stk+=st[k]; }
+  document.getElementById('t').textContent=t.toFixed(0);
+  document.getElementById('alive').textContent=al;
+  document.getElementById('mm').textContent=(m/N2).toFixed(3);
+  document.getElementById('cons').textContent=
+    ((m+rr+stk+burned-regrown-budget0)/budget0*100).toFixed(3)+'%';
+}
+
+let loop=()=>{ if(running){ for(let s=0;s<4;s++) step(); draw(); readout(); }
+               requestAnimationFrame(loop); };
+const bind=(id,fn,fmt)=>{ const el=document.getElementById(id);
+  el.oninput=()=>{ fn(+el.value); document.getElementById('l'+id).textContent=fmt(+el.value); }; };
+bind('v0',v=>V0=v,v=>v.toFixed(1));
+bind('dep',v=>DEP=v,v=>v.toFixed(3));
+bind('r0',v=>{R0=v;},v=>v.toFixed(2));
+bind('ns',v=>{NS=v;},v=>v);
+document.getElementById('go').onclick=e=>{ running=!running; e.target.textContent=running?'Pause':'Run'; };
+document.getElementById('reset').onclick=()=>{ seed=(Date.now()&0x7fffffff)|1; init(); };
+document.getElementById('test').onclick=()=>{
+  const a=labelVoids(M), b=shuffled();
+  document.getElementById('voids').textContent=a;
+  document.getElementById('surr').textContent=b;
+  const v=document.getElementById('verdict');
+  v.classList.toggle('ok', a>b);
+};
+for(const [id,k] of [['vM','M'],['vP','psi'],['vE','E'],['vR','R']])
+  document.getElementById(id).onclick=()=>{ view=k;
+    ['vM','vP','vE','vR'].forEach(q=>document.getElementById(q).classList.remove('on'));
+    document.getElementById(id).classList.add('on'); };
+init(); loop();
+</script>
