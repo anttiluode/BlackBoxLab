@@ -59,6 +59,22 @@ jobs:
         run: python experiments/datarium4_body.py --preset ci
       - name: Datarium 4B — builders make the body phase
         run: python experiments/datarium4b_builder_body.py --preset ci
+      - name: Datarium 4 browser JavaScript parses
+        shell: bash
+        run: |
+          python - <<'PY'
+          import pathlib, re
+          for name in ("datarium4.html", "datarium4b.html"):
+              text = pathlib.Path(name).read_text(encoding="utf-8")
+              match = re.search(r"<script>(.*)</script>", text, re.S)
+              if not match:
+                  raise SystemExit(f"no inline script in {name}")
+              pathlib.Path(f"/tmp/{name}.js").write_text(
+                  match.group(1), encoding="utf-8"
+              )
+          PY
+          node --check /tmp/datarium4.html.js
+          node --check /tmp/datarium4b.html.js
 
   blackboxlab:
     runs-on: ubuntu-latest
