@@ -62,9 +62,10 @@ button{border:1px solid var(--line);background:#0e1520;color:var(--ink);border-r
 
 <aside class="side">
 <section class="card"><h2>The only handoff</h2><div class="body guard">
-<p>Builders do not draw a requested ring. Their slow scalar material is fed through one fixed local catalyst law. Written patches can nucleate a bulk second phase; unwritten space cannot.</p>
+<p>Builders do not draw a requested ring. Their slow <b>oriented</b> material is fed through one fixed local catalyst law. Both local material amount and local director content must be present. Written oriented patches can nucleate a bulk second phase; unwritten space cannot.</p>
 <div class="flow">local scaffold m(x,y)
-      ↓ fixed sigmoid
++ local director |q(x,y)|
+      ↓ fixed pointwise gates
 local catalyst
       ↓
 soluble precursor → body phase φ
@@ -84,7 +85,7 @@ diffusion + local bistability
 <section class="card"><h2>Attackers</h2><div class="body guard">
 <ul>
 <li><b>SCRAMBLE</b> preserves the scalar material histogram and destroys geometry.</li>
-<li><b>MEAN FIELD</b> preserves only total material amount.</li>
+<li><b>MEAN FIELD</b> preserves only total scalar material amount and removes direction.</li>
 <li><b>NO WAVE</b> disables sustained builder wave production from reset.</li>
 <li><b>ERASE</b> gives the second-phase chemistry exactly zero catalyst.</li>
 </ul>
@@ -187,11 +188,17 @@ function matureAndRelease(){
  if(probe==='mean'){let mm=mean(m);m.fill(mm)}
  if(probe==='erased')m.fill(0);
  phi.fill(0);let bodyPrec=field(1),width=.010,half=.028,baseline=1/(1+Math.exp(half/width));
+ let oh=.010,ow=.004,obase=1/(1+Math.exp(oh/ow));
  for(let k=0;k<150;k++){
-   for(let y=0;y<N;y++)for(let x=0;x<N;x++){let i=ID(y,x),raw=1/(1+Math.exp(-(m[i]-half)/width)),cat=Math.max(0,Math.min(1,(raw-baseline)/(1-baseline))),prod=.95*cat*bodyPrec[i]*(1-phi[i]),sharp=1.45*phi[i]*(1-phi[i])*(phi[i]-.42);nphi[i]=Math.max(0,Math.min(1,phi[i]+.035*(prod+.18*lap(phi,y,x)+sharp)));bodyPrec[i]=Math.max(0,bodyPrec[i]-.035*prod)}
+   for(let y=0;y<N;y++)for(let x=0;x<N;x++){let i=ID(y,x),raw=1/(1+Math.exp(-(m[i]-half)/width)),mg=Math.max(0,Math.min(1,(raw-baseline)/(1-baseline))),dir=Math.hypot(q1[i],q2[i]),oraw=1/(1+Math.exp(-(dir-oh)/ow)),og=Math.max(0,Math.min(1,(oraw-obase)/(1-obase))),cat=mg*og,prod=.95*cat*bodyPrec[i]*(1-phi[i]),sharp=1.45*phi[i]*(1-phi[i])*(phi[i]-.42);nphi[i]=Math.max(0,Math.min(1,phi[i]+.035*(prod+.18*lap(phi,y,x)+sharp)));bodyPrec[i]=Math.max(0,bodyPrec[i]-.035*prod)}
    [phi,nphi]=[nphi,phi];
  }
  let mass=sum(phi);if(mass<5){document.getElementById('status').innerHTML='No nontrivial body phase formed. <strong>This arm fails the handoff.</strong>';return}
+ // Source-free settling: builders/scaffold stop acting before any food source
+ // is placed. This prevents passive interface relaxation from being counted
+ // as chemotaxis.
+ for(let k=0;k<180;k++){let rel=(mass-sum(phi))/(mass+1e-12);for(let y=0;y<N;y++)for(let x=0;x<N;x++){let i=ID(y,x),p=phi[i],restore=2.6*p*(1-p)*(p-.5)+12*rel*p*(1-p);nphi[i]=Math.max(0,Math.min(1,p+.03*(.4*lap(phi,y,x)+restore)))}[phi,nphi]=[nphi,phi]}
+ mass=sum(phi);
  let cx=0,cy=0;for(let i=0;i<S;i++){cx+=phi[i]*(i%N);cy+=phi[i]*Math.floor(i/N)}cx/=mass;cy/=mass;releaseCenter=[cx,cy];releaseStart=[cx,cy];releaseMass=mass;
  re.fill(0);im.fill(0);env.fill(0);agents=[];stage='body';time=0;act.fill(0);ux.fill(0);uy.fill(0);makeFood();updateStatus();
 }
