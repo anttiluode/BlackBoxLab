@@ -59,6 +59,7 @@ class Config:
     agents: int = 72
     builder_steps: int = 2600
     phase_steps: int = 220
+    settle_steps: int = 500
     move_steps: int = 900
     cargo_steps: int = 700
 
@@ -275,6 +276,28 @@ def body_config(config: Config) -> BodyConfig:
     )
 
 
+def settle_phase(
+    phi: np.ndarray,
+    config: Config,
+) -> np.ndarray:
+    """Let interface tension relax after builders/scaffold stop acting.
+
+    This is part of the assay handoff, not a body-targeting operation. The
+    exact same field equation is run with zero active stress and spatially
+    uniform food. The source is placed only *after* this settling interval.
+    """
+    world = BodyWorld(
+        body_config(config),
+        source_angle=0.0,
+        initial_phi=phi,
+        active_stress=0.0,
+        uniform_food=True,
+    )
+    for _ in range(config.settle_steps):
+        world.step()
+    return world.phi.copy()
+
+
 def move_phase(
     phi: np.ndarray,
     config: Config,
@@ -311,9 +334,21 @@ def one_seed(config: Config, seed: int) -> dict[str, object]:
         "erased": np.zeros_like(full.matrix),
     }
 
-    phases = {
+    raw_phases = {
         name: phase_from_scaffold(scaffold, config)
         for name, scaffold in scaffolds.items()
+    }
+    # Remove builder/scaffold influence, then let every nonzero candidate
+    # undergo the same source-free interface relaxation before any movement
+    # assay. This prevents passive coarsening drift from masquerading as
+    # chemotaxis.
+    phases = {
+        name: (
+            settle_phase(phi, config)
+            if float(np.sum(phi)) >= 5.0
+            else phi
+        )
+        for name, phi in raw_phases.items()
     }
     angle = 0.29 + (seed % 8) * np.pi / 4.0
 
@@ -471,6 +506,7 @@ def preset(name: str) -> tuple[Config, tuple[int, ...]]:
                 agents=36,
                 builder_steps=300,
                 phase_steps=100,
+                settle_steps=120,
                 move_steps=180,
                 cargo_steps=140,
                 source_radius=8.0,
@@ -485,6 +521,7 @@ def preset(name: str) -> tuple[Config, tuple[int, ...]]:
                 agents=52,
                 builder_steps=900,
                 phase_steps=150,
+                settle_steps=260,
                 move_steps=320,
                 cargo_steps=260,
                 source_radius=10.0,
