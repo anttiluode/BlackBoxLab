@@ -88,6 +88,20 @@ jobs:
         run: python -m unittest tests.test_datarium5 -v
       - name: Datarium 5A — field grows internal morphology
         run: python experiments/datarium5_internal_field.py --preset ci
+      - name: Datarium 5 browser JavaScript parses
+        shell: bash
+        run: |
+          python - <<'PY'
+          import pathlib, re
+          text = pathlib.Path("datarium5.html").read_text(encoding="utf-8")
+          match = re.search(r"<script>(.*)</script>", text, re.S)
+          if not match:
+              raise SystemExit("no inline script in datarium5.html")
+          pathlib.Path("/tmp/datarium5.html.js").write_text(
+              match.group(1), encoding="utf-8"
+          )
+          PY
+          node --check /tmp/datarium5.html.js
 
   blackboxlab:
     runs-on: ubuntu-latest
